@@ -123,6 +123,10 @@ namespace Implementation
                         var key = @event + "-" + u;
                         var newPriority = Util(@event, u);
                         var oldPriority = _priorities[key];
+                        if (newPriority == oldPriority)
+                        {
+                            continue;
+                        }
                         var ue = new UserEvent {Event = @event, User = u};
                         _queue.UpdateKey(oldPriority, ue, newPriority);
                         _priorities[key] = newPriority;
@@ -133,7 +137,7 @@ namespace Implementation
             return CreateOutput();
         }
 
-        private void Print(List<UserEvent> result)
+        private void Print(List<UserEvent> result, double welfare)
         {
             FileInfo fileInfo = new FileInfo(Path.GetRandomFileName() + ".xlsx");
             ExcelPackage excel = new ExcelPackage(fileInfo);
@@ -171,6 +175,19 @@ namespace Implementation
             }
             socialaffinitiessheet.Cells[socialaffinitiessheet.Dimension.Address].AutoFitColumns();
 
+            var cardinalitiessheet = excel.Workbook.Worksheets.Add("Cardinalities");
+            cardinalitiessheet.Cells[1, 1].Value = "Event";
+            cardinalitiessheet.Cells[1, 2].Value = "Min";
+            cardinalitiessheet.Cells[1, 3].Value = "Max";
+            for (int i = 0; i < _eventCapacity.Count; i++)
+            {
+                var cap = _eventCapacity[i];
+                cardinalitiessheet.Cells[i + 2, 1].Value = i + 1;
+                cardinalitiessheet.Cells[i + 2, 2].Value = cap.Min;
+                cardinalitiessheet.Cells[i + 2, 3].Value = cap.Max;
+            }
+            cardinalitiessheet.Cells[cardinalitiessheet.Dimension.Address].AutoFitColumns();
+
             var assignmentssheet = excel.Workbook.Worksheets.Add("Assignments");
             assignmentssheet.Cells[1, 1].Value = "User";
             assignmentssheet.Cells[1, 2].Value = "Event";
@@ -180,6 +197,9 @@ namespace Implementation
                 assignmentssheet.Cells[i + 2, 1].Value = userEvent.User + 1;
                 assignmentssheet.Cells[i + 2, 2].Value = userEvent.Event + 1;
             }
+            assignmentssheet.Cells[result.Count + 3, 1].Value = "Social Welfare";
+            assignmentssheet.Cells[result.Count + 3, 2].Value = welfare;
+
             assignmentssheet.Cells[assignmentssheet.Dimension.Address].AutoFitColumns();
 
             excel.Save();
@@ -197,27 +217,58 @@ namespace Implementation
                     User = i
                 });
             }
-            Print(result);
+            var welfare = SocialWelfare();
+            Print(result, welfare);
             return result;
         }
 
         private double Util(int @event, int user)
         {
             var g = (1 - _alpha) * _inAffinities[user][@event];
+
             var s = 0d;
             foreach (var u in _assignments[@event])
             {
-                s += _socAffinities[u][user];
+                s += _socAffinities[user][u];
             }
 
-            g *= _alpha;
+            s *= _alpha;
             g += s;
+            s = 0d;
+
             foreach (var u in _users)
             {
-                s += _socAffinities[u][user];
+                s += _socAffinities[user][u];
             }
-            g += s * _alpha * (_eventCapacity[@event].Min - _assignments[@event].Count) / Math.Max(_users.Count - 1, 1);
-            return s * -1;
+            g += (s * _alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
+            return g * -1;
+        }
+
+        public double SocialWelfare()
+        {
+            double u = 0;
+            for (int @event = 0; @event < _assignments.Count; @event++)
+            {
+                var assignment = _assignments[@event];
+
+                double s1 = 0;
+                double s2 = 0;
+                foreach (var user1 in assignment)
+                {
+                    s1 += _inAffinities[user1][@event];
+                    foreach (var user2 in assignment)
+                    {
+                        if (user1 != user2)
+                        {
+                            s2 += _socAffinities[user1][user2];
+                        }
+                    }
+                }
+                s1 *= (1 - _alpha);
+                s2 *= _alpha;
+                u += s1 + s2;
+            }
+            return u;
         }
 
         public void Initialize()
@@ -267,8 +318,9 @@ namespace Implementation
         {
             var result = _events.Select(x =>
             {
-                var s = GenerateRandom(1, 20);
-                var l = GenerateRandom(1, 20);
+                var n = _numberOfUsers/_numberOfEvents;
+                var s = GenerateRandom(1, n);
+                var l = GenerateRandom(1, n);
                 var c = new Cardinality
                 {
                     Min = s,
