@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Implementation.Data_Structures
 {
     public class Heap<K, V>
         where K : IComparable
+        where V : UserEvent
     {
-        public readonly SortedSet<KeyValuePair<K, V>> _sortedSet;
+        private readonly SortedSet<KeyValuePair<K, V>> _sortedSet;
 
         // O(1)
         public KeyValuePair<K, V> Min
@@ -54,13 +52,32 @@ namespace Implementation.Data_Structures
             return _sortedSet.Count == 0;
         }
 
+        public int Count()
+        {
+            return _sortedSet.Count;
+        }
+
         private class KeyValueComparer<K, V> : IComparer<KeyValuePair<K, V>>
             where K : IComparable
+            where V : UserEvent
         {
             public int Compare(KeyValuePair<K, V> x, KeyValuePair<K, V> y)
             {
-                var res = x.Key.CompareTo(y.Key);
-                return res;
+                var result = x.Key.CompareTo(y.Key);
+                if (result == 0)
+                {
+                    if (x.Value.User == y.Value.User && x.Value.Event == y.Value.Event)
+                    {
+                        return 0;
+                    }
+
+                    if (x.Value.Event > y.Value.Event && x.Value.User > y.Value.User)
+                    {
+                        return 1;
+                    }
+                    return -1;
+                }
+                return result;
             }
         }
     }

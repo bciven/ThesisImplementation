@@ -31,6 +31,7 @@ namespace Implementation
         private readonly Random _rand;
         private bool _init;
         private Dictionary<string, double> _priorities;
+        private int _percision = 7;
 
         public Pcadg(int numberOfUsers = 10, int numberOfEvents = 4, bool calculateAffectedEvents = false)
         {
@@ -133,7 +134,7 @@ namespace Implementation
                 }
 
 
-                var temp = _affectedEvents.Concat(new List<int> {@event});
+                var temp = _affectedEvents.Concat(new List<int> { @event });
                 foreach (var e in temp)
                 {
                     foreach (var u in _users)
@@ -157,7 +158,7 @@ namespace Implementation
                 {
                     return;
                 }
-                var ue = new UserEvent {Event = @event, User = user2};
+                var ue = new UserEvent { Event = @event, User = user2 };
                 _queue.UpdateKey(oldPriority, ue, newPriority);
                 _priorities[key] = newPriority;
             }
@@ -275,7 +276,7 @@ namespace Implementation
                 s += _socAffinities[user, u];
             }
             g += (s * _alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
-            return g * -1;
+            return Math.Round(g, _percision) * -1;
         }
 
         public double CalculateSocialWelfare()
@@ -307,13 +308,15 @@ namespace Implementation
 
         public void Initialize(bool generateData = true)
         {
-            _init = true;
             _users = new List<int>();
             _events = new List<int>();
             _assignments = new List<List<int>>();
             _userAssignments = new List<int?>();
             _priorities = new Dictionary<string, double>();
             SocialWelfare = 0;
+            _queue = new Heap<double, UserEvent>();
+            _phantomEvents = new List<int>();
+            _affectedEvents = new List<int>();
 
             for (var i = 0; i < _numberOfUsers; i++)
             {
@@ -326,17 +329,16 @@ namespace Implementation
                 _events.Add(i);
                 _assignments.Add(new List<int>());
             }
-            _queue = new Heap<double, UserEvent>();
-            _phantomEvents = new List<int>();
-            _affectedEvents = new List<int>();
+
 
             if (generateData)
             {
+                _init = true;
                 _eventCapacity = GenerateCapacity();
                 _inAffinities = GenerateInnateAffinities();
                 _socAffinities = GenerateSocialAffinities();
             }
-
+            List<double> gains = new List<double>();
             foreach (var u in _users)
             {
                 foreach (var evt in _events)
@@ -345,12 +347,15 @@ namespace Implementation
                     if (_inAffinities[u][evt] > 0)
                     {
                         gain = -1 * (1 - _alpha) * _inAffinities[u][evt];
+                        gain = Math.Round(gain, _percision);
                         var ue = new UserEvent { Event = evt, User = u };
                         _queue.Add(gain, ue);
+                        gains.Add(gain);
                     }
                     _priorities.Add(evt + "-" + u, gain);
                 }
             }
+            var g = gains.Distinct();
         }
 
         private List<Cardinality> GenerateCapacity()
