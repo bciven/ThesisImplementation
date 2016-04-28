@@ -9,7 +9,7 @@ namespace Implementation.Data_Structures
     public class Heap<K, V>
         where K : IComparable
     {
-        private readonly SortedSet<KeyValuePair<K, V>> _sortedSet;
+        public readonly SortedSet<KeyValuePair<K, V>> _sortedSet;
 
         // O(1)
         public KeyValuePair<K, V> Min

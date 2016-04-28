@@ -9,17 +9,18 @@ namespace Implementation
 {
     public class Pcadg : IAlgorithm<List<UserEvent>>
     {
+        public bool CalculateAffectedEvents { get; set; }
+
         private readonly int _numberOfUsers;
         private readonly int _numberOfEvents;
         private double _alpha = 0.2;
         private List<List<double>> _inAffinities;
-        private List<List<double>> _socAffinities;
+        private double[,] _socAffinities;
         private List<int> _events;
         private List<int> _users;
         private readonly List<int> _eventsReadonly;
         private readonly List<int> _usersReadonly;
         private List<List<int>> _assignments;
-        private Dictionary<string, double> _priorities;
         private List<int?> _userAssignments;
         private int _deficit = 0;
         private List<Cardinality> _eventCapacity;
@@ -27,14 +28,19 @@ namespace Implementation
         private List<int> _phantomEvents;
         private List<int> _affectedEvents;
         private readonly Random _rand;
+        private bool _init;
+        private Dictionary<string, double> _priorities;
 
-        public Pcadg(int numberOfUsers = 10, int numberOfEvents = 4)
+        public Pcadg(int numberOfUsers = 10, int numberOfEvents = 4, bool calculateAffectedEvents = false)
         {
+            CalculateAffectedEvents = calculateAffectedEvents;
             _rand = new Random();
             _usersReadonly = new List<int>();
             _eventsReadonly = new List<int>();
             _numberOfUsers = numberOfUsers;
             _numberOfEvents = numberOfEvents;
+
+            _init = false;
 
             for (var i = 0; i < _numberOfUsers; i++)
             {
@@ -49,7 +55,9 @@ namespace Implementation
 
         public List<UserEvent> Run()
         {
-            Initialize();
+            if (!_init)
+                throw new Exception("Not Initialized");
+
             while (!_queue.IsEmpty())
             {
                 var min = _queue.RemoveMin();
@@ -111,6 +119,8 @@ namespace Implementation
                             {
                                 _assignments[e].Remove(u);
                                 //affected_evts.append(e)  # this line is not in ref paper
+                                if (CalculateAffectedEvents)
+                                    _affectedEvents.Add(e);
                             }
                         }
                     }
@@ -118,7 +128,7 @@ namespace Implementation
 
                 foreach (var u in _users)
                 {
-                    if (_socAffinities[user][u] > 0 && _userAssignments[u] == null) /* or a in affected_evts)*/
+                    if ((_socAffinities[user, u] > 0 && _userAssignments[u] == null) || (!CalculateAffectedEvents || _affectedEvents.Contains(u))) /* or a in affected_evts)*/
                     {
                         var key = @event + "-" + u;
                         var newPriority = Util(@event, u);
@@ -127,7 +137,7 @@ namespace Implementation
                         {
                             continue;
                         }
-                        var ue = new UserEvent {Event = @event, User = u};
+                        var ue = new UserEvent { Event = @event, User = u };
                         _queue.UpdateKey(oldPriority, ue, newPriority);
                         _priorities[key] = newPriority;
                     }
@@ -170,7 +180,7 @@ namespace Implementation
                         socialaffinitiessheet.Cells[user2 + 2, 1].Value = user2 + 1;
                     }
 
-                    socialaffinitiessheet.Cells[user2 + 2, user1 + 2].Value = _socAffinities[user1][user2];
+                    socialaffinitiessheet.Cells[user2 + 2, user1 + 2].Value = _socAffinities[user1, user2];
                 }
             }
             socialaffinitiessheet.Cells[socialaffinitiessheet.Dimension.Address].AutoFitColumns();
@@ -195,7 +205,10 @@ namespace Implementation
             {
                 var userEvent = result[i];
                 assignmentssheet.Cells[i + 2, 1].Value = userEvent.User + 1;
-                assignmentssheet.Cells[i + 2, 2].Value = userEvent.Event + 1;
+                if (userEvent.Event >= 0)
+                {
+                    assignmentssheet.Cells[i + 2, 2].Value = userEvent.Event + 1;
+                }
             }
             assignmentssheet.Cells[result.Count + 3, 1].Value = "Social Welfare";
             assignmentssheet.Cells[result.Count + 3, 2].Value = welfare;
@@ -213,7 +226,7 @@ namespace Implementation
                 var userAssignment = _userAssignments[i];
                 result.Add(new UserEvent
                 {
-                    Event = userAssignment ?? 0,
+                    Event = userAssignment ?? -1,
                     User = i
                 });
             }
@@ -229,7 +242,7 @@ namespace Implementation
             var s = 0d;
             foreach (var u in _assignments[@event])
             {
-                s += _socAffinities[user][u];
+                s += _socAffinities[user, u];
             }
 
             s *= _alpha;
@@ -238,7 +251,7 @@ namespace Implementation
 
             foreach (var u in _users)
             {
-                s += _socAffinities[user][u];
+                s += _socAffinities[user, u];
             }
             g += (s * _alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
             return g * -1;
@@ -260,7 +273,7 @@ namespace Implementation
                     {
                         if (user1 != user2)
                         {
-                            s2 += _socAffinities[user1][user2];
+                            s2 += _socAffinities[user1, user2];
                         }
                     }
                 }
@@ -273,6 +286,7 @@ namespace Implementation
 
         public void Initialize()
         {
+            _init = true;
             _users = new List<int>();
             _events = new List<int>();
             _assignments = new List<List<int>>();
@@ -292,7 +306,6 @@ namespace Implementation
             }
 
             _eventCapacity = GenerateCapacity();
-            //_queue = new FibonacciHeap<UserEvent>();
             _queue = new Heap<double, UserEvent>();
             _phantomEvents = new List<int>();
             _affectedEvents = new List<int>();
@@ -303,13 +316,14 @@ namespace Implementation
             {
                 foreach (var evt in _events)
                 {
+                    var gain = 0d;
                     if (_inAffinities[u][evt] > 0)
                     {
-                        var gain = -1 * (1 - _alpha) * _inAffinities[u][evt];
-                        var ue = new UserEvent { Event = evt, User = u};
+                        gain = -1 * (1 - _alpha) * _inAffinities[u][evt];
+                        var ue = new UserEvent { Event = evt, User = u };
                         _queue.Add(gain, ue);
-                        _priorities.Add(evt + "-" + u, gain);
                     }
+                    _priorities.Add(evt + "-" + u, gain);
                 }
             }
         }
@@ -318,7 +332,7 @@ namespace Implementation
         {
             var result = _events.Select(x =>
             {
-                var n = _numberOfUsers/_numberOfEvents;
+                var n = _numberOfUsers / _numberOfEvents;
                 var s = GenerateRandom(1, n);
                 var l = GenerateRandom(1, n);
                 var c = new Cardinality
@@ -349,26 +363,31 @@ namespace Implementation
             return usersInterests;
         }
 
-        private List<List<double>> GenerateSocialAffinities()
+        private double[,] GenerateSocialAffinities()
         {
-            var usersInterests = new List<List<double>>();
-            foreach (var user1 in _users)
+            var usersInterests = new double[_users.Count, _users.Count];
+            for (int i = 0; i < _users.Count; i++)
             {
-                var userInterests = new List<double>();
-                foreach (var user2 in _users)
+                var user1 = _users[i];
+                for (int j = 0; j < i; j++)
                 {
+                    var user2 = _users[j];
+                    usersInterests[i, j] = usersInterests[j, i];
+                }
+                for (int j = i; j < _users.Count; j++)
+                {
+                    var user2 = _users[j];
                     if (user1 != user2)
                     {
                         var r = GenerateRandom(0d, 1d);
                         r = Math.Round(r, 2);
-                        userInterests.Add(r);
+                        usersInterests[i, j] = r;
                     }
                     else
                     {
-                        userInterests.Add(0);
+                        usersInterests[i, j] = 0;
                     }
                 }
-                usersInterests.Add(userInterests);
             }
             return usersInterests;
         }
