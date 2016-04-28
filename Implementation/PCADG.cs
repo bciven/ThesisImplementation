@@ -10,6 +10,7 @@ namespace Implementation
     public class Pcadg : IAlgorithm<List<UserEvent>>
     {
         public bool CalculateAffectedEvents { get; set; }
+        public double SocialWelfare { get; set; }
 
         private readonly int _numberOfUsers;
         private readonly int _numberOfEvents;
@@ -65,6 +66,7 @@ namespace Implementation
                 var @event = min.Value.Event;
                 var minCapacity = _eventCapacity[@event].Min;
                 var maxCapacity = _eventCapacity[@event].Max;
+                _affectedEvents.RemoveAll(x => true);
 
                 if (_userAssignments[user] == null && _assignments[@event].Count < maxCapacity)
                 {
@@ -112,34 +114,31 @@ namespace Implementation
                         _phantomEvents.Remove(@event);
                         foreach (var u in _assignments[@event])
                         {
+                            //permanently assign all users to real events
                             _userAssignments[u] = @event;
-                            var excludedEvents = _events.Where(x => x != @event && _assignments[x].Contains(u));
 
+                            //unassign these users from all other events
+                            var excludedEvents = _events.Where(x => x != @event && _assignments[x].Contains(u));
                             foreach (var e in excludedEvents)
                             {
                                 _assignments[e].Remove(u);
                                 //affected_evts.append(e)  # this line is not in ref paper
                                 if (CalculateAffectedEvents)
+                                {
                                     _affectedEvents.Add(e);
+                                }
                             }
                         }
                     }
                 }
 
-                foreach (var u in _users)
+
+                var temp = _affectedEvents.Concat(new List<int> {@event});
+                foreach (var e in temp)
                 {
-                    if ((_socAffinities[user, u] > 0 && _userAssignments[u] == null) || (!CalculateAffectedEvents || _affectedEvents.Contains(u))) /* or a in affected_evts)*/
+                    foreach (var u in _users)
                     {
-                        var key = @event + "-" + u;
-                        var newPriority = Util(@event, u);
-                        var oldPriority = _priorities[key];
-                        if (newPriority == oldPriority)
-                        {
-                            continue;
-                        }
-                        var ue = new UserEvent { Event = @event, User = u };
-                        _queue.UpdateKey(oldPriority, ue, newPriority);
-                        _priorities[key] = newPriority;
+                        Update(user, u, e);
                     }
                 }
             }
@@ -147,9 +146,31 @@ namespace Implementation
             return CreateOutput();
         }
 
+        private void Update(int user1, int user2, int @event)
+        {
+            if (_socAffinities[user1, user2] > 0 && _userAssignments[user2] == null) /* or a in affected_evts)*/
+            {
+                var key = @event + "-" + user2;
+                var newPriority = Util(@event, user2);
+                var oldPriority = _priorities[key];
+                if (newPriority == oldPriority)
+                {
+                    return;
+                }
+                var ue = new UserEvent {Event = @event, User = user2};
+                _queue.UpdateKey(oldPriority, ue, newPriority);
+                _priorities[key] = newPriority;
+            }
+        }
+
         private void Print(List<UserEvent> result, double welfare)
         {
-            FileInfo fileInfo = new FileInfo(Path.GetRandomFileName() + ".xlsx");
+            var name = Path.GetRandomFileName();
+            if (CalculateAffectedEvents)
+            {
+                name += "-AffectedEvents";
+            }
+            FileInfo fileInfo = new FileInfo(name + ".xlsx");
             ExcelPackage excel = new ExcelPackage(fileInfo);
             var usereventsheet = excel.Workbook.Worksheets.Add("Innate Affinities");
             usereventsheet.Cells[1, 1].Value = @"User\Event";
@@ -230,8 +251,8 @@ namespace Implementation
                     User = i
                 });
             }
-            var welfare = SocialWelfare();
-            Print(result, welfare);
+            SocialWelfare = CalculateSocialWelfare();
+            Print(result, SocialWelfare);
             return result;
         }
 
@@ -257,7 +278,7 @@ namespace Implementation
             return g * -1;
         }
 
-        public double SocialWelfare()
+        public double CalculateSocialWelfare()
         {
             double u = 0;
             for (int @event = 0; @event < _assignments.Count; @event++)
@@ -284,7 +305,7 @@ namespace Implementation
             return u;
         }
 
-        public void Initialize()
+        public void Initialize(bool generateData = true)
         {
             _init = true;
             _users = new List<int>();
@@ -292,6 +313,7 @@ namespace Implementation
             _assignments = new List<List<int>>();
             _userAssignments = new List<int?>();
             _priorities = new Dictionary<string, double>();
+            SocialWelfare = 0;
 
             for (var i = 0; i < _numberOfUsers; i++)
             {
@@ -304,13 +326,16 @@ namespace Implementation
                 _events.Add(i);
                 _assignments.Add(new List<int>());
             }
-
-            _eventCapacity = GenerateCapacity();
             _queue = new Heap<double, UserEvent>();
             _phantomEvents = new List<int>();
             _affectedEvents = new List<int>();
-            _inAffinities = GenerateInnateAffinities();
-            _socAffinities = GenerateSocialAffinities();
+
+            if (generateData)
+            {
+                _eventCapacity = GenerateCapacity();
+                _inAffinities = GenerateInnateAffinities();
+                _socAffinities = GenerateSocialAffinities();
+            }
 
             foreach (var u in _users)
             {

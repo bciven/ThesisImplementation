@@ -16,21 +16,22 @@ namespace Implementation
             ConsoleKeyInfo str;
             do
             {
-                Pcadg p = new Pcadg(100,40);
+                Pcadg p = new Pcadg(100,20);
+                p.CalculateAffectedEvents = false;
                 p.Initialize();
 
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-                p.CalculateAffectedEvents = false;
+                var watch = Stopwatch.StartNew();
                 var result = p.Run();
                 watch.Stop();
-                Print(result, watch);
+                Print(result, p.SocialWelfare, watch);
                 watch.Reset();
 
+                p.Initialize(false);
                 watch.Start();
                 p.CalculateAffectedEvents = true;
                 result = p.Run();
                 watch.Stop();
-                Print(result, watch);
+                Print(result, p.SocialWelfare, watch);
                 watch.Reset();
 
                 str = Console.ReadKey();
@@ -39,13 +40,15 @@ namespace Implementation
 
         }
 
-        private static void Print(List<UserEvent> result, Stopwatch watch)
+        private static void Print(List<UserEvent> result, double gain, Stopwatch watch)
         {
             foreach (var userEvent in result.Where(x=>x.Event > 0))
             {
                 Console.WriteLine("{0} ----> {1}", userEvent.User, userEvent.Event);
             }
             Console.WriteLine("Exection Time: {0}ms", watch.ElapsedMilliseconds);
+            Console.WriteLine("Social Welfare: {0}", gain);
+            Console.WriteLine();
 
         }
     }

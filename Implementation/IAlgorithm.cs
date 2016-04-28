@@ -9,6 +9,6 @@ namespace Implementation
     interface IAlgorithm<T>
     {
         T Run();
-        void Initialize();
+        void Initialize(bool generateData);
     }
 }
