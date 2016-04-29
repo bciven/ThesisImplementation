@@ -66,16 +66,27 @@ namespace Implementation.Data_Structures
                 var result = x.Key.CompareTo(y.Key);
                 if (result == 0)
                 {
-                    if (x.Value.User == y.Value.User && x.Value.Event == y.Value.Event)
-                    {
-                        return 0;
-                    }
-
-                    if (x.Value.Event > y.Value.Event && x.Value.User > y.Value.User)
+                    if (x.Value.Event > y.Value.Event)
                     {
                         return 1;
                     }
-                    return -1;
+
+                    if(x.Value.Event < y.Value.Event)
+                    {
+                        return -1;
+                    }
+
+                    if (x.Value.User > y.Value.User)
+                    {
+                        return 1;
+                    }
+
+                    if (x.Value.User < y.Value.User)
+                    {
+                        return -1;
+                    }
+
+                    return 0;
                 }
                 return result;
             }

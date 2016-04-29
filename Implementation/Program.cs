@@ -16,7 +16,7 @@ namespace Implementation
             ConsoleKeyInfo str;
             do
             {
-                Pcadg p = new Pcadg(10,3);
+                Pcadg p = new Pcadg(20,5);
                 p.CalculateAffectedEvents = false;
                 p.Initialize();
 
@@ -27,7 +27,7 @@ namespace Implementation
                 Print(result, p.SocialWelfare, watch);
                 watch.Reset();
 
-                p.Initialize(false);
+                p.Initialize();
                 p.CalculateAffectedEvents = true;
                 watch.Start();
                 result = p.Run();
