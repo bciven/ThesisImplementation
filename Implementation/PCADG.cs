@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using Implementation.Data_Structures;
@@ -25,18 +26,20 @@ namespace Implementation
         private List<int?> _userAssignments;
         private int _deficit = 0;
         private List<Cardinality> _eventCapacity;
-        private Heap<double, UserEvent> _queue;
+        //private Heap<double, UserEvent> _queue;
+        private FakeHeap/*<double, UserEvent>*/ _queue;
         private List<int> _phantomEvents;
         private List<int> _affectedEvents;
-        private readonly Random _rand;
+        private List<UserEvent> _affectedUserEvents;
         private bool _init;
         private Dictionary<string, double> _priorities;
         private int _percision = 7;
+        private IDataFeed dataFeed;
 
         public Pcadg(int numberOfUsers = 10, int numberOfEvents = 4, bool calculateAffectedEvents = false)
         {
+            InitializeFeed();
             CalculateAffectedEvents = calculateAffectedEvents;
-            _rand = new Random();
             _usersReadonly = new List<int>();
             _eventsReadonly = new List<int>();
             _numberOfUsers = numberOfUsers;
@@ -55,6 +58,19 @@ namespace Implementation
             }
         }
 
+        private void InitializeFeed()
+        {
+            var app = ConfigurationManager.AppSettings["Feed"];
+            if (app == null || app == "Random")
+            {
+                dataFeed = new RandomDataFeed();
+            }
+            else if(app == "Hardcode")
+            {
+                dataFeed = new RandomDataFeed();
+            }
+        }
+
         public List<UserEvent> Run()
         {
             if (!_init)
@@ -62,12 +78,14 @@ namespace Implementation
 
             while (!_queue.IsEmpty())
             {
-                var min = _queue.RemoveMin();
+                PrintQueue();
+                var min = _queue.RemoveMax();
                 var user = min.Value.User;
                 var @event = min.Value.Event;
                 var minCapacity = _eventCapacity[@event].Min;
                 var maxCapacity = _eventCapacity[@event].Max;
                 _affectedEvents.RemoveAll(x => true);
+                _affectedUserEvents.RemoveAll(x => true);
 
                 if (_userAssignments[user] == null && _assignments[@event].Count < maxCapacity)
                 {
@@ -100,12 +118,19 @@ namespace Implementation
                     if (_assignments[@event].Count > minCapacity)
                     {
                         _userAssignments[user] = @event;
+
                         var excludedEvents = _events.Where(x => x != @event && _assignments[x].Contains(user));
                         foreach (var e in excludedEvents)
                         {
                             if (_assignments[e].Contains(user))
                             {
                                 _assignments[e].Remove(user);
+                                if (CalculateAffectedEvents)
+                                {
+                                    _affectedEvents.Add(e);
+                                    Console.WriteLine(e);
+                                    _affectedUserEvents.Add(new UserEvent { Event = e, User = user });
+                                }
                             }
                         }
                     }
@@ -127,12 +152,13 @@ namespace Implementation
                                 if (CalculateAffectedEvents)
                                 {
                                     _affectedEvents.Add(e);
+                                    Console.WriteLine(e);
+                                    _affectedUserEvents.Add(new UserEvent { Event = e, User = user });
                                 }
                             }
                         }
                     }
                 }
-
 
                 var temp = _affectedEvents.Concat(new List<int> { @event });
                 foreach (var e in temp)
@@ -147,10 +173,33 @@ namespace Implementation
             return CreateOutput();
         }
 
+        private void PrintQueue()
+        {
+            var r = _queue._sortedSet.OrderByDescending(x => x.Key).ToList();
+            for (int index = 1; index <= 1; index++)
+            {
+                var pair = r[index - 1];
+                Console.Write("({0}, {1}, {2})", pair.Key, pair.Value.User, pair.Value.Event);
+                if (index % 5 == 0)
+                {
+                    Console.WriteLine();
+                }
+            }
+            Console.ReadLine();
+        }
+
         private void Update(int user1, int user2, int @event)
         {
-            if (_socAffinities[user1, user2] > 0 && _userAssignments[user2] == null) /* or a in affected_evts)*/
+            var userEvent = _affectedUserEvents.FirstOrDefault(x => x.User == user1 && x.Event == @event);
+            var newUserEvent = new UserEvent { Event = @event, User = user2 };
+            if (CalculateAffectedEvents && userEvent != null)
             {
+                var newPriority = Util(@event, user2);
+                _queue.Add(newPriority, newUserEvent);
+            }
+            else if (_socAffinities[user1, user2] > 0 && _userAssignments[user2] == null) /* or a in affected_evts)*/
+            {
+
                 var key = @event + "-" + user2;
                 var newPriority = Util(@event, user2);
                 var oldPriority = _priorities[key];
@@ -158,8 +207,8 @@ namespace Implementation
                 {
                     return;
                 }
-                var ue = new UserEvent { Event = @event, User = user2 };
-                _queue.UpdateKey(oldPriority, ue, newPriority);
+                _queue.UpdateKey(oldPriority, newUserEvent, newPriority);
+                //Console.WriteLine("Old:{0}, New:{1}", oldPriority, newPriority);
                 _priorities[key] = newPriority;
             }
         }
@@ -276,7 +325,7 @@ namespace Implementation
                 s += _socAffinities[user, u];
             }
             g += (s * _alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
-            return Math.Round(g, _percision) * -1;
+            return Math.Round(g, _percision);
         }
 
         public double CalculateSocialWelfare()
@@ -314,9 +363,10 @@ namespace Implementation
             _userAssignments = new List<int?>();
             _priorities = new Dictionary<string, double>();
             SocialWelfare = 0;
-            _queue = new Heap<double, UserEvent>();
+            _queue = new FakeHeap/*<double, UserEvent>*/();
             _phantomEvents = new List<int>();
             _affectedEvents = new List<int>();
+            _affectedUserEvents = new List<UserEvent>();
 
             for (var i = 0; i < _numberOfUsers; i++)
             {
@@ -334,10 +384,11 @@ namespace Implementation
             if (generateData)
             {
                 _init = true;
-                _eventCapacity = GenerateCapacity();
-                _inAffinities = GenerateInnateAffinities();
-                _socAffinities = GenerateSocialAffinities();
+                _eventCapacity = dataFeed.GenerateCapacity(_events, _numberOfUsers, _numberOfEvents);
+                _inAffinities = dataFeed.GenerateInnateAffinities(_users, _events);
+                _socAffinities = dataFeed.GenerateSocialAffinities(_users);
             }
+
             List<double> gains = new List<double>();
             foreach (var u in _users)
             {
@@ -346,7 +397,7 @@ namespace Implementation
                     var gain = 0d;
                     if (_inAffinities[u][evt] > 0)
                     {
-                        gain = -1 * (1 - _alpha) * _inAffinities[u][evt];
+                        gain = (1 - _alpha) * _inAffinities[u][evt];
                         gain = Math.Round(gain, _percision);
                         var ue = new UserEvent { Event = evt, User = u };
                         _queue.Add(gain, ue);
@@ -358,79 +409,6 @@ namespace Implementation
             var g = gains.Distinct();
         }
 
-        private List<Cardinality> GenerateCapacity()
-        {
-            var result = _events.Select(x =>
-            {
-                var n = _numberOfUsers / _numberOfEvents;
-                var s = GenerateRandom(1, n);
-                var l = GenerateRandom(1, n);
-                var c = new Cardinality
-                {
-                    Min = s,
-                    Max = s + l
-                };
-                return c;
-            }).ToList();
 
-            return result;
-        }
-
-        private List<List<double>> GenerateInnateAffinities()
-        {
-            var usersInterests = new List<List<double>>();
-            foreach (var user in _users)
-            {
-                var userInterests = new List<double>();
-                foreach (var @event in _events)
-                {
-                    var r = GenerateRandom(0d, 1d);
-                    r = Math.Round(r, 2);
-                    userInterests.Add(r);
-                }
-                usersInterests.Add(userInterests);
-            }
-            return usersInterests;
-        }
-
-        private double[,] GenerateSocialAffinities()
-        {
-            var usersInterests = new double[_users.Count, _users.Count];
-            for (int i = 0; i < _users.Count; i++)
-            {
-                var user1 = _users[i];
-                for (int j = 0; j < i; j++)
-                {
-                    var user2 = _users[j];
-                    usersInterests[i, j] = usersInterests[j, i];
-                }
-                for (int j = i; j < _users.Count; j++)
-                {
-                    var user2 = _users[j];
-                    if (user1 != user2)
-                    {
-                        var r = GenerateRandom(0d, 1d);
-                        r = Math.Round(r, 2);
-                        usersInterests[i, j] = r;
-                    }
-                    else
-                    {
-                        usersInterests[i, j] = 0;
-                    }
-                }
-            }
-            return usersInterests;
-        }
-
-        private double GenerateRandom(double minimum, double maximum)
-        {
-            return _rand.NextDouble() * (maximum - minimum) + minimum;
-        }
-
-
-        private int GenerateRandom(int minimum, int maximum)
-        {
-            return _rand.Next(minimum, maximum + 1);
-        }
     }
 }

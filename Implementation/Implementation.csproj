@@ -56,6 +56,7 @@
       <HintPath>E:\Programs\C Sharp\Graph Sharp\QuickGraph.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
@@ -70,11 +71,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data Structures\IDataFeed.cs" />
     <Compile Include="Data Structures\FibonacciHeap.cs" />
     <Compile Include="Data Structures\FibonacciHeapNode.cs" />
     <Compile Include="Data Structures\Cardinality.cs" />
+    <Compile Include="Data Structures\FakeHeap.cs" />
     <Compile Include="Data Structures\Heap.cs" />
     <Compile Include="Data Structures\Paint.cs" />
+    <Compile Include="Data Structures\HardcodeFeed.cs" />
+    <Compile Include="Data Structures\RandomDataFeed.cs" />
     <Compile Include="Data Structures\UserEvent.cs" />
     <Compile Include="IAlgorithm.cs" />
     <Compile Include="PCADG.cs" />

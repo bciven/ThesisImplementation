@@ -10,9 +10,9 @@ namespace Implementation.Data_Structures
         private readonly SortedSet<KeyValuePair<K, V>> _sortedSet;
 
         // O(1)
-        public KeyValuePair<K, V> Min
+        public KeyValuePair<K, V> Max
         {
-            get { return _sortedSet.Min; }
+            get { return _sortedSet.Max; }
         }
 
         public Heap()
@@ -27,11 +27,11 @@ namespace Implementation.Data_Structures
         }
 
         // O(logn)
-        public KeyValuePair<K, V> RemoveMin()
+        public KeyValuePair<K, V> RemoveMax()
         {
-            var min = Min;
-            _sortedSet.Remove(min);
-            return min;
+            var max = Max;
+            _sortedSet.Remove(max);
+            return max;
         }
 
         // O(logn)
