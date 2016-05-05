@@ -16,10 +16,21 @@ namespace Implementation
             ConsoleKeyInfo str;
             do
             {
-                Pcadg p = new Pcadg(20, 5);
+                int numberOfUsers = 3;
+                int numberOfEvents = 2;
+                Pcadg p = new Pcadg(numberOfUsers, numberOfEvents);
+                /*p.Initialize();
+
+                for (int i = 0; i < Math.Pow(numberOfEvents, numberOfUsers); i++)
+                {
+                    var binary = Convert.ToString(i, 2).PadLeft(3, '0');
+                    var l = binary.Select(x => int.Parse(x.ToString())).ToList();
+                    CalcPossibility(l, numberOfEvents, p);
+                }*/
+
                 var watch = new Stopwatch();
 
-                p.CalculateAffectedEvents = false;
+                p.CalculateAffectedEvents = true;
                 p.Initialize();
                 watch.Start();
                 var result = p.Run();
@@ -27,7 +38,7 @@ namespace Implementation
                 Print(result, p.SocialWelfare, watch);
                 watch.Reset();
 
-                p.CalculateAffectedEvents = true;
+                p.CalculateAffectedEvents = false;
                 p.Initialize(false);
                 watch.Start();
                 result = p.Run();
@@ -39,6 +50,25 @@ namespace Implementation
                 Console.WriteLine();
             } while (str.Key == ConsoleKey.Enter);
 
+        }
+
+        private static void CalcPossibility(List<int> states, int numberOfEvents, Pcadg p)
+        {
+            var q = new List<List<int>>();
+
+            for (int i = 0; i < numberOfEvents; i++)
+            {
+                var l = new List<int>();
+                for (int index = 0; index < states.Count; index++)
+                {
+                    var state = states[index];
+                    if (state == i)
+                        l.Add(index);
+                }
+                q.Add(l);
+            }
+
+            Console.WriteLine(p.CalculateSocialWelfare(q));
         }
 
         private static void Print(List<UserEvent> result, double gain, Stopwatch watch)
@@ -56,7 +86,7 @@ namespace Implementation
             {
                 Console.WriteLine("Count: Event {0} ----> {1} User(s)", c.e + 1, c.c);
             }
-            Console.WriteLine("{0} User(s) are assigned", count.Sum(x=>x.c));
+            Console.WriteLine("{0} User(s) are assigned", count.Sum(x => x.c));
             Console.WriteLine();
         }
     }

@@ -15,7 +15,7 @@ namespace Implementation
 
         private readonly int _numberOfUsers;
         private readonly int _numberOfEvents;
-        private double _alpha = 0.2;
+        private double _alpha = 0.5;
         private List<List<double>> _inAffinities;
         private double[,] _socAffinities;
         private List<int> _events;
@@ -67,7 +67,7 @@ namespace Implementation
             }
             else if(app == "Hardcode")
             {
-                dataFeed = new RandomDataFeed();
+                dataFeed = new HardcodeFeed();
             }
         }
 
@@ -163,6 +163,7 @@ namespace Implementation
                 var temp = _affectedEvents.Concat(new List<int> { @event });
                 foreach (var e in temp)
                 {
+                    var affectedUsers = _users.Concat(_affectedUserEvents.Select(x => x.User));
                     foreach (var u in _users)
                     {
                         Update(user, u, e);
@@ -175,22 +176,14 @@ namespace Implementation
 
         private void PrintQueue()
         {
-            var r = _queue._sortedSet.OrderByDescending(x => x.Key).ToList();
-            for (int index = 1; index <= 1; index++)
-            {
-                var pair = r[index - 1];
-                Console.Write("({0}, {1}, {2})", pair.Key, pair.Value.User, pair.Value.Event);
-                if (index % 5 == 0)
-                {
-                    Console.WriteLine();
-                }
-            }
+            var max = _queue.Max;
+            Console.WriteLine("User {0}, Event {1}, Value {2}", max.Value.User, max.Value.Event, max.Key);
             Console.ReadLine();
         }
 
         private void Update(int user1, int user2, int @event)
         {
-            var userEvent = _affectedUserEvents.FirstOrDefault(x => x.User == user1 && x.Event == @event);
+            var userEvent = _affectedUserEvents.FirstOrDefault(x => x.User == user2 && x.Event == @event);
             var newUserEvent = new UserEvent { Event = @event, User = user2 };
             if (CalculateAffectedEvents && userEvent != null)
             {
@@ -301,7 +294,7 @@ namespace Implementation
                     User = i
                 });
             }
-            SocialWelfare = CalculateSocialWelfare();
+            SocialWelfare = CalculateSocialWelfare(_assignments);
             Print(result, SocialWelfare);
             return result;
         }
@@ -328,12 +321,12 @@ namespace Implementation
             return Math.Round(g, _percision);
         }
 
-        public double CalculateSocialWelfare()
+        public double CalculateSocialWelfare(List<List<int>> assignments)
         {
             double u = 0;
-            for (int @event = 0; @event < _assignments.Count; @event++)
+            for (int @event = 0; @event < assignments.Count; @event++)
             {
-                var assignment = _assignments[@event];
+                var assignment = assignments[@event];
 
                 double s1 = 0;
                 double s2 = 0;
@@ -389,7 +382,6 @@ namespace Implementation
                 _socAffinities = dataFeed.GenerateSocialAffinities(_users);
             }
 
-            List<double> gains = new List<double>();
             foreach (var u in _users)
             {
                 foreach (var evt in _events)
@@ -401,14 +393,10 @@ namespace Implementation
                         gain = Math.Round(gain, _percision);
                         var ue = new UserEvent { Event = evt, User = u };
                         _queue.Add(gain, ue);
-                        gains.Add(gain);
                     }
                     _priorities.Add(evt + "-" + u, gain);
                 }
             }
-            var g = gains.Distinct();
         }
-
-
     }
 }
