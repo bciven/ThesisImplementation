@@ -16,8 +16,8 @@ namespace Implementation
             ConsoleKeyInfo str;
             do
             {
-                int numberOfUsers = 3;
-                int numberOfEvents = 2;
+                int numberOfUsers = 4;
+                int numberOfEvents = 3;
                 Pcadg p = new Pcadg(numberOfUsers, numberOfEvents);
                 /*p.Initialize();
 

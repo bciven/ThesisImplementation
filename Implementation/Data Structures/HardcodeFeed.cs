@@ -8,15 +8,16 @@ namespace Implementation.Data_Structures
     {
         public List<Cardinality> GenerateCapacity(List<int> events, int numberOfUsers, int numberOfEvents)
         {
-            if (numberOfUsers != 3 || numberOfEvents != 2)
+            if (numberOfUsers != 4 || numberOfEvents != 3)
             {
                 throw new Exception("This method only supports 3 users and 2 events");
             }
 
             var result = new List<Cardinality>
             {
-                new Cardinality(1, 2),
-                new Cardinality(2, 2)
+                new Cardinality(2, 3),
+                new Cardinality(3, 3),
+                new Cardinality(1, 3)
             };
 
             return result;
@@ -24,31 +25,34 @@ namespace Implementation.Data_Structures
 
         public List<List<double>> GenerateInnateAffinities(List<int> users, List<int> events)
         {
-            if (users.Count != 3 || events.Count != 2)
+            if (users.Count != 4 || events.Count != 3)
             {
                 throw new Exception("This method only supports 3 users and 2 events");
             }
             var usersInterests = new List<List<double>>();
-
-            usersInterests.Add(new List<double>() {0.2, 0});
-            usersInterests.Add(new List<double>() {0, 0.2});
-            usersInterests.Add(new List<double>() {0, 0});
+                                                      /*X     Y    Z*/
+            usersInterests.Add(new List<double>() /*a*/{1,    1,   0});
+            usersInterests.Add(new List<double>() /*b*/{1,    0,   0});
+            usersInterests.Add(new List<double>() /*c*/{-0.2, 0.4, 1});
+            usersInterests.Add(new List<double>() /*d*/{0,    0,   0});
 
             return usersInterests;
         }
 
         public double[,] GenerateSocialAffinities(List<int> users)
         {
-            if (users.Count != 3)
+            if (users.Count != 4)
             {
                 throw new Exception("This method only supports 3 users");
             }
 
             var usersInterests = new double[,]
             {
-                {0, 0.1, 0},
-                {0.1, 0, 0},
-                {0, 0, 0}
+                    /*a     b    c    d*/
+                /*a*/{0,    0,   0,   0},
+                /*b*/{0,    0,   0,   0},
+                /*c*/{0.8,  0,   0,   0},
+                /*d*/{0,    0,   0,   0}
             };
 
             return usersInterests;
