@@ -78,7 +78,7 @@ namespace Implementation
 
             while (!_queue.IsEmpty())
             {
-                PrintQueue();
+                PrintQueue(); 
                 var min = _queue.RemoveMax();
                 var user = min.Value.User;
                 var @event = min.Value.Event;
