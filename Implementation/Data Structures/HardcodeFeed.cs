@@ -34,8 +34,8 @@ namespace Implementation.Data_Structures
             usersInterests.Add(new List<double>() /*a*/{1,    1,   0});
             usersInterests.Add(new List<double>() /*b*/{1,    0,   0});
             usersInterests.Add(new List<double>() /*c*/{-0.2, 0.4, 1});
-            usersInterests.Add(new List<double>() /*d*/{0,    0,   0});
-            usersInterests.Add(new List<double>() /*e*/{0,    0,   0});
+            usersInterests.Add(new List<double>() /*d*/{0,    0.4,   0});
+            usersInterests.Add(new List<double>() /*e*/{0,    0.4,   0});
 
             return usersInterests;
         }
