@@ -78,7 +78,7 @@ namespace Implementation
 
             while (!_queue.IsEmpty())
             {
-                PrintQueue(); 
+                PrintQueue();
                 var min = _queue.RemoveMax();
                 var user = min.Value.User;
                 var @event = min.Value.Event;
@@ -124,12 +124,10 @@ namespace Implementation
                             if (_assignments[e].Contains(user))
                             {
                                 _assignments[e].Remove(user);
-                                if (CalculateAffectedEvents)
+                                foreach (var userOfOtherEvent in _assignments[e])
                                 {
-                                    _affectedEvents.Add(e);
-
-                                    var ue = new UserEvent { Event = e, User = user };
-                                    var newPriority = Util(e, user);
+                                    var ue = new UserEvent { Event = e, User = userOfOtherEvent };
+                                    var newPriority = Util(e, userOfOtherEvent);
                                     _queue.Add(newPriority, ue);
                                 }
                             }
@@ -152,11 +150,13 @@ namespace Implementation
                                 //affected_evts.append(e)  # this line is not in ref paper
                                 if (CalculateAffectedEvents)
                                 {
+                                    foreach (var userOfOtherEvent in _assignments[e])
+                                    {
+                                        var ue = new UserEvent { Event = e, User = userOfOtherEvent };
+                                        var newPriority = Util(e, userOfOtherEvent);
+                                        _queue.Add(newPriority, ue);
+                                    }
                                     _affectedEvents.Add(e);
-
-                                    var ue = new UserEvent { Event = e, User = u };
-                                    var newPriority = Util(e, u);
-                                    _queue.Add(newPriority, ue);
                                 }
                             }
                         }
@@ -194,7 +194,7 @@ namespace Implementation
                 {
                     return;
                 }
-                _queue.UpdateKey(oldPriority, new UserEvent { User = user2, Event = @event}, newPriority);
+                _queue.UpdateKey(oldPriority, new UserEvent { User = user2, Event = @event }, newPriority);
                 //Console.WriteLine("Old:{0}, New:{1}", oldPriority, newPriority);
                 _priorities[key] = newPriority;
             }
@@ -353,6 +353,7 @@ namespace Implementation
             _queue = new FakeHeap/*<double, UserEvent>*/();
             _phantomEvents = new List<int>();
             _affectedEvents = new List<int>();
+            _deficit = 0;
             //_affectedUserEvents = new List<UserEvent>();
 
             for (var i = 0; i < _numberOfUsers; i++)

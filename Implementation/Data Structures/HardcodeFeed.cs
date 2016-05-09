@@ -8,7 +8,7 @@ namespace Implementation.Data_Structures
     {
         public List<Cardinality> GenerateCapacity(List<int> events, int numberOfUsers, int numberOfEvents)
         {
-            if (numberOfUsers != 4 || numberOfEvents != 3)
+            if (numberOfUsers != 5 || numberOfEvents != 3)
             {
                 throw new Exception("This method only supports 3 users and 2 events");
             }
@@ -25,7 +25,7 @@ namespace Implementation.Data_Structures
 
         public List<List<double>> GenerateInnateAffinities(List<int> users, List<int> events)
         {
-            if (users.Count != 4 || events.Count != 3)
+            if (users.Count != 5 || events.Count != 3)
             {
                 throw new Exception("This method only supports 3 users and 2 events");
             }
@@ -35,24 +35,26 @@ namespace Implementation.Data_Structures
             usersInterests.Add(new List<double>() /*b*/{1,    0,   0});
             usersInterests.Add(new List<double>() /*c*/{-0.2, 0.4, 1});
             usersInterests.Add(new List<double>() /*d*/{0,    0,   0});
+            usersInterests.Add(new List<double>() /*e*/{0,    0,   0});
 
             return usersInterests;
         }
 
         public double[,] GenerateSocialAffinities(List<int> users)
         {
-            if (users.Count != 4)
+            if (users.Count != 5)
             {
                 throw new Exception("This method only supports 3 users");
             }
 
             var usersInterests = new double[,]
             {
-                    /*a     b    c    d*/
-                /*a*/{0,    0,   0,   0},
-                /*b*/{0,    0,   0,   0},
-                /*c*/{0.8,  0,   0,   0},
-                /*d*/{0,    0,   0,   0}
+                    /*a     b    c    d    e*/
+                /*a*/{0,    0,   0,   0,   0},
+                /*b*/{0,    0,   0,   0,   0},
+                /*c*/{0.8,  0,   0,   0,   0},
+                /*d*/{0,    0,   0,   0,   0},
+                /*e*/{0,    0,   0,   0,   0}
             };
 
             return usersInterests;
