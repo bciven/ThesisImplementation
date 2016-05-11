@@ -85,6 +85,7 @@ namespace Implementation
                 var minCapacity = _eventCapacity[@event].Min;
                 var maxCapacity = _eventCapacity[@event].Max;
                 _affectedEvents.RemoveAll(x => true);
+                bool assignmentMade = false;
 
                 if (_userAssignments[user] == null && _assignments[@event].Count < maxCapacity)
                 {
@@ -97,6 +98,7 @@ namespace Implementation
                         }
                         else
                         {
+                            PrintAssignments(assignmentMade);
                             continue;
                         }
                     }
@@ -109,6 +111,7 @@ namespace Implementation
                     }
 
                     _assignments[@event].Add(user);
+                    assignmentMade = true;
                     if (_users.Contains(user))
                     {
                         _users.Remove(user);
@@ -163,6 +166,7 @@ namespace Implementation
                         Update(user, u, e);
                     }
                 }
+                PrintAssignments(assignmentMade);
             }
 
             return CreateOutput();
@@ -175,7 +179,7 @@ namespace Implementation
             {
                 var userOfOtherEvent = _assignments[@event][i];
                 _assignments[@event].Remove(userOfOtherEvent);
-                var ue = new UserEvent {Event = @event, User = userOfOtherEvent};
+                var ue = new UserEvent { Event = @event, User = userOfOtherEvent };
                 affectedUserEvents.Add(ue);
             }
 
@@ -191,6 +195,32 @@ namespace Implementation
         {
             var max = _queue.Max;
             Console.WriteLine("User {0}, Event {1}, Value {2}", (char)(max.Value.User + 97), (char)(max.Value.Event + 88), max.Key);
+
+        }
+
+        private void PrintAssignments(bool assignmentMade)
+        {
+            if (!assignmentMade)
+            {
+                Console.WriteLine("No assignment made.");
+            }
+            for (int i = 0; i < _assignments.Count; i++)
+            {
+                Console.WriteLine();
+                Console.Write("Event {0}", (char)(i + 88));
+                var assignment = _assignments[i];
+                if (assignment.Count == 0)
+                {
+                    Console.Write(" is empty.");
+                    continue;
+                }
+                Console.Write(" contains ");
+                foreach (var user in assignment)
+                {
+                    Console.Write("{0}  ", (char)(user + 97));
+                }
+            }
+            Console.WriteLine("{0}{0}*******", Environment.NewLine);
             Console.ReadLine();
         }
 
