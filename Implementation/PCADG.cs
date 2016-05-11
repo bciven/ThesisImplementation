@@ -124,11 +124,16 @@ namespace Implementation
                             if (_assignments[e].Contains(user))
                             {
                                 _assignments[e].Remove(user);
-                                foreach (var userOfOtherEvent in _assignments[e])
+                                if (CalculateAffectedEvents)
                                 {
-                                    var ue = new UserEvent { Event = e, User = userOfOtherEvent };
-                                    var newPriority = Util(e, userOfOtherEvent);
-                                    _queue.Add(newPriority, ue);
+                                    for (int i = 0; i < _assignments[e].Count; i++)
+                                    {
+                                        var userOfOtherEvent = _assignments[e][i];
+                                        _assignments[e].Remove(userOfOtherEvent);
+                                        var ue = new UserEvent {Event = e, User = userOfOtherEvent};
+                                        var newPriority = Util(e, userOfOtherEvent);
+                                        _queue.Add(newPriority, ue);
+                                    }
                                 }
                             }
                         }
@@ -150,9 +155,11 @@ namespace Implementation
                                 //affected_evts.append(e)  # this line is not in ref paper
                                 if (CalculateAffectedEvents)
                                 {
-                                    foreach (var userOfOtherEvent in _assignments[e])
+                                    for (int i = 0; i < _assignments[e].Count; i++)
                                     {
-                                        var ue = new UserEvent { Event = e, User = userOfOtherEvent };
+                                        var userOfOtherEvent = _assignments[e][i];
+                                        _assignments[e].Remove(userOfOtherEvent);
+                                        var ue = new UserEvent {Event = e, User = userOfOtherEvent};
                                         var newPriority = Util(e, userOfOtherEvent);
                                         _queue.Add(newPriority, ue);
                                     }
@@ -185,7 +192,7 @@ namespace Implementation
 
         private void Update(int user1, int user2, int @event)
         {
-            if ((_socAffinities[user1, user2] > 0 || _socAffinities[user2, user1] > 0) && _userAssignments[user2] == null) /* or a in affected_evts)*/
+            if (_socAffinities[user2, user1] > 0 && _userAssignments[user2] == null) /* or a in affected_evts)*/
             {
                 var key = @event + "-" + user2;
                 var newPriority = Util(@event, user2);
