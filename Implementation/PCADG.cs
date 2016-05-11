@@ -126,14 +126,7 @@ namespace Implementation
                                 _assignments[e].Remove(user);
                                 if (CalculateAffectedEvents)
                                 {
-                                    for (int i = 0; i < _assignments[e].Count; i++)
-                                    {
-                                        var userOfOtherEvent = _assignments[e][i];
-                                        _assignments[e].Remove(userOfOtherEvent);
-                                        var ue = new UserEvent {Event = e, User = userOfOtherEvent};
-                                        var newPriority = Util(e, userOfOtherEvent);
-                                        _queue.Add(newPriority, ue);
-                                    }
+                                    ReaddAffectedUserEvents(e);
                                 }
                             }
                         }
@@ -155,15 +148,7 @@ namespace Implementation
                                 //affected_evts.append(e)  # this line is not in ref paper
                                 if (CalculateAffectedEvents)
                                 {
-                                    for (int i = 0; i < _assignments[e].Count; i++)
-                                    {
-                                        var userOfOtherEvent = _assignments[e][i];
-                                        _assignments[e].Remove(userOfOtherEvent);
-                                        var ue = new UserEvent {Event = e, User = userOfOtherEvent};
-                                        var newPriority = Util(e, userOfOtherEvent);
-                                        _queue.Add(newPriority, ue);
-                                    }
-                                    _affectedEvents.Add(e);
+                                    ReaddAffectedUserEvents(e);
                                 }
                             }
                         }
@@ -181,6 +166,25 @@ namespace Implementation
             }
 
             return CreateOutput();
+        }
+
+        private void ReaddAffectedUserEvents(int @event)
+        {
+            var affectedUserEvents = new List<UserEvent>();
+            for (int i = 0; i < _assignments[@event].Count; i++)
+            {
+                var userOfOtherEvent = _assignments[@event][i];
+                _assignments[@event].Remove(userOfOtherEvent);
+                var ue = new UserEvent {Event = @event, User = userOfOtherEvent};
+                affectedUserEvents.Add(ue);
+            }
+
+            foreach (var userEvent in affectedUserEvents)
+            {
+                var newPriority = Util(userEvent.Event, userEvent.User);
+                _queue.Add(newPriority, userEvent);
+            }
+            _affectedEvents.Add(@event);
         }
 
         private void PrintQueue()
