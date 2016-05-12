@@ -187,6 +187,10 @@ namespace Implementation
             {
                 var newPriority = Util(userEvent.Event, userEvent.User);
                 _queue.Add(newPriority, userEvent);
+                foreach (var user in _users)
+                {
+                    Update(userEvent.User, user, userEvent.Event);
+                }
             }
             _affectedEvents.Add(@event);
         }
@@ -220,7 +224,7 @@ namespace Implementation
                     Console.Write("{0}  ", (char)(user + 97));
                 }
             }
-            Console.WriteLine("{0}{0}*******", Environment.NewLine);
+            Console.WriteLine("{0}{0}*****************************", Environment.NewLine);
             Console.ReadLine();
         }
 

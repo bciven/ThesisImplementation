@@ -50,7 +50,7 @@ namespace Implementation.Data_Structures
         // O(logn)
         public void Remove(double key, UserEvent value)
         {
-            _sortedSet.Remove(new KeyValuePair<double, UserEvent>(key, value));
+            _sortedSet.RemoveAll(x=> x.Key == key && x.Value.User == value.User && x.Value.Event == value.Event);
         }
 
         // O(logn)
