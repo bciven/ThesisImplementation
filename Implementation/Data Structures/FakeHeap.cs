@@ -69,5 +69,17 @@ namespace Implementation.Data_Structures
         {
             return _sortedSet.Count;
         }
+
+        public void Print()
+        {
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("User|Event|Value");
+            Console.WriteLine("----------------");
+            foreach (var value in _sortedSet.OrderByDescending(x=>x.Key))
+            {
+                Console.WriteLine("{0,-4}|{1,-5}|{2,-5}", value.Value.User, value.Value.Event, value.Key);
+            }
+        }
     }
 }

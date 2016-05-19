@@ -224,6 +224,7 @@ namespace Implementation
                     Console.Write("{0}  ", (char)(user + 97));
                 }
             }
+            _queue.Print();
             Console.WriteLine("{0}{0}*****************************", Environment.NewLine);
             Console.ReadLine();
         }
