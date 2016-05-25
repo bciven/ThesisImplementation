@@ -78,7 +78,7 @@ namespace Implementation.Data_Structures
             Console.WriteLine("----------------");
             foreach (var value in _sortedSet.OrderByDescending(x=>x.Key))
             {
-                Console.WriteLine("{0,-4}|{1,-5}|{2,-5}", value.Value.User, value.Value.Event, value.Key);
+                Console.WriteLine("{0,-4}|{1,-5}|{2,-5}", (char)(value.Value.User+97), (char)(value.Value.Event+88), value.Key);
             }
         }
     }
