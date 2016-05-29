@@ -71,6 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data Structures\ExcelFileFeed.cs" />
     <Compile Include="Data Structures\FeedTypeEnum.cs" />
     <Compile Include="Data Structures\IDataFeed.cs" />
     <Compile Include="Data Structures\FibonacciHeap.cs" />

@@ -17,6 +17,7 @@ namespace Implementation
         private readonly int _numberOfUsers;
         private readonly int _numberOfEvents;
         private readonly bool _reassign;
+        private readonly string _inputFilePath;
         private double _alpha = 0.5;
         private List<List<double>> _inAffinities;
         private double[,] _socAffinities;
@@ -39,7 +40,7 @@ namespace Implementation
         private IDataFeed _dataFeed;
         private bool _printOutEachStep;
 
-        public Pcadg(FeedTypeEnum feedType, int numberOfUsers = 10, int numberOfEvents = 4, bool calculateAffectedEvents = false, bool reassign = false, bool _printOutEachStep = false)
+        public Pcadg(FeedTypeEnum feedType, int numberOfUsers = 10, int numberOfEvents = 4, bool calculateAffectedEvents = false, bool reassign = false, bool _printOutEachStep = false, string inputFilePath = null)
         {
             _feedType = feedType;
             CalculateAffectedEvents = calculateAffectedEvents;
@@ -48,6 +49,7 @@ namespace Implementation
             _numberOfUsers = numberOfUsers;
             _numberOfEvents = numberOfEvents;
             _reassign = reassign;
+            _inputFilePath = inputFilePath;
 
             _init = false;
 
@@ -72,6 +74,10 @@ namespace Implementation
             else if (_feedType == FeedTypeEnum.Example1)
             {
                 _dataFeed = new Example1Feed();
+            }
+            else if (_feedType == FeedTypeEnum.XlsxFile)
+            {
+                _dataFeed = new ExcelFileFeed(_inputFilePath);
             }
         }
 

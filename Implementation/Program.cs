@@ -39,6 +39,7 @@ namespace Implementation
             int numberOfUsers = 500;
             int numberOfEvents = 50;
             int algInt = 1;
+            string filePath = null;
             while (true)
             {
                 Console.WriteLine(" -------Choose Algorithm------- ");
@@ -63,11 +64,12 @@ namespace Implementation
                 Console.WriteLine("|1.RANDOM                      |");
                 Console.WriteLine("|2.OriginalExperiment          |");
                 Console.WriteLine("|3.Example1                    |");
+                Console.WriteLine("|4.From Excel File             |");
                 Console.WriteLine(" ------------------------------ ");
                 Console.WriteLine();
                 Console.Write("Type your choice: ");
                 var input = Console.ReadLine();
-                if (int.TryParse(input, out inputInt) && inputInt >= 1 && inputInt <= 3)
+                if (int.TryParse(input, out inputInt) && inputInt >= 1 && inputInt <= 4)
                 {
                     break;
                 }
@@ -99,8 +101,12 @@ namespace Implementation
                 case 3:
                     feedType = FeedTypeEnum.Example1;
                     break;
+                case 4:
+                    feedType = FeedTypeEnum.XlsxFile;
+                    filePath = Console.ReadLine();
+                    break;
             }
-            return new Pcadg(feedType, numberOfUsers, numberOfEvents, calculateAffectedEvents, reassign);
+            return new Pcadg(feedType, numberOfUsers, numberOfEvents, calculateAffectedEvents, reassign, false, filePath);
         }
 
         private static void CalcPossibility(List<int> states, int numberOfEvents, Pcadg p)

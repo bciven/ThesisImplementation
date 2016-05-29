@@ -8,6 +8,6 @@ namespace Implementation.Data_Structures
 {
     public enum FeedTypeEnum
     {
-        Random, Example1, OriginalExperiment 
+        Random, Example1, OriginalExperiment, XlsxFile
     }
 }
