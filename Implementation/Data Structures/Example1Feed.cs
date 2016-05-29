@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Implementation.Data_Structures
 {
-    public class HardcodeFeed : IDataFeed
+    public class Example1Feed : IDataFeed
     {
         private const int NumberOfUsers = 8;
         private const int NumberOfEvents = 3;

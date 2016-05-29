@@ -13,8 +13,10 @@ namespace Implementation
         public bool CalculateAffectedEvents { get; set; }
         public double SocialWelfare { get; set; }
 
+        private readonly FeedTypeEnum _feedType;
         private readonly int _numberOfUsers;
         private readonly int _numberOfEvents;
+        private readonly bool _reassign;
         private double _alpha = 0.5;
         private List<List<double>> _inAffinities;
         private double[,] _socAffinities;
@@ -34,16 +36,18 @@ namespace Implementation
         private bool _init;
         private Dictionary<string, double> _priorities;
         private int _percision = 7;
-        private IDataFeed dataFeed;
+        private IDataFeed _dataFeed;
+        private bool _printOutEachStep;
 
-        public Pcadg(int numberOfUsers = 10, int numberOfEvents = 4, bool calculateAffectedEvents = false)
+        public Pcadg(FeedTypeEnum feedType, int numberOfUsers = 10, int numberOfEvents = 4, bool calculateAffectedEvents = false, bool reassign = false, bool _printOutEachStep = false)
         {
-            InitializeFeed();
+            _feedType = feedType;
             CalculateAffectedEvents = calculateAffectedEvents;
             _usersReadonly = new List<int>();
             _eventsReadonly = new List<int>();
             _numberOfUsers = numberOfUsers;
             _numberOfEvents = numberOfEvents;
+            _reassign = reassign;
 
             _init = false;
 
@@ -56,18 +60,18 @@ namespace Implementation
             {
                 _eventsReadonly.Add(i);
             }
+            InitializeFeed();
         }
 
         private void InitializeFeed()
         {
-            var app = ConfigurationManager.AppSettings["Feed"];
-            if (app == null || app == "Random")
+            if (_feedType == FeedTypeEnum.Random)
             {
-                dataFeed = new RandomDataFeed();
+                _dataFeed = new RandomDataFeed();
             }
-            else if (app == "Hardcode")
+            else if (_feedType == FeedTypeEnum.Example1)
             {
-                dataFeed = new HardcodeFeed();
+                _dataFeed = new Example1Feed();
             }
         }
 
@@ -197,13 +201,23 @@ namespace Implementation
 
         private void PrintQueue()
         {
+            if (!_printOutEachStep)
+            {
+                return;
+            }
+            
             var max = _queue.Max;
-            Console.WriteLine("User {0}, Event {1}, Value {2}", (char)(max.Value.User + 97), (char)(max.Value.Event + 88), max.Key);
-
+            Console.WriteLine("User {0}, Event {1}, Value {2}", (char) (max.Value.User + 97),
+                (char) (max.Value.Event + 88), max.Key);
         }
 
         private void PrintAssignments(bool assignmentMade)
         {
+            if (!_printOutEachStep)
+            {
+                return;
+            }
+
             if (!assignmentMade)
             {
                 Console.WriteLine("No assignment made.");
@@ -388,7 +402,7 @@ namespace Implementation
             return u;
         }
 
-        public void Initialize(bool generateData = true)
+        public void Initialize()
         {
             _users = new List<int>();
             _events = new List<int>();
@@ -400,6 +414,7 @@ namespace Implementation
             _phantomEvents = new List<int>();
             _affectedEvents = new List<int>();
             _deficit = 0;
+            _init = true;
             //_affectedUserEvents = new List<UserEvent>();
 
             for (var i = 0; i < _numberOfUsers; i++)
@@ -415,13 +430,9 @@ namespace Implementation
             }
 
 
-            if (generateData)
-            {
-                _init = true;
-                _eventCapacity = dataFeed.GenerateCapacity(_events, _numberOfUsers, _numberOfEvents);
-                _inAffinities = dataFeed.GenerateInnateAffinities(_users, _events);
-                _socAffinities = dataFeed.GenerateSocialAffinities(_users);
-            }
+            _eventCapacity = _dataFeed.GenerateCapacity(_events, _numberOfUsers, _numberOfEvents);
+            _inAffinities = _dataFeed.GenerateInnateAffinities(_users, _events);
+            _socAffinities = _dataFeed.GenerateSocialAffinities(_users);
 
             foreach (var u in _users)
             {

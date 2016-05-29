@@ -16,32 +16,13 @@ namespace Implementation
             ConsoleKeyInfo str;
             do
             {
-                int numberOfUsers = 8;
-                int numberOfEvents = 3;
-                Pcadg p = new Pcadg(numberOfUsers, numberOfEvents);
-                /*p.Initialize();
-
-                for (int i = 0; i < Math.Pow(numberOfEvents, numberOfUsers); i++)
-                {
-                    var binary = Convert.ToString(i, 2).PadLeft(3, '0');
-                    var l = binary.Select(x => int.Parse(x.ToString())).ToList();
-                    CalcPossibility(l, numberOfEvents, p);
-                }*/
+                Pcadg p = ShowMenu();
 
                 var watch = new Stopwatch();
 
-                p.CalculateAffectedEvents = true;
                 p.Initialize();
                 watch.Start();
                 var result = p.Run();
-                watch.Stop();
-                Print(result, p.SocialWelfare, watch);
-                watch.Reset();
-
-                p.CalculateAffectedEvents = false;
-                p.Initialize(false);
-                watch.Start();
-                result = p.Run();
                 watch.Stop();
                 Print(result, p.SocialWelfare, watch);
                 watch.Reset();
@@ -50,6 +31,76 @@ namespace Implementation
                 Console.WriteLine();
             } while (str.Key == ConsoleKey.Enter);
 
+        }
+
+        private static Pcadg ShowMenu()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            int numberOfUsers = 500;
+            int numberOfEvents = 50;
+            int algInt = 1;
+            while (true)
+            {
+                Console.WriteLine(" -------Choose Algorithm------- ");
+                Console.WriteLine("|1.DG                          |");
+                Console.WriteLine("|2.DG + PER                    |");
+                Console.WriteLine("|3.DG + IR                     |");
+                Console.WriteLine(" ------------------------------ ");
+                Console.WriteLine();
+                Console.Write("Type your choice: ");
+                var input = Console.ReadLine();
+                if (int.TryParse(input, out algInt) && algInt >= 1 && algInt <= 3)
+                {
+                    break;
+                }
+                Console.WriteLine("Wrong Input, Try Again.");
+            }
+            Console.WriteLine();
+            int inputInt = 1;
+            while (true)
+            {
+                Console.WriteLine(" ---------Choose Input--------- ");
+                Console.WriteLine("|1.RANDOM                      |");
+                Console.WriteLine("|2.OriginalExperiment          |");
+                Console.WriteLine("|3.Example1                    |");
+                Console.WriteLine(" ------------------------------ ");
+                Console.WriteLine();
+                Console.Write("Type your choice: ");
+                var input = Console.ReadLine();
+                if (int.TryParse(input, out inputInt) && inputInt >= 1 && inputInt <= 3)
+                {
+                    break;
+                }
+                Console.WriteLine("Wrong Input, Try Again.");
+            }
+            Console.WriteLine();
+            FeedTypeEnum feedType = FeedTypeEnum.Random;
+            bool calculateAffectedEvents = false;
+            bool reassign = false;
+            switch (algInt)
+            {
+                case 1:
+                    break;
+                case 2:
+                    reassign = true;
+                    break;
+                case 3:
+                    calculateAffectedEvents = true;
+                    break;
+            }
+            switch (inputInt)
+            {
+                case 1:
+                    feedType = FeedTypeEnum.Random;
+                    break;
+                case 2:
+                    feedType = FeedTypeEnum.OriginalExperiment;
+                    break;
+                case 3:
+                    feedType = FeedTypeEnum.Example1;
+                    break;
+            }
+            return new Pcadg(feedType, numberOfUsers, numberOfEvents, calculateAffectedEvents, reassign);
         }
 
         private static void CalcPossibility(List<int> states, int numberOfEvents, Pcadg p)

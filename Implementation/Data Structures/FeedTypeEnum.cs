@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Implementation
+namespace Implementation.Data_Structures
 {
-    interface IAlgorithm<T>
+    public enum FeedTypeEnum
     {
-        T Run();
-        void Initialize();
+        Random, Example1, OriginalExperiment 
     }
 }

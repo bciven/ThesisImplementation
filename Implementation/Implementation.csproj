@@ -71,6 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data Structures\FeedTypeEnum.cs" />
     <Compile Include="Data Structures\IDataFeed.cs" />
     <Compile Include="Data Structures\FibonacciHeap.cs" />
     <Compile Include="Data Structures\FibonacciHeapNode.cs" />
@@ -78,7 +79,8 @@
     <Compile Include="Data Structures\FakeHeap.cs" />
     <Compile Include="Data Structures\Heap.cs" />
     <Compile Include="Data Structures\Paint.cs" />
-    <Compile Include="Data Structures\HardcodeFeed.cs" />
+    <Compile Include="Data Structures\Example1Feed.cs" />
+    <Compile Include="Data Structures\DistDataFeed.cs" />
     <Compile Include="Data Structures\RandomDataFeed.cs" />
     <Compile Include="Data Structures\UserEvent.cs" />
     <Compile Include="IAlgorithm.cs" />
