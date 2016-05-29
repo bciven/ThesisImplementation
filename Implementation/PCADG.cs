@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Implementation.Data_Structures;
@@ -14,8 +15,8 @@ namespace Implementation
         public double SocialWelfare { get; set; }
 
         private readonly FeedTypeEnum _feedType;
-        private readonly int _numberOfUsers;
-        private readonly int _numberOfEvents;
+        private int _numberOfUsers;
+        private int _numberOfEvents;
         private readonly bool _reassign;
         private readonly string _inputFilePath;
         private double _alpha = 0.5;
@@ -37,21 +38,27 @@ namespace Implementation
         private bool _init;
         private Dictionary<string, double> _priorities;
         private int _percision = 7;
-        private IDataFeed _dataFeed;
+        private IDataFeed _dataFeeder;
         private bool _printOutEachStep;
 
         public Pcadg(FeedTypeEnum feedType, int numberOfUsers = 10, int numberOfEvents = 4, bool calculateAffectedEvents = false, bool reassign = false, bool _printOutEachStep = false, string inputFilePath = null)
         {
+            _reassign = reassign;
+            _inputFilePath = inputFilePath;
             _feedType = feedType;
+            InitializeFeed();
+
             CalculateAffectedEvents = calculateAffectedEvents;
             _usersReadonly = new List<int>();
             _eventsReadonly = new List<int>();
             _numberOfUsers = numberOfUsers;
             _numberOfEvents = numberOfEvents;
-            _reassign = reassign;
-            _inputFilePath = inputFilePath;
-
             _init = false;
+
+            if (_feedType == FeedTypeEnum.Example1 || _feedType == FeedTypeEnum.XlsxFile)
+            {
+                _dataFeeder.GetNumberOfUsersAndEvents(out _numberOfUsers, out _numberOfEvents);
+            }
 
             for (var i = 0; i < _numberOfUsers; i++)
             {
@@ -62,22 +69,21 @@ namespace Implementation
             {
                 _eventsReadonly.Add(i);
             }
-            InitializeFeed();
         }
 
         private void InitializeFeed()
         {
             if (_feedType == FeedTypeEnum.Random)
             {
-                _dataFeed = new RandomDataFeed();
+                _dataFeeder = new RandomDataFeed();
             }
             else if (_feedType == FeedTypeEnum.Example1)
             {
-                _dataFeed = new Example1Feed();
+                _dataFeeder = new Example1Feed();
             }
             else if (_feedType == FeedTypeEnum.XlsxFile)
             {
-                _dataFeed = new ExcelFileFeed(_inputFilePath);
+                _dataFeeder = new ExcelFileFeed(_inputFilePath);
             }
         }
 
@@ -268,7 +274,7 @@ namespace Implementation
 
         private void Print(List<UserEvent> result, double welfare)
         {
-            var name = Path.GetRandomFileName();
+            var name = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.CurrentCulture);
             if (CalculateAffectedEvents)
             {
                 name += "-AffectedEvents";
@@ -435,10 +441,9 @@ namespace Implementation
                 _assignments.Add(new List<int>());
             }
 
-
-            _eventCapacity = _dataFeed.GenerateCapacity(_events, _numberOfUsers, _numberOfEvents);
-            _inAffinities = _dataFeed.GenerateInnateAffinities(_users, _events);
-            _socAffinities = _dataFeed.GenerateSocialAffinities(_users);
+            _eventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
+            _inAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
+            _socAffinities = _dataFeeder.GenerateSocialAffinities(_users);
 
             foreach (var u in _users)
             {

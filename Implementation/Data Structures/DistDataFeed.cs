@@ -15,7 +15,7 @@ namespace Implementation.Data_Structures
             _rand = new Random();
         }
 
-        public List<Cardinality> GenerateCapacity(List<int> events, int numberOfUsers, int numberOfEvents)
+        public List<Cardinality> GenerateCapacity(List<int> users, List<int> events)
         {
             var result = events.Select(x =>
             {
@@ -81,6 +81,11 @@ namespace Implementation.Data_Structures
                 }
             }
             return usersInterests;
+        }
+
+        void IDataFeed.GetNumberOfUsersAndEvents(out int usersCount, out int eventsCount)
+        {
+            throw new NotImplementedException();
         }
 
         private double GenerateRandom(double minimum)

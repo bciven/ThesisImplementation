@@ -19,7 +19,7 @@ namespace Implementation.Data_Structures
             _filePath = filePath;
         }
 
-        public List<Cardinality> GenerateCapacity(List<int> events, int numberOfUsers, int numberOfEvents)
+        public List<Cardinality> GenerateCapacity(List<int> users, List<int> events)
         {
             var result = new List<Cardinality>();
             var fileInfo = new FileInfo(_filePath);
@@ -39,6 +39,31 @@ namespace Implementation.Data_Structures
             }
 
             return result;
+        }
+
+        public void GetNumberOfUsersAndEvents(out int usersCount, out int eventsCount)
+        {
+            var fileInfo = new FileInfo(_filePath);
+            var excel = new ExcelPackage(fileInfo);
+            var ws = excel.Workbook.Worksheets[1];
+
+            usersCount = 0;
+            for (int i = 2; ; i++)
+            {
+                var value = ws.Cells[i, 1].Value;
+                if (value == null)
+                    break;
+                usersCount++;
+            }
+
+            eventsCount = 0;
+            for (int i = 2; ; i++)
+            {
+                var value = ws.Cells[1, i].Value;
+                if (value == null)
+                    break;
+                eventsCount++;
+            }
         }
 
         public List<List<double>> GenerateInnateAffinities(List<int> users, List<int> events)

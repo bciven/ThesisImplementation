@@ -8,10 +8,12 @@ namespace Implementation.Data_Structures
 {
     interface IDataFeed
     {
-        List<Cardinality> GenerateCapacity(List<int> events, int numberOfUsers, int numberOfEvents);
+        List<Cardinality> GenerateCapacity(List<int> users, List<int> events);
 
         List<List<double>> GenerateInnateAffinities(List<int> users, List<int> events);
 
         double[,] GenerateSocialAffinities(List<int> users);
+
+        void GetNumberOfUsersAndEvents(out int usersCount, out int eventsCount);
     }
 }

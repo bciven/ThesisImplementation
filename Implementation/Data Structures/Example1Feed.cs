@@ -9,9 +9,9 @@ namespace Implementation.Data_Structures
         private const int NumberOfUsers = 8;
         private const int NumberOfEvents = 3;
 
-        public List<Cardinality> GenerateCapacity(List<int> events, int numberOfUsers, int numberOfEvents)
+        public List<Cardinality> GenerateCapacity(List<int> users, List<int> events)
         {
-            if (numberOfUsers != NumberOfUsers || numberOfEvents != NumberOfEvents)
+            if (users.Count != NumberOfUsers || events.Count != NumberOfEvents)
             {
                 throw new Exception("This method only supports 3 users and 2 events");
             }
@@ -67,6 +67,13 @@ namespace Implementation.Data_Structures
             };
 
             return usersInterests;
+        }
+
+
+        public void GetNumberOfUsersAndEvents(out int usersCount, out int eventsCount)
+        {
+            usersCount = NumberOfUsers;
+            eventsCount = NumberOfEvents;
         }
     }
 }
