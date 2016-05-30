@@ -24,7 +24,7 @@ namespace Implementation.Data_Structures
             var result = new List<Cardinality>();
             var fileInfo = new FileInfo(_filePath);
             var excel = new ExcelPackage(fileInfo);
-            var ws = excel.Workbook.Worksheets[1];
+            var ws = excel.Workbook.Worksheets[3];
 
             for (int i = 2; ; i++)
             {

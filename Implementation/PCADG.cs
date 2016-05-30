@@ -73,17 +73,20 @@ namespace Implementation
 
         private void InitializeFeed()
         {
-            if (_feedType == FeedTypeEnum.Random)
+            switch (_feedType)
             {
-                _dataFeeder = new RandomDataFeed();
-            }
-            else if (_feedType == FeedTypeEnum.Example1)
-            {
-                _dataFeeder = new Example1Feed();
-            }
-            else if (_feedType == FeedTypeEnum.XlsxFile)
-            {
-                _dataFeeder = new ExcelFileFeed(_inputFilePath);
+                case FeedTypeEnum.Random:
+                    _dataFeeder = new RandomDataFeed();
+                    break;
+                case FeedTypeEnum.Example1:
+                    _dataFeeder = new Example1Feed();
+                    break;
+                case FeedTypeEnum.XlsxFile:
+                    _dataFeeder = new ExcelFileFeed(_inputFilePath);
+                    break;
+                case FeedTypeEnum.OriginalExperiment:
+                    _dataFeeder = new DistDataFeed();
+                    break;
             }
         }
 
@@ -274,7 +277,7 @@ namespace Implementation
 
         private void Print(List<UserEvent> result, double welfare)
         {
-            var name = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.CurrentCulture);
+            var name = DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss-fff", CultureInfo.CurrentCulture);
             if (CalculateAffectedEvents)
             {
                 name += "-AffectedEvents";
