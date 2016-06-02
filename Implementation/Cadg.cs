@@ -9,23 +9,17 @@ using OfficeOpenXml;
 
 namespace Implementation
 {
-    public class Pcadg : IAlgorithm<List<UserEvent>>
+    public class Cadg : IAlgorithm<List<UserEvent>>
     {
-        public bool CalculateAffectedEvents { get; set; }
         public double SocialWelfare { get; set; }
 
-        private readonly FeedTypeEnum _feedType;
-        private int _numberOfUsers;
-        private int _numberOfEvents;
-        private readonly bool _reassign;
-        private readonly string _inputFilePath;
-        private double _alpha = 0.5;
+        private CadgConf _conf;
         private List<List<double>> _inAffinities;
         private double[,] _socAffinities;
         private List<int> _events;
         private List<int> _users;
-        private readonly List<int> _eventsReadonly;
-        private readonly List<int> _usersReadonly;
+        private readonly List<int> _allEvents;
+        private readonly List<int> _allUsers;
         private List<List<int>> _assignments;
         private List<int?> _userAssignments;
         private int _deficit = 0;
@@ -37,43 +31,40 @@ namespace Implementation
         //private List<UserEvent> _affectedUserEvents;
         private bool _init;
         private Dictionary<string, double> _priorities;
-        private int _percision = 7;
         private IDataFeed _dataFeeder;
-        private bool _printOutEachStep;
 
-        public Pcadg(FeedTypeEnum feedType, int numberOfUsers = 10, int numberOfEvents = 4, bool calculateAffectedEvents = false, bool reassign = false, bool _printOutEachStep = false, string inputFilePath = null)
+        public Cadg(CadgConf conf)
         {
-            _reassign = reassign;
-            _inputFilePath = inputFilePath;
-            _feedType = feedType;
+            _conf = conf;
             InitializeFeed();
 
-            CalculateAffectedEvents = calculateAffectedEvents;
-            _usersReadonly = new List<int>();
-            _eventsReadonly = new List<int>();
-            _numberOfUsers = numberOfUsers;
-            _numberOfEvents = numberOfEvents;
+            _allUsers = new List<int>();
+            _allEvents = new List<int>();
             _init = false;
 
-            if (_feedType == FeedTypeEnum.Example1 || _feedType == FeedTypeEnum.XlsxFile)
+            if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {
-                _dataFeeder.GetNumberOfUsersAndEvents(out _numberOfUsers, out _numberOfEvents);
+                int numberOfUsers;
+                int numberOfEvents;
+                _dataFeeder.GetNumberOfUsersAndEvents(out numberOfUsers, out numberOfEvents);
+                _conf.NumberOfUsers = numberOfUsers;
+                _conf.NumberOfEvents = numberOfEvents;
             }
 
-            for (var i = 0; i < _numberOfUsers; i++)
+            for (var i = 0; i < _conf.NumberOfUsers; i++)
             {
-                _usersReadonly.Add(i);
+                _allUsers.Add(i);
             }
 
-            for (var i = 0; i < _numberOfEvents; i++)
+            for (var i = 0; i < _conf.NumberOfEvents; i++)
             {
-                _eventsReadonly.Add(i);
+                _allEvents.Add(i);
             }
         }
 
         private void InitializeFeed()
         {
-            switch (_feedType)
+            switch (_conf.FeedType)
             {
                 case FeedTypeEnum.Random:
                     _dataFeeder = new RandomDataFeed();
@@ -82,7 +73,7 @@ namespace Implementation
                     _dataFeeder = new Example1Feed();
                     break;
                 case FeedTypeEnum.XlsxFile:
-                    _dataFeeder = new ExcelFileFeed(_inputFilePath);
+                    _dataFeeder = new ExcelFileFeed(_conf.InputFilePath);
                     break;
                 case FeedTypeEnum.OriginalExperiment:
                     _dataFeeder = new DistDataFeed();
@@ -108,24 +99,27 @@ namespace Implementation
 
                 if (_userAssignments[user] == null && _assignments[@event].Count < maxCapacity)
                 {
-                    if (_assignments[@event].Count == 0)
+                    if (_conf.PhantomAware)
                     {
-                        if (_deficit + minCapacity <= _users.Count)
+                        if (_assignments[@event].Count == 0)
                         {
-                            _deficit = _deficit + minCapacity - 1;
-                            _phantomEvents.Add(@event);
+                            if (_deficit + minCapacity <= _users.Count)
+                            {
+                                _deficit = _deficit + minCapacity - 1;
+                                _phantomEvents.Add(@event);
+                            }
+                            else
+                            {
+                                PrintAssignments(assignmentMade);
+                                continue;
+                            }
                         }
                         else
                         {
-                            PrintAssignments(assignmentMade);
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        if (_phantomEvents.Contains(@event))
-                        {
-                            _deficit--;
+                            if (_phantomEvents.Contains(@event))
+                            {
+                                _deficit--;
+                            }
                         }
                     }
 
@@ -146,9 +140,14 @@ namespace Implementation
                             if (_assignments[e].Contains(user))
                             {
                                 _assignments[e].Remove(user);
-                                if (CalculateAffectedEvents)
+                                if (_conf.ImmediateReaction)
                                 {
                                     ReaddAffectedUserEvents(e);
+                                }
+
+                                if (_conf.PhantomAware && _phantomEvents.Contains(e))
+                                {
+                                    _deficit = _deficit + 1;
                                 }
                             }
                         }
@@ -162,15 +161,22 @@ namespace Implementation
                             //permanently assign all users to real events
                             _userAssignments[u] = @event;
 
+
                             //unassign these users from all other events
                             var excludedEvents = _events.Where(x => x != @event && _assignments[x].Contains(u));
                             foreach (var e in excludedEvents)
                             {
                                 _assignments[e].Remove(u);
                                 //affected_evts.append(e)  # this line is not in ref paper
-                                if (CalculateAffectedEvents)
+                                if (_conf.ImmediateReaction)
                                 {
                                     ReaddAffectedUserEvents(e);
+                                }
+
+                                if (_conf.PhantomAware && _phantomEvents.Contains(e))
+                                {
+                                    _deficit = _deficit + 1;
+
                                 }
                             }
                         }
@@ -180,7 +186,7 @@ namespace Implementation
                 var temp = _affectedEvents.Concat(new List<int> { @event });
                 foreach (var e in temp)
                 {
-                    foreach (var u in _users)
+                    foreach (var u in _allUsers)
                     {
                         Update(user, u, e);
                     }
@@ -188,47 +194,84 @@ namespace Implementation
                 PrintAssignments(assignmentMade);
             }
 
+            if (_conf.Reassign && _phantomEvents.Any() && _userAssignments.Any(x => !x.HasValue))
+            {
+                _conf.Reassign = false;
+                var realOpenEvents = _allEvents.Where(x => !_phantomEvents.Contains(x) && _assignments[x].Count < _eventCapacity[x].Max).ToList();
+                List<int> availableUsers = new List<int>();
+                for (int i = 0; i < _userAssignments.Count; i++)
+                {
+                    if (_userAssignments[i] == null)
+                    {
+                        availableUsers.Add(i);
+                    }
+                }
+
+                foreach (var phantomEvent in _phantomEvents)
+                {
+                    if (_assignments[phantomEvent].Count > 0)
+                    {
+                        availableUsers.AddRange(_assignments[phantomEvent]);
+                        _assignments[phantomEvent].RemoveAll(x => true);
+                    }
+                }
+
+                foreach (var @event in realOpenEvents)
+                {
+                    foreach (var availableUser in availableUsers)
+                    {
+                        var q = Util(@event, availableUser);
+                        _queue.Add(q, new UserEvent { User = availableUser, Event = @event });
+                    }
+                }
+            }
+            _conf.NumberOfPhantomEvents = _phantomEvents.Count;
             return CreateOutput();
         }
 
         private void ReaddAffectedUserEvents(int @event)
         {
             var affectedUserEvents = new List<UserEvent>();
-            for (int i = 0; i < _assignments[@event].Count; i++)
+            var numberOfUsers = _assignments[@event].Count;
+            for (int i = 0; i < numberOfUsers; i++)
             {
                 var userOfOtherEvent = _assignments[@event][i];
-                _assignments[@event].Remove(userOfOtherEvent);
                 var ue = new UserEvent { Event = @event, User = userOfOtherEvent };
                 affectedUserEvents.Add(ue);
             }
+            _assignments[@event].RemoveAll(x=> true);
 
             foreach (var userEvent in affectedUserEvents)
             {
                 var newPriority = Util(userEvent.Event, userEvent.User);
                 _queue.Add(newPriority, userEvent);
-                foreach (var user in _users)
+                foreach (var user in _allUsers)
                 {
                     Update(userEvent.User, user, userEvent.Event);
                 }
             }
-            _affectedEvents.Add(@event);
+            //_affectedEvents.Add(@event);
+            if (_phantomEvents.Contains(@event))
+            {
+                _phantomEvents.Remove(@event);
+            }
         }
 
         private void PrintQueue()
         {
-            if (!_printOutEachStep)
+            if (!_conf.PrintOutEachStep)
             {
                 return;
             }
-            
+
             var max = _queue.Max;
-            Console.WriteLine("User {0}, Event {1}, Value {2}", (char) (max.Value.User + 97),
-                (char) (max.Value.Event + 88), max.Key);
+            Console.WriteLine("User {0}, Event {1}, Value {2}", (char)(max.Value.User + 97),
+                (char)(max.Value.Event + 88), max.Key);
         }
 
         private void PrintAssignments(bool assignmentMade)
         {
-            if (!_printOutEachStep)
+            if (!_conf.PrintOutEachStep)
             {
                 return;
             }
@@ -278,18 +321,14 @@ namespace Implementation
         private void Print(List<UserEvent> result, double welfare)
         {
             var name = DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss-fff", CultureInfo.CurrentCulture);
-            if (CalculateAffectedEvents)
-            {
-                name += "-AffectedEvents";
-            }
             FileInfo fileInfo = new FileInfo(name + ".xlsx");
             ExcelPackage excel = new ExcelPackage(fileInfo);
             var usereventsheet = excel.Workbook.Worksheets.Add("Innate Affinities");
             usereventsheet.Cells[1, 1].Value = @"User\Event";
-            foreach (var @event in _eventsReadonly)
+            foreach (var @event in _allEvents)
             {
                 usereventsheet.Cells[1, @event + 2].Value = @event + 1;
-                foreach (var user in _usersReadonly)
+                foreach (var user in _allUsers)
                 {
                     if (@event == 0)
                     {
@@ -303,10 +342,10 @@ namespace Implementation
 
             var socialaffinitiessheet = excel.Workbook.Worksheets.Add("Social Affinities");
             socialaffinitiessheet.Cells[1, 1].Value = @"User\User";
-            foreach (var user1 in _usersReadonly)
+            foreach (var user1 in _allUsers)
             {
                 socialaffinitiessheet.Cells[1, user1 + 2].Value = user1 + 1;
-                foreach (var user2 in _usersReadonly)
+                foreach (var user2 in _allUsers)
                 {
                     if (user1 == 0)
                     {
@@ -347,7 +386,7 @@ namespace Implementation
             assignmentssheet.Cells[result.Count + 3, 2].Value = welfare;
 
             assignmentssheet.Cells[assignmentssheet.Dimension.Address].AutoFitColumns();
-
+            _conf.Print(excel);
             excel.Save();
         }
 
@@ -370,7 +409,7 @@ namespace Implementation
 
         private double Util(int @event, int user)
         {
-            var g = (1 - _alpha) * _inAffinities[user][@event];
+            var g = (1 - _conf.Alpha) * _inAffinities[user][@event];
 
             var s = 0d;
             foreach (var u in _assignments[@event])
@@ -378,7 +417,7 @@ namespace Implementation
                 s += _socAffinities[user, u];
             }
 
-            s *= _alpha;
+            s *= _conf.Alpha;
             g += s;
             s = 0d;
 
@@ -386,8 +425,8 @@ namespace Implementation
             {
                 s += _socAffinities[user, u];
             }
-            g += (s * _alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
-            return Math.Round(g, _percision);
+            g += (s * _conf.Alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
+            return Math.Round(g, _conf.Percision);
         }
 
         public double CalculateSocialWelfare(List<List<int>> assignments)
@@ -410,8 +449,8 @@ namespace Implementation
                         }
                     }
                 }
-                s1 *= (1 - _alpha);
-                s2 *= _alpha;
+                s1 *= (1 - _conf.Alpha);
+                s2 *= _conf.Alpha;
                 u += s1 + s2;
             }
             return u;
@@ -432,13 +471,13 @@ namespace Implementation
             _init = true;
             //_affectedUserEvents = new List<UserEvent>();
 
-            for (var i = 0; i < _numberOfUsers; i++)
+            for (var i = 0; i < _conf.NumberOfUsers; i++)
             {
                 _users.Add(i);
                 _userAssignments.Add(null);
             }
 
-            for (var i = 0; i < _numberOfEvents; i++)
+            for (var i = 0; i < _conf.NumberOfEvents; i++)
             {
                 _events.Add(i);
                 _assignments.Add(new List<int>());
@@ -455,8 +494,8 @@ namespace Implementation
                     var gain = 0d;
                     if (_inAffinities[u][evt] != 0)
                     {
-                        gain = (1 - _alpha) * _inAffinities[u][evt];
-                        gain = Math.Round(gain, _percision);
+                        gain = (1 - _conf.Alpha) * _inAffinities[u][evt];
+                        gain = Math.Round(gain, _conf.Percision);
                         var ue = new UserEvent { Event = evt, User = u };
                         _queue.Add(gain, ue);
                     }

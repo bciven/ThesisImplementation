@@ -71,6 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data Structures\CADGConf.cs" />
     <Compile Include="Data Structures\ExcelFileFeed.cs" />
     <Compile Include="Data Structures\FeedTypeEnum.cs" />
     <Compile Include="Data Structures\IDataFeed.cs" />
@@ -79,13 +80,12 @@
     <Compile Include="Data Structures\Cardinality.cs" />
     <Compile Include="Data Structures\FakeHeap.cs" />
     <Compile Include="Data Structures\Heap.cs" />
-    <Compile Include="Data Structures\Paint.cs" />
     <Compile Include="Data Structures\Example1Feed.cs" />
     <Compile Include="Data Structures\DistDataFeed.cs" />
     <Compile Include="Data Structures\RandomDataFeed.cs" />
     <Compile Include="Data Structures\UserEvent.cs" />
     <Compile Include="IAlgorithm.cs" />
-    <Compile Include="PCADG.cs" />
+    <Compile Include="Cadg.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

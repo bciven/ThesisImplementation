@@ -16,7 +16,7 @@ namespace Implementation
             ConsoleKeyInfo str;
             do
             {
-                Pcadg p = ShowMenu();
+                Cadg p = ShowMenu();
 
                 var watch = new Stopwatch();
 
@@ -33,31 +33,39 @@ namespace Implementation
 
         }
 
-        private static Pcadg ShowMenu()
+        private static Cadg ShowMenu()
         {
             Console.ForegroundColor = ConsoleColor.White;
-            int numberOfUsers = 500;
-            int numberOfEvents = 50;
-            int algInt = 1;
-            string filePath = null;
+            CadgConf conf = new CadgConf();
+            conf.NumberOfUsers = 500;
+            conf.NumberOfEvents = 50;
+            conf.PrintOutEachStep = false;
+            conf.InputFilePath = null;
             while (true)
             {
-                Console.WriteLine(" -------Choose Algorithm------- ");
-                Console.WriteLine("|1.DG                          |");
-                Console.WriteLine("|2.DG + PER                    |");
-                Console.WriteLine("|3.DG + IR                     |");
+                Console.WriteLine(" ---Choose Algorithm Options--- ");
+                Console.WriteLine("|1.Phantom Awareness           |");
+                Console.WriteLine("|2.Immediate Reaction          |");
+                Console.WriteLine("|3.Reassignment                |");
+                Console.WriteLine("|4.Deficit Fix                 |");
+                Console.WriteLine("|5.Pure                        |");
                 Console.WriteLine(" ------------------------------ ");
                 Console.WriteLine();
                 Console.Write("Type your choice: ");
+                var algInt = 1;
                 var input = Console.ReadLine();
-                if (int.TryParse(input, out algInt) && algInt >= 1 && algInt <= 3)
+                if (int.TryParse(input, out algInt) && algInt >= 1 && algInt <= 4321)
                 {
+                    conf.PhantomAware = input.Contains("1");
+                    conf.ImmediateReaction = input.Contains("2");
+                    conf.Reassign = input.Contains("3");
+                    conf.DeficitFix = input.Contains("4");
                     break;
                 }
                 Console.WriteLine("Wrong Input, Try Again.");
             }
             Console.WriteLine();
-            int inputInt = 1;
+
             while (true)
             {
                 Console.WriteLine(" ---------Choose Input--------- ");
@@ -69,47 +77,37 @@ namespace Implementation
                 Console.WriteLine();
                 Console.Write("Type your choice: ");
                 var input = Console.ReadLine();
+                var inputInt = 1;
                 if (int.TryParse(input, out inputInt) && inputInt >= 1 && inputInt <= 4)
                 {
+                    conf.FeedType = FeedTypeEnum.Random;
+                    switch (inputInt)
+                    {
+                        case 1:
+                            conf.FeedType = FeedTypeEnum.Random;
+                            break;
+                        case 2:
+                            conf.FeedType = FeedTypeEnum.OriginalExperiment;
+                            break;
+                        case 3:
+                            conf.FeedType = FeedTypeEnum.Example1;
+                            break;
+                        case 4:
+                            conf.FeedType = FeedTypeEnum.XlsxFile;
+                            Console.Write("Enter File Name:");
+                            conf.InputFilePath = Console.ReadLine();
+                            break;
+                    }
                     break;
                 }
                 Console.WriteLine("Wrong Input, Try Again.");
             }
             Console.WriteLine();
-            FeedTypeEnum feedType = FeedTypeEnum.Random;
-            bool calculateAffectedEvents = false;
-            bool reassign = false;
-            switch (algInt)
-            {
-                case 1:
-                    break;
-                case 2:
-                    reassign = true;
-                    break;
-                case 3:
-                    calculateAffectedEvents = true;
-                    break;
-            }
-            switch (inputInt)
-            {
-                case 1:
-                    feedType = FeedTypeEnum.Random;
-                    break;
-                case 2:
-                    feedType = FeedTypeEnum.OriginalExperiment;
-                    break;
-                case 3:
-                    feedType = FeedTypeEnum.Example1;
-                    break;
-                case 4:
-                    feedType = FeedTypeEnum.XlsxFile;
-                    filePath = Console.ReadLine();
-                    break;
-            }
-            return new Pcadg(feedType, numberOfUsers, numberOfEvents, calculateAffectedEvents, reassign, false, filePath);
+
+            return new Cadg(conf);
         }
 
-        private static void CalcPossibility(List<int> states, int numberOfEvents, Pcadg p)
+        private static void CalcPossibility(List<int> states, int numberOfEvents, Cadg p)
         {
             var q = new List<List<int>>();
 
