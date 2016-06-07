@@ -6,19 +6,20 @@ namespace Implementation.Data_Structures
 {
     public class FakeHeap
     {
-        public readonly List<KeyValuePair<double, UserEvent>> _sortedSet;
+        public readonly Dictionary<string, UserEvent> _sortedSet;
 
         // O(1)
-        public KeyValuePair<double, UserEvent> Max
+        public UserEvent Max
         {
             get
             {
-                var max = new KeyValuePair<double, UserEvent>(int.MinValue, null);
+                var max = new UserEvent { Utility = double.MinValue };
+
                 foreach (var pair in _sortedSet)
                 {
-                    if (pair.Key > max.Key)
+                    if (pair.Value.Utility > max.Utility)
                     {
-                        max = pair;
+                        max = pair.Value;
                     }
                 }
                 return max;
@@ -27,30 +28,28 @@ namespace Implementation.Data_Structures
 
         public FakeHeap()
         {
-            _sortedSet = new List<KeyValuePair<double, UserEvent>>();
+            _sortedSet = new Dictionary<string, UserEvent>();
         }
 
         // O(logn)
         public void Add(double key, UserEvent value)
         {
-            if (!_sortedSet.Exists(x => x.Key == key && value.User == x.Value.User && value.Event == x.Value.Event))
-            {
-                _sortedSet.Add(new KeyValuePair<double, UserEvent>(key, value));
-            }
+            value.Utility = key;
+            _sortedSet.Add(CreateKey(value.User, value.Event), value);
         }
 
         // O(logn)
-        public KeyValuePair<double, UserEvent> RemoveMax()
+        public UserEvent RemoveMax()
         {
             var max = Max;
-            _sortedSet.Remove(max);
+            _sortedSet.Remove(CreateKey(max.User, max.Event));
             return max;
         }
 
         // O(logn)
         public void Remove(double key, UserEvent value)
         {
-            _sortedSet.RemoveAll(x=> x.Key == key && x.Value.User == value.User && x.Value.Event == value.Event);
+            _sortedSet.Remove(CreateKey(value.User, value.Event));
         }
 
         // O(logn)
@@ -70,15 +69,20 @@ namespace Implementation.Data_Structures
             return _sortedSet.Count;
         }
 
+        private string CreateKey(int user, int @event)
+        {
+            return user + "-" + @event;
+        }
+
         public void Print()
         {
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("User|Event|Value");
             Console.WriteLine("----------------");
-            foreach (var value in _sortedSet.OrderByDescending(x=>x.Key))
+            foreach (var value in _sortedSet.OrderByDescending(x => x.Key))
             {
-                Console.WriteLine("{0,-4}|{1,-5}|{2,-5}", (char)(value.Value.User+97), (char)(value.Value.Event+88), value.Key);
+                Console.WriteLine("{0,-4}|{1,-5}|{2,-5}", (char)(value.Value.User + 97), (char)(value.Value.Event + 88), value.Key);
             }
         }
     }

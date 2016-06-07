@@ -10,5 +10,6 @@ namespace Implementation.Data_Structures
     {
         public int User { get; set; }
         public int Event { get; set; }
+        public double Utility { get; set; }
     }
 }
