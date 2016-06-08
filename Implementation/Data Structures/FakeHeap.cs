@@ -32,10 +32,30 @@ namespace Implementation.Data_Structures
         }
 
         // O(logn)
-        public void Add(double key, UserEvent value)
+        public void AddOrUpdate(double key, UserEvent value)
         {
             value.Utility = key;
-            _sortedSet.Add(CreateKey(value.User, value.Event), value);
+            var stringKey = CreateKey(value.User, value.Event);
+            UserEvent newValue;
+            if (_sortedSet.TryGetValue(stringKey, out newValue))
+            {
+                _sortedSet[stringKey].Utility = key;
+            }
+            else
+            {
+                _sortedSet.Add(stringKey, value);
+            }
+        }
+
+        public void Update(double key, UserEvent value)
+        {
+            value.Utility = key;
+            var stringKey = CreateKey(value.User, value.Event);
+            UserEvent newValue;
+            if (_sortedSet.TryGetValue(stringKey, out newValue))
+            {
+                _sortedSet[stringKey].Utility = key;
+            }
         }
 
         // O(logn)
@@ -53,11 +73,7 @@ namespace Implementation.Data_Structures
         }
 
         // O(logn)
-        public void UpdateKey(double oldKey, UserEvent oldValue, double newKey)
-        {
-            Remove(oldKey, oldValue);
-            Add(newKey, oldValue);
-        }
+
 
         public bool IsEmpty()
         {
@@ -80,10 +96,12 @@ namespace Implementation.Data_Structures
             Console.WriteLine();
             Console.WriteLine("User|Event|Value");
             Console.WriteLine("----------------");
-            foreach (var value in _sortedSet.OrderByDescending(x => x.Key))
+            foreach (var value in _sortedSet.OrderByDescending(x => x.Value.Utility))
             {
-                Console.WriteLine("{0,-4}|{1,-5}|{2,-5}", (char)(value.Value.User + 97), (char)(value.Value.Event + 88), value.Key);
+                Console.WriteLine("{0,-4}|{1,-5}|{2,-5}", (char)(value.Value.User + 97), (char)(value.Value.Event + 88), value.Value.Utility);
             }
         }
+
+
     }
 }

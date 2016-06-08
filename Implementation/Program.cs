@@ -39,27 +39,30 @@ namespace Implementation
             CadgConf conf = new CadgConf();
             conf.NumberOfUsers = 500;
             conf.NumberOfEvents = 50;
-            conf.PrintOutEachStep = false;
             conf.InputFilePath = null;
             while (true)
             {
                 Console.WriteLine(" ---Choose Algorithm Options--- ");
                 Console.WriteLine("|1.Phantom Awareness           |");
-                Console.WriteLine("|2.Immediate Reaction          |");
-                Console.WriteLine("|3.Reassignment                |");
-                Console.WriteLine("|4.Deficit Fix                 |");
-                Console.WriteLine("|5.Pure                        |");
+                Console.WriteLine("|2.Post Initialization Insert  |");
+                Console.WriteLine("|3.Immediate Reaction          |");
+                Console.WriteLine("|4.Reassignment                |");
+                Console.WriteLine("|5.Deficit Fix                 |");
+                Console.WriteLine("|6.Print Stack                 |");
+                Console.WriteLine("|7.Pure                        |");
                 Console.WriteLine(" ------------------------------ ");
                 Console.WriteLine();
                 Console.Write("Type your choice: ");
                 var algInt = 1;
                 var input = Console.ReadLine();
-                if (int.TryParse(input, out algInt) && algInt >= 1 && algInt <= 4321)
+                if (input != null && int.TryParse(input, out algInt) && algInt >= 1 && algInt <= 654321)
                 {
                     conf.PhantomAware = input.Contains("1");
-                    conf.ImmediateReaction = input.Contains("2");
-                    conf.Reassign = input.Contains("3");
-                    conf.DeficitFix = input.Contains("4");
+                    conf.PostInitializationInsert = input.Contains("2");
+                    conf.ImmediateReaction = input.Contains("3");
+                    conf.Reassign = input.Contains("4");
+                    conf.DeficitFix = input.Contains("5");
+                    conf.PrintOutEachStep = input.Contains("6");
                     break;
                 }
                 Console.WriteLine("Wrong Input, Try Again.");
@@ -128,20 +131,20 @@ namespace Implementation
 
         private static void Print(List<UserEvent> result, double gain, Stopwatch watch)
         {
-            var filtered = result.Where(x => x.Event >= 0).ToList();
+/*            var filtered = result.Where(x => x.Event >= 0).ToList();
             foreach (var userEvent in filtered)
             {
                 Console.WriteLine("{0} ----> {1}", userEvent.User + 1, userEvent.Event + 1);
-            }
+            }*/
             Console.WriteLine("Exection Time: {0}ms", watch.ElapsedMilliseconds);
             Console.WriteLine("Social Welfare: {0}", gain);
-            Console.WriteLine();
+/*            Console.WriteLine();
             var count = filtered.GroupBy(x => x.Event).Select(x => new { e = x.Key, c = x.Count() }).ToList();
             foreach (var c in count)
             {
                 Console.WriteLine("Count: Event {0} ----> {1} User(s)", c.e + 1, c.c);
             }
-            Console.WriteLine("{0} User(s) are assigned", count.Sum(x => x.c));
+            Console.WriteLine("{0} User(s) are assigned", count.Sum(x => x.c));*/
             Console.WriteLine();
         }
     }

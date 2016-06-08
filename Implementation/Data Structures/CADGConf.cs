@@ -20,7 +20,8 @@ namespace Implementation.Data_Structures
         public double Alpha;
         public int Percision { get; set; }
         public bool DeficitFix { get; set; }
-        public int NumberOfPhantomEvents{ get; set; }
+        public bool PostInitializationInsert { get; set; }
+        public int NumberOfPhantomEvents { get; set; }
 
         public CadgConf()
         {
@@ -32,6 +33,7 @@ namespace Implementation.Data_Structures
             InputFilePath = null;
             PhantomAware = false;
             DeficitFix = false;
+            PostInitializationInsert = false;
             Alpha = 0.5;
             Percision = 7;
             NumberOfPhantomEvents = 0;
@@ -52,7 +54,7 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = NumberOfEvents;
             i++;
 
-            ws.Cells[i, 1].Value = "CalculateAffectedEvents";
+            ws.Cells[i, 1].Value = "ImmediateReaction";
             ws.Cells[i, 2].Value = ImmediateReaction;
             i++;
 
@@ -74,6 +76,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "DeficitFix";
             ws.Cells[i, 2].Value = DeficitFix;
+            i++;
+
+            ws.Cells[i, 1].Value = "PostInitializationInsert";
+            ws.Cells[i, 2].Value = PostInitializationInsert;
             i++;
 
 

@@ -29,8 +29,7 @@ namespace Implementation
         private List<Cardinality> _eventCapacity;
         //private Heap<double, UserEvent> _queue;
         private FakeHeap/*<double, UserEvent>*/ _queue;
-        private Dictionary<string, bool> _inverseQueue;
-        private Dictionary<string, double> _priorities;
+        //private Dictionary<string, double> _priorities;
         private List<int> _phantomEvents;
         private List<int> _affectedEvents;
         //private List<UserEvent> _affectedUserEvents;
@@ -96,13 +95,12 @@ namespace Implementation
                 hitcount++;
                 PrintQueue();
                 var min = _queue.RemoveMax();
-                var user = min.Value.User;
-                var @event = min.Value.Event;
+                var user = min.User;
+                var @event = min.Event;
                 var minCapacity = _eventCapacity[@event].Min;
                 var maxCapacity = _eventCapacity[@event].Max;
                 _affectedEvents.RemoveAll(x => true);
                 bool assignmentMade = false;
-                _inverseQueue[CreateKey(user, @event)] = false;
                 List<int> affectedEvents = new List<int>();
 
                 if (_userAssignments[user] == null && _assignments[@event].Count < maxCapacity)
@@ -188,7 +186,7 @@ namespace Implementation
 
                 foreach (var e in affectedEvents)
                 {
-                    ReaddAffectedUserEvents(e);
+                    ImmediateReaction(e);
                 }
 
                 foreach (var u in _allUsers)
@@ -227,7 +225,7 @@ namespace Implementation
                     foreach (var availableUser in availableUsers)
                     {
                         var q = Util(@event, availableUser);
-                        _queue.Add(q, new UserEvent { User = availableUser, Event = @event });
+                        _queue.AddOrUpdate(q, new UserEvent { User = availableUser, Event = @event });
                     }
                 }
             }
@@ -247,10 +245,9 @@ namespace Implementation
             }
         }
 
-        private void ReaddAffectedUserEvents(int @event)
+        private void ImmediateReaction(int @event)
         {
-            var addUserEvents = new List<UserEvent>();
-            var updateUserEvents = new List<UserEvent>();
+            var userEvents = new List<UserEvent>();
             var numberOfUsers = _assignments[@event].Count;
             for (int i = 0; i < numberOfUsers; i++)
             {
@@ -258,6 +255,7 @@ namespace Implementation
                 _numberOfUserAssignments[userOfOtherEvent]--;
                 if (_numberOfUserAssignments[userOfOtherEvent] == 0)
                 {
+                    //_deficit--;
                     _users.Add(userOfOtherEvent);
                 }
                 if (_userAssignments[userOfOtherEvent] != null)
@@ -269,36 +267,19 @@ namespace Implementation
                     Console.WriteLine("Event is not a phantom!!");
                 }
                 var ue = new UserEvent { Event = @event, User = userOfOtherEvent };
-                if (_inverseQueue[CreateKey(ue.User, ue.Event)])
-                {
-                    updateUserEvents.Add(ue);
-                }
-                else
-                {
-                    addUserEvents.Add(ue);
-                }
             }
             _assignments[@event].Clear();
 
-            foreach (var ue in addUserEvents)
+            foreach (var ue in userEvents)
             {
                 var newPriority = Util(ue.Event, ue.User);
-                _queue.Add(newPriority, ue);
-                _priorities[CreateKey(ue.User, ue.Event)] = newPriority;
-                _inverseQueue[CreateKey(ue.User, ue.Event)] = true;
+                _queue.AddOrUpdate(newPriority, ue);
                 foreach (var user in _allUsers)
                 {
                     Update(ue.User, user, ue.Event);
                 }
             }
-            foreach (var userEvent in updateUserEvents)
-            {
-                Update(userEvent.User, userEvent.Event);
-                foreach (var user in _allUsers)
-                {
-                    Update(userEvent.User, user, userEvent.Event);
-                }
-            }
+
             //_affectedEvents.Add(@event);
             if (_conf.PhantomAware)
             {
@@ -310,6 +291,10 @@ namespace Implementation
                 if (_eventCapacity[@event].Min >= numberOfUsers)
                 {
                     _deficit = _deficit - (_eventCapacity[@event].Min - numberOfUsers);
+                    //if (_deficit < 0)
+                    //{
+                    //    Console.WriteLine("Deficit is {0}", _deficit);
+                    //}
                     _eventDeficitContribution[@event] = 0;
                 }
 
@@ -317,6 +302,26 @@ namespace Implementation
                 //{
                 //    Console.WriteLine("what!");
                 //}
+            }
+        }
+
+        private void Update(int user1, int user2, int @event)
+        {
+            if (_socAffinities[user2, user1] > 0 && _userAssignments[user2] == null) /* or a in affected_evts)*/
+            {
+                //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
+                var newPriority = Util(@event, user2);
+                if (_conf.PostInitializationInsert)
+                {
+                    if (!_assignments[@event].Contains(user2) && _assignments[@event].Count < _eventCapacity[@event].Max)
+                    {
+                        _queue.AddOrUpdate(newPriority, new UserEvent { User = user2, Event = @event });
+                    }
+                }
+                else
+                {
+                    _queue.Update(newPriority, new UserEvent { User = user2, Event = @event });
+                }
             }
         }
 
@@ -328,8 +333,8 @@ namespace Implementation
             }
 
             var max = _queue.Max;
-            Console.WriteLine("User {0}, Event {1}, Value {2}", (char)(max.Value.User + 97),
-                (char)(max.Value.Event + 88), max.Key);
+            Console.WriteLine("User {0}, Event {1}, Value {2}", (char)(max.User + 97),
+                (char)(max.Event + 88), max.Utility);
         }
 
         private void PrintAssignments(bool assignmentMade)
@@ -362,40 +367,6 @@ namespace Implementation
             _queue.Print();
             Console.WriteLine("{0}{0}*****************************", Environment.NewLine);
             Console.ReadLine();
-        }
-
-        private void Update(int user1, int user2, int @event)
-        {
-            if (_socAffinities[user2, user1] > 0 && _userAssignments[user2] == null) /* or a in affected_evts)*/
-            {
-                var key = CreateKey(user2, @event);
-                var newPriority = Util(@event, user2);
-                var oldPriority = _priorities[key];
-                if (newPriority == oldPriority)
-                {
-                    return;
-                }
-                _queue.UpdateKey(oldPriority, new UserEvent { User = user2, Event = @event }, newPriority);
-                //Console.WriteLine("Old:{0}, New:{1}", oldPriority, newPriority);
-                _priorities[key] = newPriority;
-            }
-        }
-
-        private void Update(int user, int @event)
-        {
-            if (_userAssignments[user] == null) /* or a in affected_evts)*/
-            {
-                var key = CreateKey(user, @event);
-                var newPriority = Util(@event, user);
-                var oldPriority = _priorities[key];
-                if (newPriority == oldPriority)
-                {
-                    return;
-                }
-                _queue.UpdateKey(oldPriority, new UserEvent { User = user, Event = @event }, newPriority);
-                //Console.WriteLine("Old:{0}, New:{1}", oldPriority, newPriority);
-                _priorities[key] = newPriority;
-            }
         }
 
         private void Print(List<UserEvent> result, double welfare)
@@ -544,8 +515,6 @@ namespace Implementation
             _userAssignments = new List<int?>();
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
-            _priorities = new Dictionary<string, double>();
-            _inverseQueue = new Dictionary<string, bool>();
             SocialWelfare = 0;
             _queue = new FakeHeap/*<double, UserEvent>*/();
             _phantomEvents = new List<int>();
@@ -581,11 +550,9 @@ namespace Implementation
                     {
                         gain = (1 - _conf.Alpha) * _inAffinities[u][e];
                         gain = Math.Round(gain, _conf.Percision);
-                        var ue = new UserEvent { Event = e, User = u };
-                        _queue.Add(gain, ue);
+                        var ue = new UserEvent { Event = e, User = u, Utility = gain };
+                        _queue.AddOrUpdate(gain, ue);
                     }
-                    _priorities.Add(CreateKey(u, e), gain);
-                    _inverseQueue[CreateKey(u, e)] = true;
                 }
             }
         }
