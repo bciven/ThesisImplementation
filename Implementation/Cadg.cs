@@ -192,20 +192,17 @@ namespace Implementation
                             }
                         }
                     }
+
+                    if (_conf.LazyAdjustment)
+                    {
+                        AdjustList(affectedEvents, user, @event, assignmentMade);
+                    }
                 }
 
-                foreach (var e in affectedEvents)
+                if (!_conf.LazyAdjustment)
                 {
-                    ImmediateReaction(e);
+                    AdjustList(affectedEvents, user, @event, assignmentMade);
                 }
-
-                foreach (var u in _allUsers)
-                {
-                    Update(user, u, @event);
-                }
-
-                PrintAssignments(assignmentMade);
-                CheckValidity();
             }
 
             if (_conf.Reassign && _phantomEvents.Any() && _userAssignments.Any(x => !x.HasValue))
@@ -241,6 +238,22 @@ namespace Implementation
             }
             _conf.NumberOfPhantomEvents = _phantomEvents.Count;
             return CreateOutput();
+        }
+
+        private void AdjustList(List<int> affectedEvents, int user, int @event, bool assignmentMade)
+        {
+            foreach (var e in affectedEvents)
+            {
+                ImmediateReaction(e);
+            }
+
+            foreach (var u in _allUsers)
+            {
+                Update(user, u, @event);
+            }
+
+            PrintAssignments(assignmentMade);
+            CheckValidity();
         }
 
         private void CheckValidity()
@@ -301,7 +314,7 @@ namespace Implementation
                 {
                     _eventDeficitContribution[@event] = 0;
                 }
-                else if(_eventCapacity[@event].Min >= numberOfUsers)
+                else if (_eventCapacity[@event].Min >= numberOfUsers)
                 {
                     _deficit = _deficit - (_eventCapacity[@event].Min - numberOfUsers);
                 }

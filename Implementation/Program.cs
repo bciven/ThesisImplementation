@@ -48,21 +48,23 @@ namespace Implementation
                 Console.WriteLine("|3.Immediate Reaction          |");
                 Console.WriteLine("|4.Reassignment                |");
                 Console.WriteLine("|5.Deficit Fix                 |");
-                Console.WriteLine("|6.Print Stack                 |");
-                Console.WriteLine("|7.Pure                        |");
+                Console.WriteLine("|6.Lazy Adjustment             |");
+                Console.WriteLine("|7.Print Stack                 |");
+                Console.WriteLine("|8.Pure                        |");
                 Console.WriteLine(" ------------------------------ ");
                 Console.WriteLine();
                 Console.Write("Type your choice: ");
                 var algInt = 1;
                 var input = Console.ReadLine();
-                if (input != null && int.TryParse(input, out algInt) && algInt >= 1 && algInt <= 654321)
+                if (input != null && int.TryParse(input, out algInt) && algInt >= 1 && algInt <= 7654321)
                 {
                     conf.PhantomAware = input.Contains("1");
                     conf.PostInitializationInsert = input.Contains("2");
                     conf.ImmediateReaction = input.Contains("3");
                     conf.Reassign = input.Contains("4");
                     conf.DeficitFix = input.Contains("5");
-                    conf.PrintOutEachStep = input.Contains("6");
+                    conf.LazyAdjustment = input.Contains("6");
+                    conf.PrintOutEachStep = input.Contains("7");
                     break;
                 }
                 Console.WriteLine("Wrong Input, Try Again.");
