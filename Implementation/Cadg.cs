@@ -31,7 +31,6 @@ namespace Implementation
         private FakeHeap/*<double, UserEvent>*/ _queue;
         //private Dictionary<string, double> _priorities;
         private List<int> _phantomEvents;
-        private List<int> _affectedEvents;
         //private List<UserEvent> _affectedUserEvents;
         private bool _init;
         private IDataFeed _dataFeeder;
@@ -99,7 +98,6 @@ namespace Implementation
                 var @event = min.Event;
                 var minCapacity = _eventCapacity[@event].Min;
                 var maxCapacity = _eventCapacity[@event].Max;
-                _affectedEvents.RemoveAll(x => true);
                 bool assignmentMade = false;
                 List<int> affectedEvents = new List<int>();
 
@@ -109,10 +107,16 @@ namespace Implementation
                     {
                         if (_assignments[@event].Count == 0)
                         {
-                            if (_deficit + minCapacity <= _users.Count)
+                            if (_eventDeficitContribution.Sum(x => x) + minCapacity <= _users.Count)
                             {
-                                _deficit = _deficit + minCapacity - 1;
-                                _eventDeficitContribution[@event] = minCapacity - 1;
+                                if (!_conf.DeficitFix)
+                                {
+                                    _deficit = _deficit + minCapacity - 1;
+                                }
+                                else
+                                {
+                                    _eventDeficitContribution[@event] = minCapacity - 1;
+                                }
                                 _phantomEvents.Add(@event);
                             }
                             else
@@ -125,8 +129,14 @@ namespace Implementation
                         {
                             if (_phantomEvents.Contains(@event))
                             {
-                                _deficit--;
-                                _eventDeficitContribution[@event]--;
+                                if (!_conf.DeficitFix)
+                                {
+                                    _deficit--;
+                                }
+                                else
+                                {
+                                    _eventDeficitContribution[@event]--;
+                                }
                             }
                         }
                     }
@@ -169,7 +179,7 @@ namespace Implementation
                             {
                                 if (!_phantomEvents.Contains(e))
                                 {
-                                    Console.WriteLine("Stranger here");
+                                    Console.WriteLine("This event should be phantom!");
                                 }
                                 _assignments[e].Remove(u);
                                 _numberOfUserAssignments[u]--;
@@ -255,7 +265,6 @@ namespace Implementation
                 _numberOfUserAssignments[userOfOtherEvent]--;
                 if (_numberOfUserAssignments[userOfOtherEvent] == 0)
                 {
-                    //_deficit--;
                     _users.Add(userOfOtherEvent);
                 }
                 if (_userAssignments[userOfOtherEvent] != null)
@@ -288,20 +297,14 @@ namespace Implementation
                     _phantomEvents.Remove(@event);
                 }
 
-                if (_eventCapacity[@event].Min >= numberOfUsers)
+                if (_conf.DeficitFix)
                 {
-                    _deficit = _deficit - (_eventCapacity[@event].Min - numberOfUsers);
-                    //if (_deficit < 0)
-                    //{
-                    //    Console.WriteLine("Deficit is {0}", _deficit);
-                    //}
                     _eventDeficitContribution[@event] = 0;
                 }
-
-                //if (_eventDeficitContribution.Sum(x => x) != _deficit)
-                //{
-                //    Console.WriteLine("what!");
-                //}
+                else if(_eventCapacity[@event].Min >= numberOfUsers)
+                {
+                    _deficit = _deficit - (_eventCapacity[@event].Min - numberOfUsers);
+                }
             }
         }
 
@@ -518,8 +521,7 @@ namespace Implementation
             SocialWelfare = 0;
             _queue = new FakeHeap/*<double, UserEvent>*/();
             _phantomEvents = new List<int>();
-            _affectedEvents = new List<int>();
-            _deficit = 0;
+            //_deficit = 0;
             _init = true;
             //_affectedUserEvents = new List<UserEvent>();
 
