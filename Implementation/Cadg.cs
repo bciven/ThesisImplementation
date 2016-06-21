@@ -318,7 +318,7 @@ namespace Implementation
 
         private void Update(int user1, int user2, int @event)
         {
-            if (_socAffinities[user2, user1] > 0 && _userAssignments[user2] == null) /* or a in affected_evts)*/
+            if (_socAffinities[user2,user1] > 0 && _userAssignments[user2] == null) /* or a in affected_evts)*/
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
                 var newPriority = Util(@event, user2);
@@ -476,7 +476,7 @@ namespace Implementation
             var s = 0d;
             foreach (var u in _assignments[@event])
             {
-                s += _socAffinities[user, u];
+                s += _socAffinities[user,u];
             }
 
             s *= _conf.Alpha;
@@ -485,7 +485,7 @@ namespace Implementation
 
             foreach (var u in _users)
             {
-                s += _socAffinities[user, u];
+                s += _socAffinities[user,u];
             }
             g += (s * _conf.Alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
             return Math.Round(g, _conf.Percision);
@@ -507,7 +507,7 @@ namespace Implementation
                     {
                         if (user1 != user2)
                         {
-                            s2 += _socAffinities[user1, user2];
+                            s2 += _socAffinities[user1,user2];
                         }
                     }
                 }
@@ -566,5 +566,26 @@ namespace Implementation
                 }
             }
         }
+
+/*        public double CalculateRegRatio(int user)
+        {
+            var finalDenom = double.MinValue;
+            foreach (var @event in _allEvents)
+            {
+                var friendAffinities = _socAffinities[user].Where(x => x > 0).OrderByDescending(x => x).ToList();
+                var k = Math.Min(_eventCapacity[@event].Max - 1, friendAffinities.Count);
+                var localSocialAffinity = friendAffinities.Take(k).Sum(x => x);
+                var denom = (1 - _conf.Alpha) * _inAffinities[user][@event] + _conf.Alpha * localSocialAffinity;
+                finalDenom = Math.Max(finalDenom, denom);
+            }
+
+            var assignedEvent = _userAssignments[user].Value;
+            var users = _assignments[assignedEvent];
+            var socialAffinity = users.Sum(x => _socAffinities[user][x]);
+            var numerator = (1 - _conf.Alpha) * _inAffinities[user][assignedEvent] + _conf.Alpha * socialAffinity;
+
+            var phi = 1 - (numerator / finalDenom);
+            return phi;
+        }*/
     }
 }
