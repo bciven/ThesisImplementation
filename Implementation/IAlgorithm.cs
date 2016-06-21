@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Implementation
 {
-    interface IAlgorithm<T>
+    public abstract class Algorithm<T>
     {
-        T Run();
-        void Initialize();
+        public abstract T Run();
+        public abstract void Initialize();
+        public double SocialWelfare { get; set; }
     }
 }

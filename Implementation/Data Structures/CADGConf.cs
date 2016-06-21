@@ -7,18 +7,11 @@ using OfficeOpenXml;
 
 namespace Implementation.Data_Structures
 {
-    public class CadgConf
+    public class CadgConf : SgConf
     {
-        public FeedTypeEnum FeedType { get; set; }
-        public int NumberOfUsers { get; set; }
-        public int NumberOfEvents { get; set; }
         public bool ImmediateReaction { get; set; }
         public bool Reassign { get; set; }
-        public bool PrintOutEachStep { get; set; }
-        public string InputFilePath { get; set; }
         public bool PhantomAware { get; set; }
-        public double Alpha;
-        public int Percision { get; set; }
         public bool DeficitFix { get; set; }
         public bool PostInitializationInsert { get; set; }
         public bool LazyAdjustment { get; set; }
@@ -41,7 +34,7 @@ namespace Implementation.Data_Structures
             LazyAdjustment = false;
         }
 
-        public void Print(ExcelPackage excel)
+        public override void Print(ExcelPackage excel)
         {
             var ws = excel.Workbook.Worksheets.Add("Configs");
             int i = 1;
