@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Implementation.Data_Structures;
 
-namespace Implementation.Data_Structures
+namespace Implementation.Dataset_Reader
 {
     interface IDataFeed
     {

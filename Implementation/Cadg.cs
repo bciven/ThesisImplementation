@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
 using OfficeOpenXml;
 
@@ -318,7 +319,7 @@ namespace Implementation
 
         private void Update(int user1, int user2, int @event)
         {
-            if (_socAffinities[user2,user1] > 0 && _userAssignments[user2] == null) /* or a in affected_evts)*/
+            if (_socAffinities[user2, user1] > 0 && _userAssignments[user2] == null) /* or a in affected_evts)*/
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
                 var newPriority = Util(@event, user2);
@@ -448,6 +449,18 @@ namespace Implementation
             assignmentssheet.Cells[result.Count + 3, 2].Value = welfare;
 
             assignmentssheet.Cells[assignmentssheet.Dimension.Address].AutoFitColumns();
+
+            var regRatiosheet = excel.Workbook.Worksheets.Add("RegRatios");
+            var ratios = CalcRegRatios();
+            int index = 1;
+            foreach (var ratio in ratios)
+            {
+                regRatiosheet.Cells[index, 1].Value = ratio.Key;
+                regRatiosheet.Cells[index, 2].Value = ratio.Value;
+                index++;
+            }
+            regRatiosheet.Cells[assignmentssheet.Dimension.Address].AutoFitColumns();
+
             _conf.Print(excel);
             excel.Save();
         }
@@ -476,7 +489,7 @@ namespace Implementation
             var s = 0d;
             foreach (var u in _assignments[@event])
             {
-                s += _socAffinities[user,u];
+                s += _socAffinities[user, u];
             }
 
             s *= _conf.Alpha;
@@ -485,7 +498,7 @@ namespace Implementation
 
             foreach (var u in _users)
             {
-                s += _socAffinities[user,u];
+                s += _socAffinities[user, u];
             }
             g += (s * _conf.Alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
             return Math.Round(g, _conf.Percision);
@@ -507,7 +520,7 @@ namespace Implementation
                     {
                         if (user1 != user2)
                         {
-                            s2 += _socAffinities[user1,user2];
+                            s2 += _socAffinities[user1, user2];
                         }
                     }
                 }
@@ -567,12 +580,31 @@ namespace Implementation
             }
         }
 
-/*        public double CalculateRegRatio(int user)
+        public Dictionary<int, double> CalcRegRatios()
+        {
+            var ratios = new Dictionary<int, double>();
+            foreach (var user in _allUsers)
+            {
+                var ratio = CalculateRegRatio(user);
+                ratios.Add(user, ratio);
+            }
+            return ratios;
+        }
+
+        public double CalculateRegRatio(int user)
         {
             var finalDenom = double.MinValue;
             foreach (var @event in _allEvents)
             {
-                var friendAffinities = _socAffinities[user].Where(x => x > 0).OrderByDescending(x => x).ToList();
+                var friendAffinities = new List<double>();
+                for (int i = 0; i < _conf.NumberOfUsers; i++)
+                {
+                    if (_socAffinities[user, i] > 0)
+                    {
+                        friendAffinities.Add(_socAffinities[user, i]);
+                    }
+                }
+                friendAffinities = friendAffinities.OrderByDescending(x => x).ToList();
                 var k = Math.Min(_eventCapacity[@event].Max - 1, friendAffinities.Count);
                 var localSocialAffinity = friendAffinities.Take(k).Sum(x => x);
                 var denom = (1 - _conf.Alpha) * _inAffinities[user][@event] + _conf.Alpha * localSocialAffinity;
@@ -581,11 +613,11 @@ namespace Implementation
 
             var assignedEvent = _userAssignments[user].Value;
             var users = _assignments[assignedEvent];
-            var socialAffinity = users.Sum(x => _socAffinities[user][x]);
+            var socialAffinity = users.Sum(x => _socAffinities[user, x]);
             var numerator = (1 - _conf.Alpha) * _inAffinities[user][assignedEvent] + _conf.Alpha * socialAffinity;
 
             var phi = 1 - (numerator / finalDenom);
             return phi;
-        }*/
+        }
     }
 }

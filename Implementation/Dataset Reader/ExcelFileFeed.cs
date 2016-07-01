@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using Implementation.Data_Structures;
 using OfficeOpenXml;
 
-namespace Implementation.Data_Structures
+namespace Implementation.Dataset_Reader
 {
     public class ExcelFileFeed : IDataFeed
     {

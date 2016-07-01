@@ -18,28 +18,36 @@ namespace Implementation.Dataset_Reader
             var userEvents = ReadGroups(userEventsFile);
             var users = userEvents.Select(x => x.EntityId).Distinct().ToList();
 
+            HashSet<int> hashset = new HashSet<int>(users);
+            userTags = userTags.Where(x => hashset.Contains(x.EntityId)).ToList();
+            Dictionary<int, HashSet<int>> dic = new Dictionary<int, HashSet<int>>();
+            var tagsLookup = userTags.ToLookup(x => x.EntityId, x=>x.GroupId);
+            foreach (var user in hashset)
+            {
+                dic.Add(user, new HashSet<int>(tagsLookup[user]));
+            }
+
+            var crossedJoin = users.SelectMany(user1 => users, (user1, user2) => new { user1, user2 });
+            int i = 0;
             using (var file = new StreamWriter(@"D:\Graphs\user_user.csv"))
             {
-                foreach (var user1 in users)
-                {
-                    foreach (var user2 in users)
+                    foreach (var item in crossedJoin)
                     {
-                        if (user1 != user2)
+                        i++;
+                        if (item.user1 != item.user2)
                         {
-
-                            var user1Tags = userTags.Where(x => x.EntityId == user1).Select(x => x.GroupId).ToList();
-                            var user2Tags = userTags.Where(x => x.EntityId == user2).Select(x => x.GroupId).ToList();
+                            var user1Tags = dic[item.user1];
+                            var user2Tags = dic[item.user2];
                             var union = user1Tags.Union(user2Tags).Count();
                             var intersect = user1Tags.Intersect(user2Tags).Count();
                             if (union > 0 && intersect > 0)
                             {
                                 double interest = (double)intersect / union;
 
-                                file.WriteLine("{0},{1},{2}", user1, user2, interest);
+                                file.WriteLine("{0},{1},{2}", item.user1, item.user2, interest);
                             }
                         }
                     }
-                }
             }
 
         }

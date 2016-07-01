@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MathNet.Numerics;
-using MathNet.Numerics.Distributions;
+using Implementation.Data_Structures;
 
-namespace Implementation.Data_Structures
+namespace Implementation.Dataset_Reader
 {
-    public class DistDataFeed : IDataFeed
+    public class RandomDataFeed : IDataFeed
     {
         private readonly Random _rand;
 
-        public DistDataFeed()
+        public RandomDataFeed()
         {
             _rand = new Random();
         }
@@ -19,22 +18,18 @@ namespace Implementation.Data_Structures
         {
             var result = events.Select(x =>
             {
-                var end = GenerateMaxCapacity(1);
-                var start = GenerateMinCapacity(1, end);
+                var n = users.Count / events.Count;
+                var s = GenerateRandom(1, n);
+                var l = GenerateRandom(1, n);
                 var c = new Cardinality
                 {
-                    Min = start,
-                    Max = end
+                    Min = s,
+                    Max = s + l
                 };
                 return c;
             }).ToList();
 
             return result;
-        }
-
-        private int GenerateMinCapacity(int min, int max)
-        {
-            return _rand.Next(min, max);
         }
 
         public List<List<double>> GenerateInnateAffinities(List<int> users, List<int> events)
@@ -45,7 +40,7 @@ namespace Implementation.Data_Structures
                 var userInterests = new List<double>();
                 foreach (var @event in events)
                 {
-                    double r = 1.0 / Math.Pow(1 - _rand.NextDouble(), 1.5);
+                    var r = GenerateRandom(0d, 1d);
                     r = Math.Round(r, 2);
                     userInterests.Add(r);
                 }
@@ -70,7 +65,7 @@ namespace Implementation.Data_Structures
                     var user2 = users[j];
                     if (user1 != user2)
                     {
-                        var r = GenerateRandom(0);
+                        var r = GenerateRandom(0d, 1d);
                         r = Math.Round(r, 2);
                         usersInterests[i, j] = r;
                     }
@@ -83,23 +78,21 @@ namespace Implementation.Data_Structures
             return usersInterests;
         }
 
+
         void IDataFeed.GetNumberOfUsersAndEvents(out int usersCount, out int eventsCount)
         {
             throw new NotImplementedException();
         }
 
-        private double GenerateRandom(double minimum)
+        private double GenerateRandom(double minimum, double maximum)
         {
-            var normalDist = Normal.WithMeanStdDev(1.5, 3, _rand).Sample();
-            return normalDist < Math.Pow(10, -5) ? minimum : normalDist;
+            return _rand.NextDouble() * (maximum - minimum) + minimum;
         }
 
 
-        private int GenerateMaxCapacity(int minimum)
+        private int GenerateRandom(int minimum, int maximum)
         {
-            var normalDist = MathNet.Numerics.Distributions.Normal.WithMeanStdDev(20, 10, _rand).Sample();
-            var notmalDistInt = Convert.ToInt32(Math.Floor(normalDist));
-            return notmalDistInt < minimum ? minimum : notmalDistInt;
+            return _rand.Next(minimum, maximum + 1);
         }
     }
 }
