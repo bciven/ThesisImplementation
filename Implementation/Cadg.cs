@@ -593,6 +593,11 @@ namespace Implementation
 
         public double CalculateRegRatio(int user)
         {
+            if (!_userAssignments[user].HasValue)
+            {
+                return 1;
+            }
+
             var finalDenom = double.MinValue;
             foreach (var @event in _allEvents)
             {

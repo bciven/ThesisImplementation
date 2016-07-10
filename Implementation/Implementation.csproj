@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data Structures\Graph.cs" />
     <Compile Include="Data Structures\SgConf.cs" />
     <Compile Include="Data Structures\UserPairEvent.cs" />
     <Compile Include="Sg.cs" />
