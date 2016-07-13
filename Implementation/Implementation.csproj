@@ -85,6 +85,8 @@
     <Compile Include="Data Structures\Graph.cs" />
     <Compile Include="Data Structures\SgConf.cs" />
     <Compile Include="Data Structures\UserPairEvent.cs" />
+    <Compile Include="Experiment\Parameters.cs" />
+    <Compile Include="Experiment\Runner.cs" />
     <Compile Include="Sg.cs" />
     <Compile Include="Data Structures\CADGConf.cs" />
     <Compile Include="Dataset Reader\ExcelFileFeed.cs" />
@@ -117,6 +119,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Code.png" />
+    <Content Include="Experiment\Experiments.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

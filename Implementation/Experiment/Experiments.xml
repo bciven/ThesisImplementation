@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Experiments>
+  <Experiment count="10">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capstddev value="10" />
+    <sndensity value="0.4" />
+  </Experiment>
+</Experiments>

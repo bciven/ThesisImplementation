@@ -10,10 +10,21 @@ namespace Implementation.Dataset_Reader
 {
     public class DistDataFeed : IDataFeed
     {
+        private readonly int _capmean;
+        private readonly int _capstddev;
         private readonly Random _rand;
 
         public DistDataFeed()
         {
+            _rand = new Random();
+            _capmean = 20;
+            _capstddev = 10;
+        }
+
+        public DistDataFeed(int capmean, int capstddev)
+        {
+            _capmean = capmean;
+            _capstddev = capstddev;
             _rand = new Random();
         }
 
@@ -146,7 +157,7 @@ namespace Implementation.Dataset_Reader
 
         private int GenerateMaxCapacity(int minimum)
         {
-            var normalDist = MathNet.Numerics.Distributions.Normal.WithMeanStdDev(20, 10, _rand).Sample();
+            var normalDist = Normal.WithMeanStdDev(_capmean, _capstddev, _rand).Sample();
             var notmalDistInt = Convert.ToInt32(Math.Floor(normalDist));
             return notmalDistInt < minimum ? minimum : notmalDistInt;
         }

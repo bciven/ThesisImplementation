@@ -75,7 +75,7 @@ namespace Implementation
             }
         }
 
-        public override List<UserEvent> Run()
+        public override void Run()
         {
             if (!_init)
                 throw new Exception("Not Initialized");
@@ -135,8 +135,6 @@ namespace Implementation
                     }
                 }
             }
-
-            return CreateOutput();
         }
 
         private void PrintQueue()
@@ -195,11 +193,9 @@ namespace Implementation
             }
         }
 
-        private void Print(List<UserEvent> result, double welfare)
+        private void Print(List<UserEvent> result, double welfare, FileInfo output)
         {
-            var name = DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss-fff", CultureInfo.CurrentCulture);
-            FileInfo fileInfo = new FileInfo(name + ".xlsx");
-            ExcelPackage excel = new ExcelPackage(fileInfo);
+            ExcelPackage excel = new ExcelPackage(output);
             var usereventsheet = excel.Workbook.Worksheets.Add("Innate Affinities");
             usereventsheet.Cells[1, 1].Value = @"User\Event";
             foreach (var @event in _allEvents)
@@ -267,7 +263,7 @@ namespace Implementation
             excel.Save();
         }
 
-        private List<UserEvent> CreateOutput()
+        public override List<UserEvent> CreateOutput(FileInfo output)
         {
             var result = new List<UserEvent>();
             for (int i = 0; i < _userAssignments.Count; i++)
@@ -280,7 +276,7 @@ namespace Implementation
                 });
             }
             SocialWelfare = CalculateSocialWelfare(_assignments);
-            Print(result, SocialWelfare);
+            Print(result, SocialWelfare, output);
             return result;
         }
 
