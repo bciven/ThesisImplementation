@@ -72,6 +72,16 @@ namespace Implementation
                 case FeedTypeEnum.OriginalExperiment:
                     _dataFeeder = new DistDataFeed();
                     break;
+                case FeedTypeEnum.SerialExperiment:
+                    if (string.IsNullOrEmpty(_conf.InputFilePath))
+                    {
+                        _dataFeeder = new DistDataFeed();
+                    }
+                    else
+                    {
+                        _dataFeeder = new ExcelFileFeed(_conf.InputFilePath);
+                    }
+                    break;
             }
         }
 
@@ -278,6 +288,16 @@ namespace Implementation
             SocialWelfare = CalculateSocialWelfare(_assignments);
             Print(result, SocialWelfare, output);
             return result;
+        }
+
+        public override void SetInputFile(string file)
+        {
+            _conf.InputFilePath = file;
+        }
+
+        public override string GetInputFile()
+        {
+            return _conf.InputFilePath;
         }
 
         private double Util(int @event, int user)

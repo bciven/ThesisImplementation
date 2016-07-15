@@ -48,13 +48,21 @@ namespace Implementation.Experiment
             {
                 var dir = CopyOutputFiles(experiment);
                 var numOfExp = experiments.Count().ToString().Length;
-                var alg = ShowMenu(experiment);
+                var algorithms = ShowMenu(experiment);
 
                 for (int i = 0; i < experiment.ExpCount; i++)
                 {
-                    var fileName = i.ToString().PadLeft(numOfExp, '0');
-                    var output = new FileInfo(Path.Combine(dir.Name, fileName + ".xlsx"));
-                    Run(i, alg, output);
+                    for (int j = 0; j < algorithms.Count; j++)
+                    {
+                        var algorithm = algorithms[j];
+                        if (j > 0)
+                        {
+                            algorithm.SetInputFile(algorithms[j - 1].GetInputFile());
+                        }
+                        var fileName = i.ToString().PadLeft(numOfExp, '0') + "-" + j.ToString().PadLeft(algorithms.Count, '0');
+                        var output = new FileInfo(Path.Combine(dir.Name, fileName + ".xlsx"));
+                        Run(i, algorithm, output);
+                    }
                 }
             }
 
@@ -80,26 +88,29 @@ namespace Implementation.Experiment
             return dir;
         }
 
-        private Algorithm<List<UserEvent>> ShowMenu(Parameters parameters)
+        private List<Algorithm<List<UserEvent>>> ShowMenu(Parameters parameters)
         {
             Console.ForegroundColor = ConsoleColor.White;
             int algInt = 0;
 
             FeedTypeEnum feedType = FeedTypeEnum.Random;
             string inputFilePath = null;
+            int numberOfExperimentTypes = 1;
+            var algorithms = new List<Algorithm<List<UserEvent>>>();
             while (true)
             {
                 Console.WriteLine(" ---------Choose Input--------- ");
                 Console.WriteLine("|1.RANDOM                      |");
-                Console.WriteLine("|2.OriginalExperiment          |");
+                Console.WriteLine("|2.Original Experiment         |");
                 Console.WriteLine("|3.Example1                    |");
                 Console.WriteLine("|4.From Excel File             |");
+                Console.WriteLine("|5.Serial Experiments          |");
                 Console.WriteLine(" ------------------------------ ");
                 Console.WriteLine();
                 Console.Write("Type your choice: ");
                 var input = Console.ReadLine();
                 var inputInt = 1;
-                if (int.TryParse(input, out inputInt) && inputInt >= 1 && inputInt <= 4)
+                if (int.TryParse(input, out inputInt) && inputInt >= 1 && inputInt <= 5)
                 {
                     switch (inputInt)
                     {
@@ -116,6 +127,11 @@ namespace Implementation.Experiment
                             feedType = FeedTypeEnum.XlsxFile;
                             Console.Write("Enter File Name:");
                             inputFilePath = Console.ReadLine();
+                            break;
+                        case 5:
+                            feedType = FeedTypeEnum.SerialExperiment;
+                            Console.Write("Enter Number Of Experiment Types:");
+                            numberOfExperimentTypes = Convert.ToInt32(Console.ReadLine());
                             break;
                     }
                     break;
@@ -143,64 +159,72 @@ namespace Implementation.Experiment
 
             Console.WriteLine();
 
-            while (algInt == 2)
+            if (algInt == 2)
             {
-                SgConf conf = new SgConf();
-                conf = new SgConf
+                for (int i = 0; i < numberOfExperimentTypes; i++)
                 {
-                    NumberOfUsers = 500,
-                    NumberOfEvents = 50,
-                    InputFilePath = inputFilePath,
-                    FeedType = feedType,
-                    Alpha = parameters.AlphaValue
-                };
-
-                return new Sg(conf);
-            }
-
-            while (algInt == 1)
-            {
-                CadgConf conf = new CadgConf();
-                Console.WriteLine(" ---Choose Algorithm Options--- ");
-                Console.WriteLine("|1.Phantom Awareness           |");
-                Console.WriteLine("|2.Post Initialization Insert  |");
-                Console.WriteLine("|3.Immediate Reaction          |");
-                Console.WriteLine("|4.Reassignment                |");
-                Console.WriteLine("|5.Deficit Fix                 |");
-                Console.WriteLine("|6.Agile Adjustment            |");
-                Console.WriteLine("|7.Print Stack                 |");
-                Console.WriteLine("|8.Pure                        |");
-                Console.WriteLine(" ------------------------------ ");
-                Console.WriteLine();
-                Console.Write("Type your choice: ");
-                var options = 1;
-                var input = Console.ReadLine();
-                if (input != null && int.TryParse(input, out options) && options >= 1 && options <= 7654321)
-                {
-                    conf = new CadgConf
+                    SgConf conf = new SgConf();
+                    conf = new SgConf
                     {
-                        NumberOfUsers = parameters.UserCount,
-                        NumberOfEvents = parameters.EventCount,
+                        NumberOfUsers = 500,
+                        NumberOfEvents = 50,
                         InputFilePath = inputFilePath,
-                        PhantomAware = input.Contains("1"),
-                        PostInitializationInsert = input.Contains("2"),
-                        ImmediateReaction = input.Contains("3"),
-                        Reassign = input.Contains("4"),
-                        DeficitFix = input.Contains("5"),
-                        LazyAdjustment = !input.Contains("6"),
-                        PrintOutEachStep = input.Contains("7"),
                         FeedType = feedType,
                         Alpha = parameters.AlphaValue
                     };
-
-                    Console.WriteLine();
-
-                    return new Cadg(conf);
+                    algorithms.Add(new Sg(conf));
                 }
-                Console.WriteLine("Wrong Input, Try Again.");
+            }
+            else if (algInt == 1)
+            {
+                for (int i = 0; i < numberOfExperimentTypes;)
+                {
+                    CadgConf conf = new CadgConf();
+                    Console.WriteLine(" ---Choose Algorithm Options--- ");
+                    Console.WriteLine("|1.Phantom Awareness           |");
+                    Console.WriteLine("|2.Post Initialization Insert  |");
+                    Console.WriteLine("|3.Immediate Reaction          |");
+                    Console.WriteLine("|4.Reassignment                |");
+                    Console.WriteLine("|5.Deficit Fix                 |");
+                    Console.WriteLine("|6.Agile Adjustment            |");
+                    Console.WriteLine("|7.Print Stack                 |");
+                    Console.WriteLine("|8.Pure                        |");
+                    Console.WriteLine(" ------------------------------ ");
+                    Console.WriteLine();
+                    Console.Write("Type your choice: ");
+                    var options = 1;
+                    var input = Console.ReadLine();
+                    if (input != null && int.TryParse(input, out options) && options >= 1 && options <= 7654321)
+                    {
+                        conf = new CadgConf
+                        {
+                            NumberOfUsers = parameters.UserCount,
+                            NumberOfEvents = parameters.EventCount,
+                            InputFilePath = inputFilePath,
+                            PhantomAware = input.Contains("1"),
+                            PostInitializationInsert = input.Contains("2"),
+                            ImmediateReaction = input.Contains("3"),
+                            Reassign = input.Contains("4"),
+                            DeficitFix = input.Contains("5"),
+                            LazyAdjustment = !input.Contains("6"),
+                            PrintOutEachStep = input.Contains("7"),
+                            FeedType = feedType,
+                            Alpha = parameters.AlphaValue
+                        };
+
+                        Console.WriteLine();
+
+                        algorithms.Add(new Cadg(conf));
+                        i++;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Wrong Input, Try Again.");
+                    }
+                }
             }
 
-            throw new Exception("Wrong Input!");
+            return algorithms;
         }
 
         private void Print(List<UserEvent> result, double gain, Stopwatch watch)

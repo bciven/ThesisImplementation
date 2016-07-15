@@ -18,6 +18,7 @@ namespace Implementation.Data_Structures
         public string InputFilePath { get; set; }
         public double Alpha;
         public int Percision { get; set; }
+        public int NumberOfExperimentTypes { get; set; }
 
         public SgConf()
         {
@@ -27,6 +28,7 @@ namespace Implementation.Data_Structures
             InputFilePath = null;
             Alpha = 0.5;
             Percision = 7;
+            NumberOfExperimentTypes = 1;
         }
 
         public virtual void Print(ExcelPackage excel)
