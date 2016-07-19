@@ -1,35 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
   <Experiment count="5">
-    <users count="5000" />
+    <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capstddev value="10" />
     <sndensity value="0.4" />
   </Experiment>
-  <Experiment count="5">
-    <users count="5000" />
-    <events count="250" />
+  <!--<Experiment count="2">
+    <users count="100" />
+    <events count="10" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capstddev value="10" />
     <sndensity value="0.4" />
   </Experiment>
-  <Experiment count="5">
-    <users count="5000" />
-    <events count="500" />
+  <Experiment count="2">
+    <users count="100" />
+    <events count="15" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capstddev value="10" />
     <sndensity value="0.4" />
   </Experiment>
-  <Experiment count="5">
-    <users count="5000" />
-    <events count="1000" />
+  <Experiment count="2">
+    <users count="100" />
+    <events count="20" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capstddev value="10" />
     <sndensity value="0.4" />
-  </Experiment>
+  </Experiment>-->
 </Experiments>

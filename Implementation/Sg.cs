@@ -18,8 +18,8 @@ namespace Implementation
         private double[,] _socAffinities;
         private List<int> _events;
         private List<int> _users;
-        private readonly List<int> _allEvents;
-        private readonly List<int> _allUsers;
+        private List<int> _allEvents;
+        private List<int> _allUsers;
         private List<List<int>> _assignments;
         private List<int?> _userAssignments;
         private List<Cardinality> _eventCapacity;
@@ -30,30 +30,6 @@ namespace Implementation
         public Sg(SgConf conf)
         {
             _conf = conf;
-            InitializeFeed();
-
-            _allUsers = new List<int>();
-            _allEvents = new List<int>();
-            _init = false;
-
-            if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
-            {
-                int numberOfUsers;
-                int numberOfEvents;
-                _dataFeeder.GetNumberOfUsersAndEvents(out numberOfUsers, out numberOfEvents);
-                _conf.NumberOfUsers = numberOfUsers;
-                _conf.NumberOfEvents = numberOfEvents;
-            }
-
-            for (var i = 0; i < _conf.NumberOfUsers; i++)
-            {
-                _allUsers.Add(i);
-            }
-
-            for (var i = 0; i < _conf.NumberOfEvents; i++)
-            {
-                _allEvents.Add(i);
-            }
         }
 
         private void InitializeFeed()
@@ -300,6 +276,11 @@ namespace Implementation
             return _conf.InputFilePath;
         }
 
+        public override FeedTypeEnum GetFeedType()
+        {
+            return _conf.FeedType;
+        }
+
         private double Util(int @event, int user)
         {
             var g = (1 - _conf.Alpha) * _inAffinities[user][@event];
@@ -351,6 +332,31 @@ namespace Implementation
 
         public override void Initialize()
         {
+            InitializeFeed();
+
+            _allUsers = new List<int>();
+            _allEvents = new List<int>();
+            _init = false;
+
+            if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
+            {
+                int numberOfUsers;
+                int numberOfEvents;
+                _dataFeeder.GetNumberOfUsersAndEvents(out numberOfUsers, out numberOfEvents);
+                _conf.NumberOfUsers = numberOfUsers;
+                _conf.NumberOfEvents = numberOfEvents;
+            }
+
+            for (var i = 0; i < _conf.NumberOfUsers; i++)
+            {
+                _allUsers.Add(i);
+            }
+
+            for (var i = 0; i < _conf.NumberOfEvents; i++)
+            {
+                _allEvents.Add(i);
+            }
+
             _users = new List<int>();
             _events = new List<int>();
             _assignments = new List<List<int>>();
