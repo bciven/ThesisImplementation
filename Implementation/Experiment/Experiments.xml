@@ -7,6 +7,12 @@
     <capmean value="20" />
     <capstddev value="10" />
     <sndensity value="0.4" />
+    <exptypes>
+      <type>IR</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+    </exptypes>
   </Experiment>
   <!--<Experiment count="2">
     <users count="100" />

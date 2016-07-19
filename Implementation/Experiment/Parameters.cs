@@ -1,4 +1,7 @@
 
+using System.Collections.Generic;
+using Implementation.Data_Structures;
+
 namespace Implementation.Experiment
 {
     public class Parameters
@@ -11,5 +14,6 @@ namespace Implementation.Experiment
         public double CapstddevValue { get; set; }
         public double SndensityValue { get; set; }
         public string ExperimentFile { get; set; }
+        public List<AlgorithmEnum> ExpTypes { get; set; }
     }
 }

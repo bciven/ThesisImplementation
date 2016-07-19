@@ -160,7 +160,7 @@ namespace Implementation
                             var excludedEvents = _events.Where(x => x != @event && _assignments[x].Contains(u));
                             foreach (var e in excludedEvents)
                             {
-                                if (!_phantomEvents.Contains(e))
+                                if (_conf.PhantomAware && !_phantomEvents.Contains(e))
                                 {
                                     Console.WriteLine("This event should be phantom!");
                                 }
@@ -223,9 +223,12 @@ namespace Implementation
 
         private void AdjustList(List<int> affectedEvents, int user, int @event, bool assignmentMade)
         {
-            foreach (var e in affectedEvents)
+            if (_conf.ImmediateReaction)
             {
-                ImmediateReaction(e);
+                foreach (var e in affectedEvents)
+                {
+                    ImmediateReaction(e);
+                }
             }
 
             foreach (var u in _allUsers)
@@ -486,21 +489,19 @@ namespace Implementation
         {
             var g = (1 - _conf.Alpha) * _inAffinities[user][@event];
 
-            var s = 0d;
-            foreach (var u in _assignments[@event])
-            {
-                s += _socAffinities[user, u];
-            }
+            var s = _assignments[@event].Sum(u => _socAffinities[user, u]);
 
             s *= _conf.Alpha;
             g += s;
-            s = 0d;
 
-            foreach (var u in _users)
+            if (_conf.CommunityAware)
             {
-                s += _socAffinities[user, u];
+                s = _users.Sum(u => _socAffinities[user, u]);
+
+                g += (s*_conf.Alpha*(_eventCapacity[@event].Min - _assignments[@event].Count))/
+                     Math.Max(_users.Count - 1, 1);
             }
-            g += (s * _conf.Alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
+
             return Math.Round(g, _conf.Percision);
         }
 

@@ -16,6 +16,7 @@ namespace Implementation.Data_Structures
         public bool PostInitializationInsert { get; set; }
         public bool LazyAdjustment { get; set; }
         public int NumberOfPhantomEvents { get; set; }
+        public bool CommunityAware { get; set; }
 
         public CadgConf()
         {
@@ -32,6 +33,7 @@ namespace Implementation.Data_Structures
             Percision = 7;
             NumberOfPhantomEvents = 0;
             LazyAdjustment = false;
+            CommunityAware = false;
         }
 
         public override void Print(ExcelPackage excel)
@@ -88,6 +90,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Lazy Adjustment";
             ws.Cells[i, 2].Value = LazyAdjustment;
+            i++;
+
+            ws.Cells[i, 1].Value = "Community Aware";
+            ws.Cells[i, 2].Value = CommunityAware;
             i++;
 
             ws.Cells[i, 1].Value = "Number Of Phantom Events";
