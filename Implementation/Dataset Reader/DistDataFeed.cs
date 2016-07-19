@@ -50,7 +50,7 @@ namespace Implementation.Dataset_Reader
             List<string> lines;
             using (WebClient client = new WebClient())
             {
-                var csv = client.DownloadString($"http://192.168.1.67:5000/getgraph/{userCount}");
+                var csv = client.DownloadString($"http://192.168.56.101:5000/getgraph/{userCount}");
                 lines = csv.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
             }
 

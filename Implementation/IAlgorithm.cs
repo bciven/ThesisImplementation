@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Implementation.Data_Structures;
 
 namespace Implementation
 {
@@ -9,6 +10,7 @@ namespace Implementation
         public abstract T CreateOutput(FileInfo file);
         public abstract void SetInputFile(string file);
         public abstract string GetInputFile();
+        public abstract FeedTypeEnum GetFeedType();
         public double SocialWelfare { get; set; }
     }
 }

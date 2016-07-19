@@ -28,28 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.textBoxFolder = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonBrowse = new System.Windows.Forms.Button();
-            this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.buttonDraw = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
+            this.welfareChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.buttonAdd = new System.Windows.Forms.Button();
+            this.buttonRemove = new System.Windows.Forms.Button();
+            this.listBox = new System.Windows.Forms.ListBox();
+            this.regChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            ((System.ComponentModel.ISupportInitialize)(this.welfareChart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.regChart)).BeginInit();
             this.SuspendLayout();
             // 
             // textBoxFolder
             // 
-            this.textBoxFolder.Location = new System.Drawing.Point(53, 286);
+            this.textBoxFolder.Location = new System.Drawing.Point(53, 594);
             this.textBoxFolder.Name = "textBoxFolder";
-            this.textBoxFolder.Size = new System.Drawing.Size(428, 20);
+            this.textBoxFolder.Size = new System.Drawing.Size(352, 20);
             this.textBoxFolder.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 289);
+            this.label1.Location = new System.Drawing.Point(12, 598);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(39, 13);
             this.label1.TabIndex = 1;
@@ -57,7 +62,7 @@
             // 
             // buttonBrowse
             // 
-            this.buttonBrowse.Location = new System.Drawing.Point(487, 284);
+            this.buttonBrowse.Location = new System.Drawing.Point(406, 593);
             this.buttonBrowse.Name = "buttonBrowse";
             this.buttonBrowse.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowse.TabIndex = 2;
@@ -65,39 +70,72 @@
             this.buttonBrowse.UseVisualStyleBackColor = true;
             this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
             // 
-            // chart
+            // welfareChart
             // 
+            chartArea1.BackColor = System.Drawing.Color.White;
+            chartArea1.Name = "ChartArea1";
+            this.welfareChart.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            legend1.Title = "Welfare";
+            this.welfareChart.Legends.Add(legend1);
+            this.welfareChart.Location = new System.Drawing.Point(14, 12);
+            this.welfareChart.Name = "welfareChart";
+            this.welfareChart.Size = new System.Drawing.Size(467, 260);
+            this.welfareChart.TabIndex = 3;
+            this.welfareChart.Text = "Welfare";
+            // 
+            // buttonAdd
+            // 
+            this.buttonAdd.Location = new System.Drawing.Point(487, 593);
+            this.buttonAdd.Name = "buttonAdd";
+            this.buttonAdd.Size = new System.Drawing.Size(75, 23);
+            this.buttonAdd.TabIndex = 4;
+            this.buttonAdd.Text = "Add";
+            this.buttonAdd.UseVisualStyleBackColor = true;
+            this.buttonAdd.Click += new System.EventHandler(this.buttonDraw_Click);
+            // 
+            // buttonRemove
+            // 
+            this.buttonRemove.Location = new System.Drawing.Point(577, 593);
+            this.buttonRemove.Name = "buttonRemove";
+            this.buttonRemove.Size = new System.Drawing.Size(75, 23);
+            this.buttonRemove.TabIndex = 6;
+            this.buttonRemove.Text = "Remove";
+            this.buttonRemove.UseVisualStyleBackColor = true;
+            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            // 
+            // listBox
+            // 
+            this.listBox.FormattingEnabled = true;
+            this.listBox.Location = new System.Drawing.Point(487, 12);
+            this.listBox.Name = "listBox";
+            this.listBox.Size = new System.Drawing.Size(165, 576);
+            this.listBox.TabIndex = 7;
+            // 
+            // regChart
+            // 
+            chartArea2.BackColor = System.Drawing.Color.White;
             chartArea2.Name = "ChartArea1";
-            this.chart.ChartAreas.Add(chartArea2);
+            this.regChart.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
-            this.chart.Legends.Add(legend2);
-            this.chart.Location = new System.Drawing.Point(14, 12);
-            this.chart.Name = "chart";
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.chart.Series.Add(series2);
-            this.chart.Size = new System.Drawing.Size(638, 260);
-            this.chart.TabIndex = 3;
-            this.chart.Text = "chart1";
-            // 
-            // buttonDraw
-            // 
-            this.buttonDraw.Location = new System.Drawing.Point(577, 284);
-            this.buttonDraw.Name = "buttonDraw";
-            this.buttonDraw.Size = new System.Drawing.Size(75, 23);
-            this.buttonDraw.TabIndex = 4;
-            this.buttonDraw.Text = "Draw";
-            this.buttonDraw.UseVisualStyleBackColor = true;
-            this.buttonDraw.Click += new System.EventHandler(this.buttonDraw_Click);
+            legend2.Title = "Welfare";
+            this.regChart.Legends.Add(legend2);
+            this.regChart.Location = new System.Drawing.Point(15, 327);
+            this.regChart.Name = "regChart";
+            this.regChart.Size = new System.Drawing.Size(467, 260);
+            this.regChart.TabIndex = 8;
+            this.regChart.Text = "Regret Ratio";
             // 
             // Charts
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 318);
-            this.Controls.Add(this.buttonDraw);
-            this.Controls.Add(this.chart);
+            this.ClientSize = new System.Drawing.Size(664, 620);
+            this.Controls.Add(this.regChart);
+            this.Controls.Add(this.listBox);
+            this.Controls.Add(this.buttonRemove);
+            this.Controls.Add(this.buttonAdd);
+            this.Controls.Add(this.welfareChart);
             this.Controls.Add(this.buttonBrowse);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBoxFolder);
@@ -105,7 +143,8 @@
             this.MaximizeBox = false;
             this.Name = "Charts";
             this.Text = "Form";
-            ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.welfareChart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.regChart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -116,8 +155,11 @@
         private System.Windows.Forms.TextBox textBoxFolder;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonBrowse;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart;
-        private System.Windows.Forms.Button buttonDraw;
+        private System.Windows.Forms.DataVisualization.Charting.Chart welfareChart;
+        private System.Windows.Forms.Button buttonAdd;
+        private System.Windows.Forms.Button buttonRemove;
+        private System.Windows.Forms.ListBox listBox;
+        private System.Windows.Forms.DataVisualization.Charting.Chart regChart;
     }
 }
 

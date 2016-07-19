@@ -49,16 +49,25 @@ namespace Implementation.Experiment
                 var dir = CopyOutputFiles(experiment);
                 var numOfExp = experiments.Count().ToString().Length;
                 var algorithms = ShowMenu(experiment);
-
+                var serial = algorithms.Any(x => x.GetFeedType() == FeedTypeEnum.SerialExperiment);
                 for (int i = 0; i < experiment.ExpCount; i++)
                 {
                     for (int j = 0; j < algorithms.Count; j++)
                     {
                         var algorithm = algorithms[j];
-                        if (j > 0)
+
+                        if (serial)
                         {
-                            algorithm.SetInputFile(algorithms[j - 1].GetInputFile());
+                            if (j == 0)
+                            {
+                                algorithm.SetInputFile(null);
+                            }
+                            else if (j > 0)
+                            {
+                                algorithm.SetInputFile(algorithms[j - 1].GetInputFile());
+                            }
                         }
+
                         var fileName = i.ToString().PadLeft(numOfExp, '0') + "-" + j.ToString().PadLeft(algorithms.Count, '0');
                         var output = new FileInfo(Path.Combine(dir.Name, fileName + ".xlsx"));
                         Run(i, algorithm, output);
