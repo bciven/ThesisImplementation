@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="5">
-    <users count="500" />
+  <Experiment count="3">
+    <users count="1000" />
     <events count="50" />
     <alpha value="0.5" />
     <capmean value="20" />
@@ -14,28 +14,32 @@
       <type>PCADG</type>
     </exptypes>
   </Experiment>
-  <!--<Experiment count="2">
-    <users count="100" />
-    <events count="10" />
+  <Experiment count="3">
+    <users count="1000" />
+    <events count="100" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capstddev value="10" />
     <sndensity value="0.4" />
+    <exptypes>
+      <type>IR</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+    </exptypes>
   </Experiment>
-  <Experiment count="2">
-    <users count="100" />
-    <events count="15" />
+  <Experiment count="3">
+    <users count="1000" />
+    <events count="200" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capstddev value="10" />
     <sndensity value="0.4" />
+    <exptypes>
+      <type>IR</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+    </exptypes>
   </Experiment>
-  <Experiment count="2">
-    <users count="100" />
-    <events count="20" />
-    <alpha value="0.5" />
-    <capmean value="20" />
-    <capstddev value="10" />
-    <sndensity value="0.4" />
-  </Experiment>-->
 </Experiments>

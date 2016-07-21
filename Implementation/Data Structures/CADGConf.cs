@@ -17,6 +17,7 @@ namespace Implementation.Data_Structures
         public bool LazyAdjustment { get; set; }
         public int NumberOfPhantomEvents { get; set; }
         public bool CommunityAware { get; set; }
+        public string AlgorithmName { get; set; }
 
         public CadgConf()
         {
@@ -34,6 +35,7 @@ namespace Implementation.Data_Structures
             NumberOfPhantomEvents = 0;
             LazyAdjustment = false;
             CommunityAware = false;
+            AlgorithmName = null;
         }
 
         public override void Print(ExcelPackage excel)
@@ -98,6 +100,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Number Of Phantom Events";
             ws.Cells[i, 2].Value = NumberOfPhantomEvents;
+            i++;
+
+            ws.Cells[i, 1].Value = "Algorithm Name";
+            ws.Cells[i, 2].Value = AlgorithmName;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
 

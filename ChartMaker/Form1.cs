@@ -15,6 +15,7 @@ namespace ChartMaker
     public partial class Charts : Form
     {
         private int _index = 0;
+        private int _posX = 0;
 
         public Charts()
         {
@@ -43,33 +44,41 @@ namespace ChartMaker
             }
             var stats = ReadData.CalcAverageWelfares(textBoxFolder.Text);
             listBox.Items.Add(new Item { Id = _index, Text = textBoxFolder.Text, Count = stats.Count });
-            foreach (var welfare in stats)
-            {
-                var seriesWelfare = new Series
-                {
-                    Name = _index.ToString(),
-                    Color = Color.Blue,
-                    IsVisibleInLegend = false,
-                    IsXValueIndexed = false,
-                    ChartType = SeriesChartType.Line,
-                    Label = welfare.Version
-                };
-                welfareChart.Series.Add(seriesWelfare);
-                seriesWelfare.Points.AddXY(_index, welfare.AvgWelfare);
 
-                var seriesReg = new Series
+            for (int i = 0; i < stats.Count; i++)
+            {
+                var welfare = stats[i];
+                if (_posX == 0)
                 {
-                    Name = _index.ToString(),
-                    Color = Color.Green,
-                    IsVisibleInLegend = false,
-                    IsXValueIndexed = false,
-                    ChartType = SeriesChartType.Line,
-                    Label = welfare.Version
-                };
-                regChart.Series.Add(seriesReg);
-                seriesReg.Points.AddXY(_index, welfare.AvgRegRatio);
+                    var seriesWelfare = new Series
+                    {
+                        Name = _index.ToString(),
+                        Color = Color.FromArgb(0, 0, i*10),
+                        IsVisibleInLegend = false,
+                        IsXValueIndexed = false,
+                        ChartType = SeriesChartType.Line,
+                        Label = welfare.Version,
+                        MarkerStyle = MarkerStyle.Circle
+                    };
+                    welfareChart.Series.Add(seriesWelfare);
+
+                    var seriesReg = new Series
+                    {
+                        Name = _index.ToString(),
+                        Color = Color.FromArgb(0, i * 10, 0),
+                        IsVisibleInLegend = false,
+                        IsXValueIndexed = false,
+                        ChartType = SeriesChartType.Line,
+                        Label = welfare.Version,
+                        MarkerStyle = MarkerStyle.Circle
+                    };
+                    regChart.Series.Add(seriesReg);
+                }
+                welfareChart.Series[i].Points.AddXY(_posX, welfare.AvgWelfare);
+                regChart.Series[i].Points.AddXY(_posX, welfare.AvgRegRatio);
                 _index++;
             }
+            _posX++;
             welfareChart.Invalidate();
             regChart.Invalidate();
             textBoxFolder.Text = "";

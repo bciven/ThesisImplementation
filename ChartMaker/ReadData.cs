@@ -16,7 +16,7 @@ namespace ChartMaker
             var allFiles = directory.GetFiles();
 
             var files = allFiles.Where(x => Path.GetExtension(x.Name).ToLower() == ".xlsx" && !x.Attributes.HasFlag(FileAttributes.Hidden));
-            var groups = files.GroupBy(x => x.Name.Split('-')[0]).ToList();
+            var groups = files.GroupBy(x => x.Name.Split('-')[0], (key, g) => g.Select(x => new ExcelPackage(x)).ToList() ).ToList();
             var fResults = new List<AlgorithmWelfare>();
             foreach (var @group in groups)
             {
@@ -44,21 +44,20 @@ namespace ChartMaker
                 fResults[i].AvgWelfare = fResults[i].AvgWelfare / groups.Count();
                 fResults[i].AvgRegRatio = fResults[i].AvgRegRatio / groups.Count();
             }
+            var maxWelfare = fResults.Max(x => x.AvgWelfare);
+            fResults.ForEach(x=> x.AvgWelfare = x.AvgWelfare / maxWelfare);
             return fResults;
         }
 
-        private static double ReadSocialWelfare(FileInfo file)
+        private static double ReadSocialWelfare(ExcelPackage package)
         {
-            ExcelPackage package = new ExcelPackage(file);
             var ws = package.Workbook.Worksheets[4];
-            var value = ws.Cells[ws.Dimension.End.Row, 2].Value;
-            package.Dispose();
+            var value = ws.Cells[1, 5].Value;
             return Convert.ToDouble(value);
         }
 
-        private static double ReadRegRatio(FileInfo file)
+        private static double ReadRegRatio(ExcelPackage package)
         {
-            ExcelPackage package = new ExcelPackage(file);
             var ws = package.Workbook.Worksheets[5];
             var cells = ws.Cells[1, 2, ws.Dimension.End.Row, 2];
             var avg = 0d;
@@ -66,35 +65,22 @@ namespace ChartMaker
             {
                 avg += Convert.ToDouble(cell.Value);
             }
-            avg = avg/cells.Count();
-            package.Dispose();
+            avg = avg / cells.Count();
             return avg;
         }
 
-        private static int ReadEventCount(FileInfo file)
+        private static int ReadEventCount(ExcelPackage package)
         {
-            ExcelPackage package = new ExcelPackage(file);
             var ws = package.Workbook.Worksheets[6];
             var value = ws.Cells[3, 2].Value;
-            package.Dispose();
             return Convert.ToInt32(value);
         }
 
-        private static string ReadVersion(FileInfo file)
+        private static string ReadVersion(ExcelPackage package)
         {
-            ExcelPackage package = new ExcelPackage(file);
             var ws = package.Workbook.Worksheets[6];
-            var values = ws.Cells[4, 2, 10, 2];
-            var numberTrue = 0;
-            foreach (var value in values)
-            {
-                if (value.Text == "1")
-                {
-                    numberTrue++;
-                }
-            }
-            package.Dispose();
-            return numberTrue > 2 ? "Imediate Reaction" : "Original";
+            var value = ws.Cells[ws.Dimension.End.Row, 2].Value;
+            return value.ToString();
         }
     }
 

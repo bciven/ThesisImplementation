@@ -534,11 +534,13 @@ namespace Implementation
 
         public override void Initialize()
         {
+            SetNullMembers();
             InitializeFeed();
 
             _allUsers = new List<int>();
             _allEvents = new List<int>();
             _init = false;
+            _conf.NumberOfPhantomEvents = 0;
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {
@@ -604,6 +606,26 @@ namespace Implementation
                     }
                 }
             }
+        }
+
+        private void SetNullMembers()
+        {
+            _inAffinities = null;
+            _socAffinities = null;
+            _events = null;
+            _users = null;
+            _allEvents = null;
+            _allUsers = null;
+            _numberOfUserAssignments = null;
+            _eventDeficitContribution = null;
+            _assignments = null;
+            _userAssignments = null;
+            _deficit = 0;
+            _eventCapacity = null;
+            _queue = null;
+            _phantomEvents = null;
+            _init = false;
+            _dataFeeder = null;
         }
 
         public Dictionary<int, double> CalcRegRatios()
