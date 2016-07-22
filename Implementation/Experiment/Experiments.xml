@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="3">
-    <users count="1000" />
+  <Experiment count="2">
+    <users count="300" />
     <events count="50" />
     <alpha value="0.5" />
     <capmean value="20" />
@@ -15,7 +15,7 @@
     </exptypes>
   </Experiment>
   <Experiment count="3">
-    <users count="1000" />
+    <users count="300" />
     <events count="100" />
     <alpha value="0.5" />
     <capmean value="20" />
@@ -29,7 +29,7 @@
     </exptypes>
   </Experiment>
   <Experiment count="3">
-    <users count="1000" />
+    <users count="300" />
     <events count="200" />
     <alpha value="0.5" />
     <capmean value="20" />

@@ -510,6 +510,11 @@ namespace Implementation
             double u = 0;
             for (int @event = 0; @event < assignments.Count; @event++)
             {
+                if (!EventIsReal(@event))
+                {
+                    continue;
+                }
+
                 var assignment = assignments[@event];
 
                 double s1 = 0;
@@ -530,6 +535,14 @@ namespace Implementation
                 u += s1 + s2;
             }
             return u;
+        }
+
+        private bool EventIsReal(int @event)
+        {
+            var usersCount = _assignments[@event].Count;
+            var min = _eventCapacity[@event].Min;
+            var max = _eventCapacity[@event].Max;
+            return usersCount >= min && usersCount <= max;
         }
 
         public override void Initialize()
@@ -641,7 +654,7 @@ namespace Implementation
 
         public double CalculateRegRatio(int user)
         {
-            if (!_userAssignments[user].HasValue)
+            if (!_userAssignments[user].HasValue || !EventIsReal(_userAssignments[user].Value))
             {
                 return 1;
             }

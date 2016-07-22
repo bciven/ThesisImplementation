@@ -59,19 +59,29 @@ namespace Implementation.Experiment
 
         public void RunExperiments()
         {
+            var useMenu = ChooseByMenu();
             var experiments = ReadExperiments();
             foreach (var experiment in experiments)
             {
                 var dir = CopyOutputFiles(experiment);
-                var numOfExp = experiments.Count().ToString().Length;
-                //var algorithms = ShowMenu(experiment);
-                var algorithms = ToAlgorithm(experiment);
-                var serial = algorithms.Any(x => x.GetFeedType() == FeedTypeEnum.SerialExperiment);
+                var numOfExp = experiments.Count();
+                var configs = useMenu ? ShowMenu(experiment) : ToConfigs(experiment);
+                var serial = configs.Any(x => x.FeedType == FeedTypeEnum.SerialExperiment);
+
                 for (int i = 0; i < experiment.ExpCount; i++)
                 {
-                    for (int j = 0; j < algorithms.Count; j++)
+                    for (int j = 0; j < configs.Count; j++)
                     {
-                        var algorithm = algorithms[j];
+                        var conf = configs[j] as CadgConf;
+                        Algorithm<List<UserEvent>> algorithm;
+                        if (conf != null)
+                        {
+                            algorithm = new Cadg(conf);
+                        }
+                        else
+                        {
+                            algorithm = new Sg(configs[j]);
+                        }
 
                         if (serial)
                         {
@@ -81,10 +91,10 @@ namespace Implementation.Experiment
                             }
                             else if (j > 0)
                             {
-                                algorithm.SetInputFile(algorithms[j - 1].GetInputFile());
+                                algorithm.SetInputFile(configs[j - 1].InputFilePath);
                             }
                         }
-                        var algDigits = Convert.ToInt32(Math.Floor(Math.Log10(algorithms.Count) + 1));
+                        var algDigits = Convert.ToInt32(Math.Floor(Math.Log10(configs.Count) + 1));
                         var expDigits = Convert.ToInt32(Math.Floor(Math.Log10(numOfExp) + 1));
                         var fileName = i.ToString().PadLeft(expDigits, '0') + "-" + j.ToString().PadLeft(algDigits, '0');
                         var output = new FileInfo(Path.Combine(dir.Name, fileName + ".xlsx"));
@@ -96,13 +106,20 @@ namespace Implementation.Experiment
             Exit();
         }
 
-        private List<Algorithm<List<UserEvent>>> ToAlgorithm(Parameters experiment)
+        private bool ChooseByMenu()
         {
-            var algorithms = new List<Algorithm<List<UserEvent>>>();
+            Console.WriteLine("Do you want to choose experiment by menu?");
+            var line = Console.ReadLine();
+            return line == "y";
+        }
+
+        private List<SgConf> ToConfigs(Parameters experiment)
+        {
+            var configs = new List<SgConf>();
             foreach (var algorithmEnum in experiment.ExpTypes)
             {
                 var alg = (int)algorithmEnum;
-                CadgConf conf = new CadgConf();
+                var conf = new CadgConf();
                 conf = new CadgConf
                 {
                     NumberOfUsers = experiment.UserCount,
@@ -116,14 +133,15 @@ namespace Implementation.Experiment
                     LazyAdjustment = false,
                     PrintOutEachStep = false,
                     FeedType = FeedTypeEnum.SerialExperiment,
-                    CommunityAware = (alg != (int)AlgorithmEnum.DG && alg != (int)AlgorithmEnum.PADG),
-                    Alpha = experiment.AlphaValue
+                    CommunityAware = (alg == (int)AlgorithmEnum.PCADG || alg == (int)AlgorithmEnum.IR),
+                    Alpha = experiment.AlphaValue,
+                    AlgorithmName = ConvertToString(algorithmEnum)
                 };
 
-                algorithms.Add(new Cadg(conf));
+                configs.Add(conf);
             }
 
-            return algorithms;
+            return configs;
         }
 
         private void Exit()
@@ -145,7 +163,7 @@ namespace Implementation.Experiment
             return dir;
         }
 
-        private List<Algorithm<List<UserEvent>>> ShowMenu(Parameters parameters)
+        private List<SgConf> ShowMenu(Parameters parameters)
         {
             Console.ForegroundColor = ConsoleColor.White;
             int algInt = 0;
@@ -153,7 +171,7 @@ namespace Implementation.Experiment
             FeedTypeEnum feedType = FeedTypeEnum.Random;
             string inputFilePath = null;
             int numberOfExperimentTypes = 1;
-            var algorithms = new List<Algorithm<List<UserEvent>>>();
+            var configs = new List<SgConf>();
             while (true)
             {
                 Console.WriteLine(" ---------Choose Input--------- ");
@@ -220,7 +238,7 @@ namespace Implementation.Experiment
             {
                 for (int i = 0; i < numberOfExperimentTypes; i++)
                 {
-                    SgConf conf = new SgConf();
+                    var conf = new SgConf();
                     conf = new SgConf
                     {
                         NumberOfUsers = 500,
@@ -229,7 +247,7 @@ namespace Implementation.Experiment
                         FeedType = feedType,
                         Alpha = parameters.AlphaValue
                     };
-                    algorithms.Add(new Sg(conf));
+                    configs.Add(conf);
                 }
             }
             else if (algInt == 1)
@@ -269,12 +287,12 @@ namespace Implementation.Experiment
                             PrintOutEachStep = input.Contains("8"),
                             FeedType = feedType,
                             Alpha = parameters.AlphaValue,
-
+                            AlgorithmName = ""
                         };
 
                         Console.WriteLine();
 
-                        algorithms.Add(new Cadg(conf));
+                        configs.Add(conf);
                         i++;
                     }
                     else
@@ -284,7 +302,7 @@ namespace Implementation.Experiment
                 }
             }
 
-            return algorithms;
+            return configs;
         }
 
         private void Print(List<UserEvent> result, double gain, Stopwatch watch)
