@@ -17,6 +17,8 @@ namespace ChartMaker
         private int _index = 0;
         private int _posX = 0;
 
+        private readonly List<List<AlgorithmWelfare>> _welfares;
+
         public Charts()
         {
             InitializeComponent();
@@ -24,6 +26,7 @@ namespace ChartMaker
             listBox.ValueMember = "Id";
             regChart.Titles.Add("Regret Ratio");
             welfareChart.Titles.Add("Welfare Ratio");
+            _welfares = new List<List<AlgorithmWelfare>>();
         }
 
         private void buttonBrowse_Click(object sender, EventArgs e)
@@ -44,6 +47,7 @@ namespace ChartMaker
             }
             var stats = ReadData.CalcAverageWelfares(textBoxFolder.Text);
             listBox.Items.Add(new Item { Id = _index, Text = textBoxFolder.Text, Count = stats.Count });
+            _welfares.Add(stats);
 
             for (int i = 0; i < stats.Count; i++)
             {
@@ -95,6 +99,11 @@ namespace ChartMaker
             listBox.Items.Remove(item);
             welfareChart.Invalidate();
             regChart.Invalidate();
+        }
+
+        private void buttonOutput_Click(object sender, EventArgs e)
+        {
+            WriteData.Write(textBoxFolder.Text, _welfares);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace ChartMaker
             var allFiles = directory.GetFiles();
 
             var files = allFiles.Where(x => Path.GetExtension(x.Name).ToLower() == ".xlsx" && !x.Attributes.HasFlag(FileAttributes.Hidden));
-            var groups = files.GroupBy(x => x.Name.Split('-')[0], (key, g) => g.Select(x => new ExcelPackage(x)).ToList() ).ToList();
+            var groups = files.GroupBy(x => x.Name.Split('-')[0], (key, g) => g.Select(x => new ExcelPackage(x)).ToList()).ToList();
             var fResults = new List<AlgorithmWelfare>();
             foreach (var @group in groups)
             {
@@ -26,8 +26,10 @@ namespace ChartMaker
                 {
                     for (int i = 0; i < @group.Count(); i++)
                     {
-                        var version = ReadVersion(@group.ElementAt(i));
-                        fResults.Add(new AlgorithmWelfare() { Version = version, AvgWelfare = welfares[i], AvgRegRatio = regRatios[i] });
+                        var config = ReadConfig(@group.ElementAt(i));
+                        config.AvgWelfare = welfares[i];
+                        config.AvgRegRatio = regRatios[i];
+                        fResults.Add(config);
                     }
                     continue;
                 }
@@ -45,7 +47,7 @@ namespace ChartMaker
                 fResults[i].AvgRegRatio = fResults[i].AvgRegRatio / groups.Count();
             }
             var maxWelfare = fResults.Max(x => x.AvgWelfare);
-            fResults.ForEach(x=> x.AvgWelfare = x.AvgWelfare / maxWelfare);
+            fResults.ForEach(x => x.AvgWelfare = x.AvgWelfare / maxWelfare);
             return fResults;
         }
 
@@ -69,18 +71,15 @@ namespace ChartMaker
             return avg;
         }
 
-        private static int ReadEventCount(ExcelPackage package)
+        private static AlgorithmWelfare ReadConfig(ExcelPackage package)
         {
             var ws = package.Workbook.Worksheets[6];
-            var value = ws.Cells[3, 2].Value;
-            return Convert.ToInt32(value);
-        }
-
-        private static string ReadVersion(ExcelPackage package)
-        {
-            var ws = package.Workbook.Worksheets[6];
-            var value = ws.Cells[ws.Dimension.End.Row, 2].Value;
-            return value.ToString();
+            var welfare = new AlgorithmWelfare();
+            welfare.Version = Convert.ToString(ws.Cells[16, 2].Value);
+            welfare.Alpha = Convert.ToDouble(ws.Cells[11, 2].Value);
+            welfare.UserCount = Convert.ToInt32(ws.Cells[2, 2].Value);
+            welfare.EventCount = Convert.ToInt32(ws.Cells[3, 2].Value);
+            return welfare;
         }
     }
 
@@ -89,5 +88,8 @@ namespace ChartMaker
         public string Version { get; set; }
         public double AvgWelfare { get; set; }
         public double AvgRegRatio { get; set; }
+        public int UserCount { get; set; }
+        public int EventCount { get; set; }
+        public double Alpha { get; set; }
     }
 }
