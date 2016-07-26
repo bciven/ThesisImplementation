@@ -17,8 +17,8 @@ namespace ChartMaker
             var file = new FileInfo(Path.Combine(folder, DateTime.Now.ToFileTime() + ".xlsx"));
             var package = new ExcelPackage(file);
             var ws = package.Workbook.Worksheets.Add("Chart");
-            var welfareChart = ws.Drawings.AddChart("chart1", eChartType.Line);
-            var regretChart = ws.Drawings.AddChart("chart2", eChartType.Line);
+            var welfareEventChart = ws.Drawings.AddChart("chart1", eChartType.Line);
+            var regretEventChart = ws.Drawings.AddChart("chart2", eChartType.Line);
 
             ws.Cells[1, 1].Value = "User Count";
             ws.Cells[1, 2].Value = "Event Count";
@@ -26,6 +26,28 @@ namespace ChartMaker
             var rows = welfares.Count + 1;
             for (int i = 0; i < welfares.Count; i++)
             {
+                var horizontalFactor = 1;
+                if (i == 0 && welfares[i].Count > 1)
+                {
+                    if (welfares[i][0].UserCount != welfares[i][1].UserCount)
+                    {
+                        horizontalFactor = 1;
+                        welfareEventChart.Title.Text = "Number of Users/Welfare Ratio";
+                        regretEventChart.Title.Text = "Number of Users/Regret Ratio";
+                    }
+                    else if (welfares[i][0].EventCount != welfares[i][1].EventCount)
+                    {
+                        horizontalFactor = 2;
+                        welfareEventChart.Title.Text = "Number of Events/Welfare Ratio";
+                        regretEventChart.Title.Text = "Number of Events/Regret Ratio";
+                    }
+                    else if (welfares[i][0].Alpha != welfares[i][1].Alpha)
+                    {
+                        horizontalFactor = 3;
+                        welfareEventChart.Title.Text = "Alpha/Welfare Ratio";
+                        regretEventChart.Title.Text = "Alpha/Regret Ratio";
+                    }
+                }
                 ws.Cells[i + 2, 1].Value = welfares[i][0].UserCount;
                 ws.Cells[i + 2, 2].Value = welfares[i][0].EventCount;
                 ws.Cells[i + 2, 3].Value = welfares[i][0].Alpha;
@@ -36,8 +58,8 @@ namespace ChartMaker
                     ws.Cells[i + 2, col].Value = welfares[i][j].AvgWelfare;
                     if (i == 0)
                     {
-                        welfareChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, 2, rows, 2]);
-                        welfareChart.Series[welfareChart.Series.Count - 1].HeaderAddress = ws.Cells[1, col];
+                        welfareEventChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, horizontalFactor, rows, 2]);
+                        welfareEventChart.Series[welfareEventChart.Series.Count - 1].HeaderAddress = ws.Cells[1, col];
                     }
                 }
 
@@ -47,16 +69,14 @@ namespace ChartMaker
                     ws.Cells[i + 2, col].Value = welfares[i][j].AvgWelfare;
                     if (i == 0)
                     {
-                        regretChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, 2, rows, 2]);
-                        regretChart.Series[regretChart.Series.Count - 1].HeaderAddress = ws.Cells[1, col];
+                        regretEventChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, horizontalFactor, rows, 2]);
+                        regretEventChart.Series[regretEventChart.Series.Count - 1].HeaderAddress = ws.Cells[1, col];
                     }
                 }
 
             }
-            welfareChart.SetPosition(1, 0, ws.Dimension.End.Column + 1, 0);
-            //welfareChart.SetSize(400,400);
-            regretChart.SetPosition(ws.Dimension.End.Row + 1, 0, ws.Dimension.End.Column + 1, 0);
-            //regretChart.SetSize(400,400);
+            welfareEventChart.SetPosition(1, 0, ws.Dimension.End.Column + 1, 0);
+            regretEventChart.SetPosition(12, 0, ws.Dimension.End.Column + 1, 0);
 
             package.Save();
         }

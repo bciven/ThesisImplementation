@@ -186,11 +186,22 @@ namespace Implementation
                 {
                     AdjustList(affectedEvents, user, @event, assignmentMade);
                 }
+
+                if (_queue.IsEmpty())
+                {
+                    Refill();
+                }
             }
 
+            _conf.NumberOfPhantomEvents = _allEvents.Count(x => !EventIsReal(x));
+        }
+
+        private void Refill()
+        {
             if (_conf.Reassign && _phantomEvents.Any() && _userAssignments.Any(x => !x.HasValue))
             {
-                var realOpenEvents = _allEvents.Where(x => !_phantomEvents.Contains(x) && _assignments[x].Count < _eventCapacity[x].Max).ToList();
+                var realOpenEvents =
+                    _allEvents.Where(x => !_phantomEvents.Contains(x) && _assignments[x].Count < _eventCapacity[x].Max).ToList();
                 List<int> availableUsers = new List<int>();
                 for (int i = 0; i < _userAssignments.Count; i++)
                 {
@@ -218,7 +229,6 @@ namespace Implementation
                     }
                 }
             }
-            _conf.NumberOfPhantomEvents = _phantomEvents.Count;
         }
 
         private void AdjustList(List<int> affectedEvents, int user, int @event, bool assignmentMade)
@@ -498,7 +508,7 @@ namespace Implementation
             {
                 s = _users.Sum(u => _socAffinities[user, u]);
 
-                g += (s*_conf.Alpha*(_eventCapacity[@event].Min - _assignments[@event].Count))/
+                g += (s * _conf.Alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) /
                      Math.Max(_users.Count - 1, 1);
             }
 

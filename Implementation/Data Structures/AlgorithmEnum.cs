@@ -11,6 +11,7 @@ namespace Implementation.Data_Structures
         DG = 1,
         PADG = 2,
         PCADG = 3,
-        IR = 4 
+        IRC = 4,
+        IR = 5,
     }
 }

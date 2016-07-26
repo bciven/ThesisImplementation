@@ -15,8 +15,6 @@ namespace ChartMaker
     public partial class Charts : Form
     {
         private int _index = 0;
-        private int _posX = 0;
-
         private readonly List<List<AlgorithmWelfare>> _welfares;
 
         public Charts()
@@ -24,8 +22,6 @@ namespace ChartMaker
             InitializeComponent();
             listBox.DisplayMember = "Text";
             listBox.ValueMember = "Id";
-            regChart.Titles.Add("Regret Ratio");
-            welfareChart.Titles.Add("Welfare Ratio");
             _welfares = new List<List<AlgorithmWelfare>>();
         }
 
@@ -46,64 +42,25 @@ namespace ChartMaker
                 return;
             }
             var stats = ReadData.CalcAverageWelfares(textBoxFolder.Text);
-            listBox.Items.Add(new Item { Id = _index, Text = textBoxFolder.Text, Count = stats.Count });
+            listBox.Items.Add(new Item { Id = _index++, Text = textBoxFolder.Text, Count = stats.Count });
             _welfares.Add(stats);
-
-            for (int i = 0; i < stats.Count; i++)
-            {
-                var welfare = stats[i];
-                if (_posX == 0)
-                {
-                    var seriesWelfare = new Series
-                    {
-                        Name = _index.ToString(),
-                        Color = Color.FromArgb(0, 0, i*10),
-                        IsVisibleInLegend = false,
-                        IsXValueIndexed = false,
-                        ChartType = SeriesChartType.Line,
-                        Label = welfare.Version,
-                        MarkerStyle = MarkerStyle.Circle
-                    };
-                    welfareChart.Series.Add(seriesWelfare);
-
-                    var seriesReg = new Series
-                    {
-                        Name = _index.ToString(),
-                        Color = Color.FromArgb(0, i * 10, 0),
-                        IsVisibleInLegend = false,
-                        IsXValueIndexed = false,
-                        ChartType = SeriesChartType.Line,
-                        Label = welfare.Version,
-                        MarkerStyle = MarkerStyle.Circle
-                    };
-                    regChart.Series.Add(seriesReg);
-                }
-                welfareChart.Series[i].Points.AddXY(_posX, welfare.AvgWelfare);
-                regChart.Series[i].Points.AddXY(_posX, welfare.AvgRegRatio);
-                _index++;
-            }
-            _posX++;
-            welfareChart.Invalidate();
-            regChart.Invalidate();
             textBoxFolder.Text = "";
         }
 
         private void buttonRemove_Click(object sender, EventArgs e)
         {
             var item = (Item)listBox.SelectedItem;
-            for (int i = 0; i < item.Count; i++)
-            {
-                welfareChart.Series.Remove(welfareChart.Series[(item.Id + i).ToString()]);
-                regChart.Series.Remove(regChart.Series[(item.Id + i).ToString()]);
-            }
             listBox.Items.Remove(item);
-            welfareChart.Invalidate();
-            regChart.Invalidate();
         }
 
         private void buttonOutput_Click(object sender, EventArgs e)
         {
             WriteData.Write(textBoxFolder.Text, _welfares);
+        }
+
+        private void Charts_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
