@@ -12,6 +12,7 @@
       <type>PADG</type>
       <type>PCADG</type>
       <type>IR</type>
+      <type>IRC</type>
     </exptypes>
   </Experiment>
   <Experiment count="4">
@@ -26,6 +27,7 @@
       <type>PADG</type>
       <type>PCADG</type>
       <type>IR</type>
+      <type>IRC</type>
     </exptypes>
   </Experiment>
   <Experiment count="4">
@@ -40,6 +42,7 @@
       <type>PADG</type>
       <type>PCADG</type>
       <type>IR</type>
+      <type>IRC</type>
     </exptypes>
   </Experiment>
 </Experiments>

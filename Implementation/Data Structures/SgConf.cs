@@ -27,7 +27,7 @@ namespace Implementation.Data_Structures
             PrintOutEachStep = false;
             InputFilePath = null;
             Alpha = 0.5;
-            Percision = 7;
+            Percision = 20;
             NumberOfExperimentTypes = 1;
         }
 

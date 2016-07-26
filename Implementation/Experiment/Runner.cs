@@ -13,9 +13,10 @@ namespace Implementation.Experiment
 {
     public class Runner
     {
+        const string experimentFile = "Experiment\\Experiments.xml";
+
         private List<Parameters> ReadExperiments()
         {
-            const string experimentFile = "Experiment\\Experiments.xml";
             var root = XDocument.Load(experimentFile);
 
             var experiments = (from exp in root.Descendants("Experiment")
@@ -43,6 +44,8 @@ namespace Implementation.Experiment
                                        {
                                            case "IR":
                                                return AlgorithmEnum.IR;
+                                           case "IRC":
+                                               return AlgorithmEnum.IRC;
                                            case "DG":
                                                return AlgorithmEnum.DG;
                                            case "PADG":
@@ -61,9 +64,11 @@ namespace Implementation.Experiment
         {
             var useMenu = ChooseByMenu();
             var experiments = ReadExperiments();
+            CreateWorkingDirectory();
+
             foreach (var experiment in experiments)
             {
-                var dir = CopyOutputFiles(experiment);
+                var dir = CreateOutputDirectory(experiment);
                 var numOfExp = experiments.Count();
                 var configs = useMenu ? ShowMenu(experiment) : ToConfigs(experiment);
                 var serial = configs.Any(x => x.FeedType == FeedTypeEnum.SerialExperiment);
@@ -106,6 +111,15 @@ namespace Implementation.Experiment
             Exit();
         }
 
+        private static void CreateWorkingDirectory()
+        {
+            var folder = "Batch - " + (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            Directory.CreateDirectory(folder);
+            var fileInfo = new FileInfo(experimentFile);
+            File.Copy(experimentFile, Path.Combine(folder, fileInfo.Name));
+            Directory.SetCurrentDirectory(folder);
+        }
+
         private bool ChooseByMenu()
         {
             Console.WriteLine("Do you want to choose experiment by menu?");
@@ -127,13 +141,13 @@ namespace Implementation.Experiment
                     InputFilePath = null,
                     PhantomAware = alg != (int)AlgorithmEnum.DG,
                     PostInitializationInsert = true,
-                    ImmediateReaction = alg == (int)AlgorithmEnum.IR,
-                    Reassign = alg == (int)AlgorithmEnum.IR,
-                    DeficitFix = alg == (int)AlgorithmEnum.IR,
+                    ImmediateReaction = alg >= (int)AlgorithmEnum.IRC,
+                    Reassign = alg >= (int)AlgorithmEnum.IRC,
+                    DeficitFix = alg >= (int)AlgorithmEnum.IRC,
                     LazyAdjustment = false,
                     PrintOutEachStep = false,
                     FeedType = FeedTypeEnum.SerialExperiment,
-                    CommunityAware = (alg == (int)AlgorithmEnum.PCADG || alg == (int)AlgorithmEnum.IR),
+                    CommunityAware = (alg == (int)AlgorithmEnum.PCADG || alg == (int)AlgorithmEnum.IRC),
                     Alpha = experiment.AlphaValue,
                     AlgorithmName = ConvertToString(algorithmEnum)
                 };
@@ -154,12 +168,10 @@ namespace Implementation.Experiment
             } while (str.Key != ConsoleKey.Enter);
         }
 
-        private static DirectoryInfo CopyOutputFiles(Parameters experiment)
+        private static DirectoryInfo CreateOutputDirectory(Parameters experiment)
         {
             var folder = DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss-fff", CultureInfo.CurrentCulture);
             var dir = Directory.CreateDirectory(folder);
-            var fileInfo = new FileInfo(experiment.ExperimentFile);
-            File.Copy(experiment.ExperimentFile, Path.Combine(folder, fileInfo.Name));
             return dir;
         }
 
