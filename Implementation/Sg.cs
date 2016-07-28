@@ -25,40 +25,12 @@ namespace Implementation
         private List<Cardinality> _eventCapacity;
         private List<UserPairEvent> _queue;
         private bool _init;
-        private IDataFeed _dataFeeder;
+        private readonly IDataFeed _dataFeeder;
 
-        public Sg(SgConf conf)
+        public Sg(SgConf conf, IDataFeed dataFeeder)
         {
             _conf = conf;
-        }
-
-        private void InitializeFeed()
-        {
-            switch (_conf.FeedType)
-            {
-                case FeedTypeEnum.Random:
-                    _dataFeeder = new RandomDataFeed();
-                    break;
-                case FeedTypeEnum.Example1:
-                    _dataFeeder = new Example1Feed();
-                    break;
-                case FeedTypeEnum.XlsxFile:
-                    _dataFeeder = new ExcelFileFeed(_conf.InputFilePath);
-                    break;
-                case FeedTypeEnum.OriginalExperiment:
-                    _dataFeeder = new DistDataFeed();
-                    break;
-                case FeedTypeEnum.SerialExperiment:
-                    if (string.IsNullOrEmpty(_conf.InputFilePath))
-                    {
-                        _dataFeeder = new DistDataFeed();
-                    }
-                    else
-                    {
-                        _dataFeeder = new ExcelFileFeed(_conf.InputFilePath);
-                    }
-                    break;
-            }
+            _dataFeeder = dataFeeder;
         }
 
         public override void Run()
@@ -266,7 +238,7 @@ namespace Implementation
             return result;
         }
 
-        public override void SetInputFile(string file)
+        private void SetInputFile(string file)
         {
             _conf.InputFilePath = file;
         }
@@ -332,8 +304,6 @@ namespace Implementation
 
         public override void Initialize()
         {
-            InitializeFeed();
-
             _allUsers = new List<int>();
             _allEvents = new List<int>();
             _init = false;

@@ -112,44 +112,57 @@ namespace Implementation.Experiment
 
                 for (int i = 0; i < parameters.ExpCount; i++)
                 {
-                    for (int j = 0; j < configs.Count; j++)
+                    for (int round = 0; round < configs.Count; round++)
                     {
-                        Algorithm<List<UserEvent>> algorithm;
-                        if (serial)
-                        {
-                            if (j == 0)
-                            {
-                                configs[j].InputFilePath = null;
-                            }
-                            else if (j > 0)
-                            {
-                                configs[j].InputFilePath = configs[j - 1].InputFilePath;
-                            }
-                        }
-                        
-                        var cadgConf = configs[j] as CadgConf;
-                        if (cadgConf != null)
-                        {
-                            var feed = CreateFeed(cadgConf.FeedType, cadgConf.InputFilePath, parameters);
-                            algorithm = new Cadg(cadgConf, feed);
-                        }
-                        else
-                        {
-                            var sgConf = (SgConf)configs[j];
-                            var feed = CreateFeed(sgConf.FeedType, sgConf.InputFilePath, parameters);
-                            algorithm = new Sg(sgConf, feed);
-                        }
-
-                        var algDigits = Convert.ToInt32(Math.Floor(Math.Log10(configs.Count) + 1));
-                        var expDigits = Convert.ToInt32(Math.Floor(Math.Log10(numOfExp) + 1));
-                        var fileName = i.ToString().PadLeft(expDigits, '0') + "-" + j.ToString().PadLeft(algDigits, '0');
-                        var output = new FileInfo(Path.Combine(dir.Name, fileName + ".xlsx"));
-                        Run(i, algorithm, output, parameters.ExpTypes[j]);
+                        SetInputFile(serial, round, configs);
+                        var algorithm = CreateAlgorithm(configs, round, parameters);
+                        var output = CreateOutputFileInfo(configs, numOfExp, i, round, dir);
+                        Run(i, algorithm, output, parameters.ExpTypes[round]);
                     }
                 }
             }
 
             Exit();
+        }
+
+        private static FileInfo CreateOutputFileInfo(List<SgConf> configs, int numOfExp, int i, int round, DirectoryInfo dir)
+        {
+            var algDigits = Convert.ToInt32(Math.Floor(Math.Log10(configs.Count) + 1));
+            var expDigits = Convert.ToInt32(Math.Floor(Math.Log10(numOfExp) + 1));
+            var fileName = i.ToString().PadLeft(expDigits, '0') + "-" + round.ToString().PadLeft(algDigits, '0');
+            var output = new FileInfo(Path.Combine(dir.Name, fileName + ".xlsx"));
+            return output;
+        }
+
+        private static void SetInputFile(bool serial, int round, List<SgConf> configs)
+        {
+            if (serial)
+            {
+                if (round == 0)
+                {
+                    configs[round].InputFilePath = null;
+                }
+                else if (round > 0)
+                {
+                    configs[round].InputFilePath = configs[round - 1].InputFilePath;
+                }
+            }
+        }
+
+        private Algorithm<List<UserEvent>> CreateAlgorithm(List<SgConf> configs, int j, Parameters parameters)
+        {
+            var cadgConf = configs[j] as CadgConf;
+            if (cadgConf != null)
+            {
+                var feed = CreateFeed(cadgConf.FeedType, cadgConf.InputFilePath, parameters);
+                return new Cadg(cadgConf, feed);
+            }
+            else
+            {
+                var sgConf = (SgConf) configs[j];
+                var feed = CreateFeed(sgConf.FeedType, sgConf.InputFilePath, parameters);
+                return new Sg(sgConf, feed);
+            }
         }
 
         private static void CreateWorkingDirectory()
