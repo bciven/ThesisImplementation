@@ -41,8 +41,8 @@ namespace ChartMaker
                 fResults[i].AvgWelfare = fResults[i].AvgWelfare / fResults[i].Count;
                 fResults[i].AvgRegRatio = fResults[i].AvgRegRatio / fResults[i].Count;
             }
-            var maxWelfare = fResults.Max(x => x.AvgWelfare);
-            fResults.ForEach(x => x.AvgWelfare = x.AvgWelfare / maxWelfare);
+            //var maxWelfare = fResults.Max(x => x.AvgWelfare);
+            //fResults.ForEach(x => x.AvgWelfare = x.AvgWelfare / maxWelfare);
 
             return fResults;
         }

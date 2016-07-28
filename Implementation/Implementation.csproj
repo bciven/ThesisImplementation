@@ -86,6 +86,7 @@
     <Compile Include="Data Structures\Graph.cs" />
     <Compile Include="Data Structures\SgConf.cs" />
     <Compile Include="Data Structures\UserPairEvent.cs" />
+    <Compile Include="Dataset Reader\MinCardinalityOptions.cs" />
     <Compile Include="Experiment\Parameters.cs" />
     <Compile Include="Experiment\Runner.cs" />
     <Compile Include="Sg.cs" />

@@ -3,7 +3,7 @@ using Implementation.Data_Structures;
 
 namespace Implementation.Dataset_Reader
 {
-    interface IDataFeed
+    public interface IDataFeed
     {
         List<Cardinality> GenerateCapacity(List<int> users, List<int> events);
 

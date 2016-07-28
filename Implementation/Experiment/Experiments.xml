@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="4">
-    <users count="1500" />
-    <events count="100" />
+  <Experiment count="100">
+    <users count="500" />
+    <events count="50" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capstddev value="10" />
+    <mincard value="2" />
     <sndensity value="0.4" />
     <exptypes>
       <type>DG</type>
@@ -15,12 +16,13 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="4">
-    <users count="1500" />
-    <events count="200" />
+  <Experiment count="100">
+    <users count="500" />
+    <events count="50" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capstddev value="10" />
+    <mincard value="4" />
     <sndensity value="0.4" />
     <exptypes>
       <type>DG</type>
@@ -30,12 +32,13 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="4">
-    <users count="1500" />
-    <events count="700" />
+  <Experiment count="100">
+    <users count="500" />
+    <events count="50" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capstddev value="10" />
+    <mincard value="8" />
     <sndensity value="0.4" />
     <exptypes>
       <type>DG</type>

@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
 
 namespace Implementation.Experiment
@@ -15,5 +16,6 @@ namespace Implementation.Experiment
         public double SndensityValue { get; set; }
         public string ExperimentFile { get; set; }
         public List<AlgorithmEnum> ExpTypes { get; set; }
+        public MinCardinalityOptions MinCardinalityOption { get; set; }
     }
 }

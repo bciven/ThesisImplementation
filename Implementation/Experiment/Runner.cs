@@ -7,6 +7,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
 
 namespace Implementation.Experiment
@@ -27,6 +28,7 @@ namespace Implementation.Experiment
                                let capstddev = exp.Element("capstddev")
                                let sndensity = exp.Element("sndensity")
                                let exptypes = exp.Element("exptypes")
+                               let mincard = exp.Element("mincard")
                                where users != null && events != null && alpha != null &&
                                      capmean != null && capstddev != null && sndensity != null
                                select new Parameters
@@ -38,6 +40,7 @@ namespace Implementation.Experiment
                                    CapmeanValue = Convert.ToDouble(capmean.Attribute("value").Value),
                                    CapstddevValue = Convert.ToDouble(capstddev.Attribute("value").Value),
                                    SndensityValue = Convert.ToDouble(sndensity.Attribute("value").Value),
+                                   MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
                                    ExpTypes = exptypes.Descendants("type").Select(x =>
                                    {
                                        switch (x.Value.ToUpper())
@@ -60,50 +63,88 @@ namespace Implementation.Experiment
             return experiments;
         }
 
+        private IDataFeed CreateFeed(FeedTypeEnum feedType, string inputFilePath, Parameters parameters)
+        {
+            IDataFeed dataFeeder;
+            switch (feedType)
+            {
+                case FeedTypeEnum.Random:
+                    dataFeeder = new RandomDataFeed();
+                    break;
+                case FeedTypeEnum.Example1:
+                    dataFeeder = new Example1Feed();
+                    break;
+                case FeedTypeEnum.XlsxFile:
+                    dataFeeder = new ExcelFileFeed(inputFilePath);
+                    break;
+                case FeedTypeEnum.OriginalExperiment:
+                    dataFeeder = new DistDataFeed(Convert.ToInt32(parameters.CapmeanValue), Convert.ToInt32(parameters.CapstddevValue), parameters.MinCardinalityOption);
+                    break;
+                case FeedTypeEnum.SerialExperiment:
+                    if (string.IsNullOrEmpty(inputFilePath))
+                    {
+                        dataFeeder = new DistDataFeed(Convert.ToInt32(parameters.CapmeanValue), Convert.ToInt32(parameters.CapstddevValue), parameters.MinCardinalityOption);
+                    }
+                    else
+                    {
+                        dataFeeder = new ExcelFileFeed(inputFilePath);
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+
+            }
+            return dataFeeder;
+        }
+
         public void RunExperiments()
         {
             var useMenu = ChooseByMenu();
             var experiments = ReadExperiments();
             CreateWorkingDirectory();
 
-            foreach (var experiment in experiments)
+            foreach (var parameters in experiments)
             {
-                var dir = CreateOutputDirectory(experiment);
+                var dir = CreateOutputDirectory();
                 var numOfExp = experiments.Count();
-                var configs = useMenu ? ShowMenu(experiment) : ToConfigs(experiment);
+                var configs = useMenu ? ShowMenu(parameters) : ToConfigs(parameters);
                 var serial = configs.Any(x => x.FeedType == FeedTypeEnum.SerialExperiment);
 
-                for (int i = 0; i < experiment.ExpCount; i++)
+                for (int i = 0; i < parameters.ExpCount; i++)
                 {
                     for (int j = 0; j < configs.Count; j++)
                     {
-                        var conf = configs[j] as CadgConf;
                         Algorithm<List<UserEvent>> algorithm;
-                        if (conf != null)
-                        {
-                            algorithm = new Cadg(conf);
-                        }
-                        else
-                        {
-                            algorithm = new Sg(configs[j]);
-                        }
-
                         if (serial)
                         {
                             if (j == 0)
                             {
-                                algorithm.SetInputFile(null);
+                                configs[j].InputFilePath = null;
                             }
                             else if (j > 0)
                             {
-                                algorithm.SetInputFile(configs[j - 1].InputFilePath);
+                                configs[j].InputFilePath = configs[j - 1].InputFilePath;
                             }
                         }
+                        
+                        var cadgConf = configs[j] as CadgConf;
+                        if (cadgConf != null)
+                        {
+                            var feed = CreateFeed(cadgConf.FeedType, cadgConf.InputFilePath, parameters);
+                            algorithm = new Cadg(cadgConf, feed);
+                        }
+                        else
+                        {
+                            var sgConf = (SgConf)configs[j];
+                            var feed = CreateFeed(sgConf.FeedType, sgConf.InputFilePath, parameters);
+                            algorithm = new Sg(sgConf, feed);
+                        }
+
                         var algDigits = Convert.ToInt32(Math.Floor(Math.Log10(configs.Count) + 1));
                         var expDigits = Convert.ToInt32(Math.Floor(Math.Log10(numOfExp) + 1));
                         var fileName = i.ToString().PadLeft(expDigits, '0') + "-" + j.ToString().PadLeft(algDigits, '0');
                         var output = new FileInfo(Path.Combine(dir.Name, fileName + ".xlsx"));
-                        Run(i, algorithm, output, experiment.ExpTypes[j]);
+                        Run(i, algorithm, output, parameters.ExpTypes[j]);
                     }
                 }
             }
@@ -127,17 +168,17 @@ namespace Implementation.Experiment
             return line == "y";
         }
 
-        private List<SgConf> ToConfigs(Parameters experiment)
+        private List<SgConf> ToConfigs(Parameters parameters)
         {
             var configs = new List<SgConf>();
-            foreach (var algorithmEnum in experiment.ExpTypes)
+            foreach (var algorithmEnum in parameters.ExpTypes)
             {
                 var alg = (int)algorithmEnum;
                 var conf = new CadgConf();
                 conf = new CadgConf
                 {
-                    NumberOfUsers = experiment.UserCount,
-                    NumberOfEvents = experiment.EventCount,
+                    NumberOfUsers = parameters.UserCount,
+                    NumberOfEvents = parameters.EventCount,
                     InputFilePath = null,
                     PhantomAware = alg != (int)AlgorithmEnum.DG,
                     PostInitializationInsert = true,
@@ -148,8 +189,9 @@ namespace Implementation.Experiment
                     PrintOutEachStep = false,
                     FeedType = FeedTypeEnum.SerialExperiment,
                     CommunityAware = (alg == (int)AlgorithmEnum.PCADG || alg == (int)AlgorithmEnum.IRC),
-                    Alpha = experiment.AlphaValue,
-                    AlgorithmName = ConvertToString(algorithmEnum)
+                    Alpha = parameters.AlphaValue,
+                    AlgorithmName = ConvertToString(algorithmEnum),
+                    Parameters = parameters
                 };
 
                 configs.Add(conf);
@@ -168,7 +210,7 @@ namespace Implementation.Experiment
             } while (str.Key != ConsoleKey.Enter);
         }
 
-        private static DirectoryInfo CreateOutputDirectory(Parameters experiment)
+        private static DirectoryInfo CreateOutputDirectory()
         {
             var folder = DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss-fff", CultureInfo.CurrentCulture);
             var dir = Directory.CreateDirectory(folder);

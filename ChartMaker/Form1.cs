@@ -41,9 +41,13 @@ namespace ChartMaker
             {
                 return;
             }
-            var stats = ReadData.CalcAverageWelfares(textBoxFolder.Text);
-            listBox.Items.Add(new Item { Id = _index++, Text = textBoxFolder.Text, Count = stats.Count });
-            _welfares.Add(stats);
+            var files = textBoxFolder.Text.Split(new string[] { "," }, StringSplitOptions.None);
+            foreach (var file in files)
+            {
+                var stats = ReadData.CalcAverageWelfares(file);
+                listBox.Items.Add(new Item { Id = _index++, Text = textBoxFolder.Text, Count = stats.Count });
+                _welfares.Add(stats);
+            }
             textBoxFolder.Text = "";
         }
 

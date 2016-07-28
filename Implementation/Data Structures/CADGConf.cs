@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Implementation.Experiment;
 using OfficeOpenXml;
 
 namespace Implementation.Data_Structures
@@ -18,6 +19,7 @@ namespace Implementation.Data_Structures
         public int NumberOfPhantomEvents { get; set; }
         public bool CommunityAware { get; set; }
         public string AlgorithmName { get; set; }
+        public Parameters Parameters{ get; set; }
 
         public CadgConf()
         {

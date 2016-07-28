@@ -12,19 +12,21 @@ namespace Implementation.Dataset_Reader
     {
         private readonly int _capmean;
         private readonly int _capstddev;
+        private readonly MinCardinalityOptions _minCardinalityOption;
         private readonly Random _rand;
 
-        public DistDataFeed()
-        {
-            _rand = new Random();
-            _capmean = 20;
-            _capstddev = 10;
-        }
+        //public DistDataFeed()
+        //{
+        //    _rand = new Random();
+        //    _capmean = 20;
+        //    _capstddev = 10;
+        //}
 
-        public DistDataFeed(int capmean, int capstddev)
+        public DistDataFeed(int capmean, int capstddev, MinCardinalityOptions minCardinalityOption)
         {
             _capmean = capmean;
             _capstddev = capstddev;
+            _minCardinalityOption = minCardinalityOption;
             _rand = new Random();
         }
 
@@ -51,11 +53,11 @@ namespace Implementation.Dataset_Reader
             using (WebClient client = new WebClient())
             {
                 var csv = client.DownloadString($"http://192.168.56.101:5000/getgraph/{userCount}");
-                lines = csv.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
+                lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             }
 
             //var lines = File.ReadAllLines("graph.csv");
-            
+
             Graph graph = new Graph(lines.Count);
 
             foreach (var line in lines)
@@ -96,7 +98,25 @@ namespace Implementation.Dataset_Reader
 
         private int GenerateMinCapacity(int min, int max)
         {
-            return _rand.Next(min, max);
+            var ground = min;
+            switch (_minCardinalityOption)
+            {
+                case MinCardinalityOptions.Half:
+                    ground = Convert.ToInt32(Math.Floor((double)max / 2));
+                    break;
+                case MinCardinalityOptions.Fourth:
+                    ground = max - Convert.ToInt32(Math.Floor((double)max / 4));
+                    break;
+                case MinCardinalityOptions.Eighth:
+                    ground = max - Convert.ToInt32(Math.Floor((double)max / 8));
+                    break;
+                case MinCardinalityOptions.Random:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return _rand.Next(ground, max);
         }
 
         public List<List<double>> GenerateInnateAffinities(List<int> users, List<int> events)
@@ -110,7 +130,7 @@ namespace Implementation.Dataset_Reader
                 {
                     if (eventGraph.Edges[user].Contains(@event))
                     {
-                        double r = 1.0 / Math.Pow(1 - _rand.NextDouble(), 1.5);
+                        double r = 1.0/Math.Pow(1 - _rand.NextDouble(), 1.5);
                         r = Math.Round(r, 2);
                         userInterests.Add(r);
                     }
@@ -139,7 +159,7 @@ namespace Implementation.Dataset_Reader
                     usersInterests[nodeA, nodeB] = r;
                 }
             }
-            
+
             return usersInterests;
         }
 

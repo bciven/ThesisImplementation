@@ -66,7 +66,7 @@ namespace ChartMaker
                 for (int j = 0; j < welfares[i].Count; j++, col++)
                 {
                     ws.Cells[1, col].Value = welfares[i][j].Version;
-                    ws.Cells[i + 2, col].Value = welfares[i][j].AvgWelfare;
+                    ws.Cells[i + 2, col].Value = welfares[i][j].AvgRegRatio;
                     if (i == 0)
                     {
                         regretEventChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, horizontalFactor, rows, 2]);
