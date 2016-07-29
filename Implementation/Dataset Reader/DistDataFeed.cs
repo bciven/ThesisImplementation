@@ -10,10 +10,8 @@ namespace Implementation.Dataset_Reader
 {
     public class DistDataFeed : IDataFeed
     {
-        private readonly int _capmean;
-        private readonly int _capstddev;
-        private readonly MinCardinalityOptions _minCardinalityOption;
         private readonly Random _rand;
+        private readonly DistDataParams _distDataParams;
 
         //public DistDataFeed()
         //{
@@ -22,11 +20,9 @@ namespace Implementation.Dataset_Reader
         //    _capstddev = 10;
         //}
 
-        public DistDataFeed(int capmean, int capstddev, MinCardinalityOptions minCardinalityOption)
+        public DistDataFeed(DistDataParams distDataParams)
         {
-            _capmean = capmean;
-            _capstddev = capstddev;
-            _minCardinalityOption = minCardinalityOption;
+            _distDataParams = distDataParams;
             _rand = new Random();
         }
 
@@ -48,6 +44,48 @@ namespace Implementation.Dataset_Reader
         }
 
         private Graph GenerateSocialGraph(int userCount)
+        {
+            switch (_distDataParams.SocialNetworkModel)
+            {
+                case SocialNetworkModel.PowerLawModel:
+                    return PowerLawModel(userCount);
+                case SocialNetworkModel.ErdosModel:
+                    return ErdosModel(userCount);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private Graph ErdosModel(int userCount)
+        {
+            Graph graph = new Graph();
+            for (int nodeA = 0; nodeA < userCount; nodeA++)
+            {
+                for (int nodeB = 0; nodeB < userCount; nodeB++)
+                {
+                    if (nodeA != nodeB)
+                    {
+                        if (_rand.NextDouble() <= _distDataParams.SocialNetworkDensity)
+                        {
+                            if (!graph.Edges.ContainsKey(nodeA))
+                            {
+                                graph.Edges.Add(nodeA, new List<int>());
+                            }
+                            if (!graph.Edges.ContainsKey(nodeB))
+                            {
+                                graph.Edges.Add(nodeB, new List<int>());
+                            }
+                            graph.Edges[nodeA].Add(nodeB);
+                            graph.Edges[nodeB].Add(nodeA);
+                        }
+                    }
+                }
+            }
+
+            return graph;
+        }
+
+        private static Graph PowerLawModel(int userCount)
         {
             List<string> lines;
             using (WebClient client = new WebClient())
@@ -99,7 +137,7 @@ namespace Implementation.Dataset_Reader
         private int GenerateMinCapacity(int min, int max)
         {
             var ground = min;
-            switch (_minCardinalityOption)
+            switch (_distDataParams.MinCardinalityOption)
             {
                 case MinCardinalityOptions.Half:
                     ground = Convert.ToInt32(Math.Floor((double)max / 2));
@@ -130,7 +168,7 @@ namespace Implementation.Dataset_Reader
                 {
                     if (eventGraph.Edges[user].Contains(@event))
                     {
-                        double r = 1.0/Math.Pow(1 - _rand.NextDouble(), 1.5);
+                        double r = 1.0 / Math.Pow(1 - _rand.NextDouble(), 1.5);
                         r = Math.Round(r, 2);
                         userInterests.Add(r);
                     }
@@ -177,7 +215,7 @@ namespace Implementation.Dataset_Reader
 
         private int GenerateMaxCapacity(int minimum)
         {
-            var normalDist = Normal.WithMeanStdDev(_capmean, _capstddev, _rand).Sample();
+            var normalDist = Normal.WithMeanStdDev(_distDataParams.CapacityMean, _distDataParams.CapacityStdDev, _rand).Sample();
             var notmalDistInt = Convert.ToInt32(Math.Floor(normalDist));
             return notmalDistInt < minimum ? minimum : notmalDistInt;
         }

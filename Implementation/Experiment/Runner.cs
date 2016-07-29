@@ -29,6 +29,7 @@ namespace Implementation.Experiment
                                let sndensity = exp.Element("sndensity")
                                let exptypes = exp.Element("exptypes")
                                let mincard = exp.Element("mincard")
+                               let snmodel = exp.Element("snmodel")
                                where users != null && events != null && alpha != null &&
                                      capmean != null && capstddev != null && sndensity != null
                                select new Parameters
@@ -41,6 +42,7 @@ namespace Implementation.Experiment
                                    CapstddevValue = Convert.ToDouble(capstddev.Attribute("value").Value),
                                    SndensityValue = Convert.ToDouble(sndensity.Attribute("value").Value),
                                    MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
+                                   SocialNetworkModel = (SocialNetworkModel)Convert.ToInt32(snmodel.Attribute("value").Value),
                                    ExpTypes = exptypes.Descendants("type").Select(x =>
                                    {
                                        switch (x.Value.ToUpper())
@@ -66,6 +68,15 @@ namespace Implementation.Experiment
         private IDataFeed CreateFeed(FeedTypeEnum feedType, string inputFilePath, Parameters parameters)
         {
             IDataFeed dataFeeder;
+            var distDataParams = new DistDataParams
+            {
+                MinCardinalityOption = parameters.MinCardinalityOption,
+                CapacityMean = Convert.ToInt32(parameters.CapmeanValue),
+                CapacityStdDev = Convert.ToInt32(parameters.CapstddevValue),
+                SocialNetworkModel = parameters.SocialNetworkModel,
+                SocialNetworkDensity = parameters.SndensityValue
+            };
+
             switch (feedType)
             {
                 case FeedTypeEnum.Random:
@@ -78,12 +89,12 @@ namespace Implementation.Experiment
                     dataFeeder = new ExcelFileFeed(inputFilePath);
                     break;
                 case FeedTypeEnum.OriginalExperiment:
-                    dataFeeder = new DistDataFeed(Convert.ToInt32(parameters.CapmeanValue), Convert.ToInt32(parameters.CapstddevValue), parameters.MinCardinalityOption);
+                    dataFeeder = new DistDataFeed(distDataParams);
                     break;
                 case FeedTypeEnum.SerialExperiment:
                     if (string.IsNullOrEmpty(inputFilePath))
                     {
-                        dataFeeder = new DistDataFeed(Convert.ToInt32(parameters.CapmeanValue), Convert.ToInt32(parameters.CapstddevValue), parameters.MinCardinalityOption);
+                        dataFeeder = new DistDataFeed(distDataParams);
                     }
                     else
                     {

@@ -14,5 +14,10 @@ namespace Implementation.Data_Structures
         {
             Edges = new Dictionary<int, List<int>>(numberOfEdges);
         }
+
+        public Graph()
+        {
+            Edges = new Dictionary<int, List<int>>();
+        }
     }
 }

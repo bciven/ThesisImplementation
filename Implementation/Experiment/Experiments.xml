@@ -7,7 +7,8 @@
     <capmean value="20" />
     <capstddev value="10" />
     <mincard value="2" />
-    <sndensity value="0.4" />
+    <sndensity value="0.001" />
+    <snmodel value="1" />
     <exptypes>
       <type>DG</type>
       <type>PADG</type>
@@ -23,7 +24,8 @@
     <capmean value="20" />
     <capstddev value="10" />
     <mincard value="4" />
-    <sndensity value="0.4" />
+    <sndensity value="0.01" />
+    <snmodel value="1" />
     <exptypes>
       <type>DG</type>
       <type>PADG</type>
@@ -39,7 +41,25 @@
     <capmean value="20" />
     <capstddev value="10" />
     <mincard value="8" />
-    <sndensity value="0.4" />
+    <sndensity value="0.1" />
+    <snmodel value="1" />
+    <exptypes>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="100">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capstddev value="10" />
+    <mincard value="8" />
+    <sndensity value="1" />
+    <snmodel value="1" />
     <exptypes>
       <type>DG</type>
       <type>PADG</type>

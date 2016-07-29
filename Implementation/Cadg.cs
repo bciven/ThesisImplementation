@@ -618,7 +618,6 @@ namespace Implementation
             _queue = null;
             _phantomEvents = null;
             _init = false;
-            _dataFeeder = null;
         }
 
         public Dictionary<int, double> CalcRegRatios()

@@ -17,5 +17,6 @@ namespace Implementation.Experiment
         public string ExperimentFile { get; set; }
         public List<AlgorithmEnum> ExpTypes { get; set; }
         public MinCardinalityOptions MinCardinalityOption { get; set; }
+        public SocialNetworkModel SocialNetworkModel { get; set; }
     }
 }
