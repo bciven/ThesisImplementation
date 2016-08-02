@@ -24,8 +24,9 @@ namespace ChartMaker
                 var wb = excelPackage.Workbook;
                 var config = ReadConfig(wb);
                 excelPackage.Dispose();
-                foreach (var file in group)
+                for (int i = 0; i < @group.Count; i++)
                 {
+                    var file = @group[i];
                     excelPackage = new ExcelPackage(file);
                     wb = excelPackage.Workbook;
                     config.AvgWelfare += ReadSocialWelfare(wb);

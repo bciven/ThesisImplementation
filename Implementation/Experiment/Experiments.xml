@@ -2,13 +2,13 @@
 <Experiments>
   <Experiment count="100">
     <users count="500" />
-    <events count="50" />
+    <events count="10" />
     <alpha value="0.5" />
     <capmean value="20" />
-    <capstddev value="10" />
-    <mincard value="2" />
+    <capvar value="10" />
+    <mincard value="0" />
     <sndensity value="0.001" />
-    <snmodel value="1" />
+    <snmodel value="0" />
     <exptypes>
       <type>DG</type>
       <type>PADG</type>
@@ -19,13 +19,13 @@
   </Experiment>
   <Experiment count="100">
     <users count="500" />
-    <events count="50" />
+    <events count="25" />
     <alpha value="0.5" />
     <capmean value="20" />
-    <capstddev value="10" />
-    <mincard value="4" />
+    <capvar value="10" />
+    <mincard value="0" />
     <sndensity value="0.01" />
-    <snmodel value="1" />
+    <snmodel value="0" />
     <exptypes>
       <type>DG</type>
       <type>PADG</type>
@@ -36,13 +36,13 @@
   </Experiment>
   <Experiment count="100">
     <users count="500" />
-    <events count="50" />
+    <events count="35" />
     <alpha value="0.5" />
     <capmean value="20" />
-    <capstddev value="10" />
-    <mincard value="8" />
+    <capvar value="10" />
+    <mincard value="0" />
     <sndensity value="0.1" />
-    <snmodel value="1" />
+    <snmodel value="0" />
     <exptypes>
       <type>DG</type>
       <type>PADG</type>
@@ -51,15 +51,15 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="100">
+<!--  <Experiment count="100">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
     <capmean value="20" />
-    <capstddev value="10" />
+    <capvar value="10" />
     <mincard value="8" />
     <sndensity value="1" />
-    <snmodel value="1" />
+    <snmodel value="0" />
     <exptypes>
       <type>DG</type>
       <type>PADG</type>
@@ -67,5 +67,5 @@
       <type>IR</type>
       <type>IRC</type>
     </exptypes>
-  </Experiment>
+  </Experiment>-->
 </Experiments>

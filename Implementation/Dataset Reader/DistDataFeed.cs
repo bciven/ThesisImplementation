@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -90,7 +91,8 @@ namespace Implementation.Dataset_Reader
             List<string> lines;
             using (WebClient client = new WebClient())
             {
-                var csv = client.DownloadString($"http://192.168.56.101:5000/getgraph/{userCount}");
+                var ip = ConfigurationManager.AppSettings["IP"];
+                var csv = client.DownloadString(ip + $"/getgraph/{userCount}");
                 lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             }
 
@@ -168,9 +170,9 @@ namespace Implementation.Dataset_Reader
                 {
                     if (eventGraph.Edges[user].Contains(@event))
                     {
-                        double r = 1.0 / Math.Pow(1 - _rand.NextDouble(), 1.5);
-                        r = Math.Round(r, 2);
-                        userInterests.Add(r);
+                        //double r = 1.0 / Math.Pow(1 - _rand.NextDouble(), 1.5);
+                        //r = Math.Round(r, 2);
+                        userInterests.Add(GenerateRandom(0));
                     }
                     else
                     {
@@ -208,14 +210,14 @@ namespace Implementation.Dataset_Reader
 
         private double GenerateRandom(double minimum)
         {
-            var normalDist = Normal.WithMeanStdDev(1.5, 3, _rand).Sample();
+            var normalDist = Normal.WithMeanVariance(1.5, 3, _rand).Sample();
             return normalDist < Math.Pow(10, -5) ? minimum : normalDist;
         }
 
 
         private int GenerateMaxCapacity(int minimum)
         {
-            var normalDist = Normal.WithMeanStdDev(_distDataParams.CapacityMean, _distDataParams.CapacityStdDev, _rand).Sample();
+            var normalDist = Normal.WithMeanVariance(_distDataParams.CapacityMean, _distDataParams.CapacityVariance, _rand).Sample();
             var notmalDistInt = Convert.ToInt32(Math.Floor(normalDist));
             return notmalDistInt < minimum ? minimum : notmalDistInt;
         }

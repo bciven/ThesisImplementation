@@ -25,13 +25,13 @@ namespace Implementation.Experiment
                                let events = exp.Element("events")
                                let alpha = exp.Element("alpha")
                                let capmean = exp.Element("capmean")
-                               let capstddev = exp.Element("capstddev")
+                               let capvar = exp.Element("capvar")
                                let sndensity = exp.Element("sndensity")
                                let exptypes = exp.Element("exptypes")
                                let mincard = exp.Element("mincard")
                                let snmodel = exp.Element("snmodel")
                                where users != null && events != null && alpha != null &&
-                                     capmean != null && capstddev != null && sndensity != null
+                                     capmean != null && capvar != null && sndensity != null
                                select new Parameters
                                {
                                    ExpCount = Convert.ToInt32(exp.Attribute("count").Value),
@@ -39,7 +39,7 @@ namespace Implementation.Experiment
                                    EventCount = Convert.ToInt32(events.Attribute("count").Value),
                                    AlphaValue = Convert.ToDouble(alpha.Attribute("value").Value),
                                    CapmeanValue = Convert.ToDouble(capmean.Attribute("value").Value),
-                                   CapstddevValue = Convert.ToDouble(capstddev.Attribute("value").Value),
+                                   CapVarValue = Convert.ToDouble(capvar.Attribute("value").Value),
                                    SndensityValue = Convert.ToDouble(sndensity.Attribute("value").Value),
                                    MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
                                    SocialNetworkModel = (SocialNetworkModel)Convert.ToInt32(snmodel.Attribute("value").Value),
@@ -72,7 +72,7 @@ namespace Implementation.Experiment
             {
                 MinCardinalityOption = parameters.MinCardinalityOption,
                 CapacityMean = Convert.ToInt32(parameters.CapmeanValue),
-                CapacityStdDev = Convert.ToInt32(parameters.CapstddevValue),
+                CapacityVariance = Convert.ToInt32(parameters.CapVarValue),
                 SocialNetworkModel = parameters.SocialNetworkModel,
                 SocialNetworkDensity = parameters.SndensityValue
             };

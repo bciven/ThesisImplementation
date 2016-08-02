@@ -12,7 +12,7 @@ namespace Implementation.Experiment
         public int EventCount { get; set; }
         public double AlphaValue { get; set; }
         public double CapmeanValue { get; set; }
-        public double CapstddevValue { get; set; }
+        public double CapVarValue { get; set; }
         public double SndensityValue { get; set; }
         public string ExperimentFile { get; set; }
         public List<AlgorithmEnum> ExpTypes { get; set; }
