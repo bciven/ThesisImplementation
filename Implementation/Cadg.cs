@@ -661,6 +661,10 @@ namespace Implementation
             var socialAffinity = users.Sum(x => _socAffinities[user, x]);
             var numerator = (1 - _conf.Alpha) * _inAffinities[user][assignedEvent] + _conf.Alpha * socialAffinity;
 
+            if (finalDenom == 0)
+            {
+                return 1;
+            }
             var phi = 1 - (numerator / finalDenom);
             return phi;
         }

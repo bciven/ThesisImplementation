@@ -41,25 +41,33 @@ namespace ChartMaker
             {
                 return;
             }
-            var files = textBoxFolder.Text.Split(new string[] { "," }, StringSplitOptions.None);
+            listBox.Items.Add(new Item { Id = _index++, Text = textBoxFolder.Text });
+        }
+
+        private void WriteOutput(List<string> files)
+        {
+            buttonAdd.Enabled = false;
             foreach (var file in files)
             {
                 var stats = ReadData.CalcAverageWelfares(file);
-                listBox.Items.Add(new Item { Id = _index++, Text = textBoxFolder.Text, Count = stats.Count });
                 _welfares.Add(stats);
             }
-            textBoxFolder.Text = "";
+            MessageBox.Show("Job Completed!");
         }
 
         private void buttonRemove_Click(object sender, EventArgs e)
         {
             var item = (Item)listBox.SelectedItem;
             listBox.Items.Remove(item);
+
         }
 
         private void buttonOutput_Click(object sender, EventArgs e)
         {
-            WriteData.Write(textBoxFolder.Text, _welfares);
+            var files = listBox.Items.Cast<Item>().Select(x => x.Text).ToList();
+            WriteOutput(files);
+            WriteData.Write("", _welfares);
+            buttonAdd.Enabled = true;
         }
 
         private void Charts_FormClosed(object sender, FormClosedEventArgs e)
