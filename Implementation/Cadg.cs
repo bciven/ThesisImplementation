@@ -478,7 +478,7 @@ namespace Implementation
 
             if (_conf.CommunityAware)
             {
-                s = _users.Sum(u => _socAffinities[user, u]) / (double) Math.Max(_users.Count - 1, 1);
+                s = _users.Sum(u => _socAffinities[user, u]) / (double)Math.Max(_users.Count - 1, 1);
 
                 g += s * _conf.Alpha * (_eventCapacity[@event].Min - _assignments[@event].Count);
             }
@@ -489,8 +489,11 @@ namespace Implementation
         public double CalculateSocialWelfare(List<List<int>> assignments)
         {
             double u = 0;
+            
             for (int @event = 0; @event < assignments.Count; @event++)
             {
+                double s1 = 0;
+                double s2 = 0;
                 if (!EventIsReal(@event))
                 {
                     continue;
@@ -498,8 +501,7 @@ namespace Implementation
 
                 var assignment = assignments[@event];
 
-                double s1 = 0;
-                double s2 = 0;
+
                 foreach (var user1 in assignment)
                 {
                     s1 += _inAffinities[user1][@event];
@@ -515,6 +517,7 @@ namespace Implementation
                 s2 *= _conf.Alpha;
                 u += s1 + s2;
             }
+
             return u;
         }
 
