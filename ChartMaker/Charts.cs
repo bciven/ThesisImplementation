@@ -42,6 +42,7 @@ namespace ChartMaker
                 return;
             }
             listBox.Items.Add(new Item { Id = _index++, Text = textBoxFolder.Text });
+            textBoxFolder.Text = "";
         }
 
         private void WriteOutput(List<string> files)
@@ -64,9 +65,11 @@ namespace ChartMaker
 
         private void buttonOutput_Click(object sender, EventArgs e)
         {
-            var files = listBox.Items.Cast<Item>().Select(x => x.Text).ToList();
-            WriteOutput(files);
-            WriteData.Write("", _welfares);
+            var folders = listBox.Items.Cast<Item>().Select(x => x.Text).ToList();
+            WriteOutput(folders);
+            var firstFolder = folders.First();
+            var parent = new DirectoryInfo(firstFolder).Parent;
+            WriteData.Write(parent.FullName, _welfares);
             buttonAdd.Enabled = true;
         }
 

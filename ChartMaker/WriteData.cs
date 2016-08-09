@@ -17,8 +17,8 @@ namespace ChartMaker
             var file = new FileInfo(Path.Combine(folder, DateTime.Now.ToFileTime() + ".xlsx"));
             var package = new ExcelPackage(file);
             var ws = package.Workbook.Worksheets.Add("Chart");
-            var welfareEventChart = ws.Drawings.AddChart("chart1", eChartType.Line);
-            var regretEventChart = ws.Drawings.AddChart("chart2", eChartType.Line);
+            var welfareEventChart = ws.Drawings.AddChart("chart1", eChartType.ColumnClustered);
+            var regretEventChart = ws.Drawings.AddChart("chart2", eChartType.ColumnClustered);
 
             ws.Cells[1, 1].Value = "User Count";
             ws.Cells[1, 2].Value = "Event Count";
