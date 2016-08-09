@@ -471,16 +471,15 @@ namespace Implementation
         {
             var g = (1 - _conf.Alpha) * _inAffinities[user][@event];
 
-            var s = _assignments[@event].Sum(u => _socAffinities[user, u]);
+            var s = _conf.Alpha * _assignments[@event].Sum(u => _socAffinities[user, u]);
 
-            s *= _conf.Alpha;
-            g += s;
+            g = g + s;
 
             if (_conf.CommunityAware)
             {
                 s = _users.Sum(u => _socAffinities[user, u]) / (double)Math.Max(_users.Count - 1, 1);
 
-                g += s * _conf.Alpha * (_eventCapacity[@event].Min - _assignments[@event].Count);
+                g += s * _conf.Alpha * (_eventCapacity[@event].Max - _assignments[@event].Count);
             }
 
             return Math.Round(g, _conf.Percision);
