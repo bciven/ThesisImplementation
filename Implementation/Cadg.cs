@@ -169,7 +169,7 @@ namespace Implementation
             for (int user = 0; user < _userAssignments.Count; user++)
             {
                 var userAssignment = _userAssignments[user];
-                if (userAssignment.HasValue)
+                if (userAssignment.HasValue && EventIsReal(userAssignment.Value))
                 {
                     _assignments[userAssignment.Value].Add(user);
                 }
