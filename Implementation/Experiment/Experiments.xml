@@ -1,6 +1,116 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="100">
+<Experiment count="5">
+    <users count="500" />
+    <events count="10" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" />
+    <exptypes>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="5">
+    <users count="500" />
+    <events count="25" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" />
+    <exptypes>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="5">
+    <users count="500" />
+    <events count="35" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" />
+    <exptypes>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IRC</type>
+    </exptypes>
+  </Experiment>
+  
+  <Experiment count="6">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="2" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" />
+    <exptypes>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="6">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="4" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" />
+    <exptypes>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="6">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="8" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" />
+    <exptypes>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IRC</type>
+    </exptypes>
+  </Experiment>
+
+  <Experiment count="7">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -8,6 +118,7 @@
     <capvar value="10" />
     <mincard value="0" />
     <sndensity value="0.001" />
+    <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
       <type>DG</type>
@@ -17,7 +128,7 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="100">
+  <Experiment count="7">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -25,6 +136,7 @@
     <capvar value="10" />
     <mincard value="0" />
     <sndensity value="0.01" />
+    <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
       <type>DG</type>
@@ -34,7 +146,7 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="100">
+  <Experiment count="7">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -42,6 +154,7 @@
     <capvar value="10" />
     <mincard value="0" />
     <sndensity value="0.1" />
+    <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
       <type>DG</type>
@@ -51,7 +164,8 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-<Experiment count="100">
+  
+  <Experiment count="7">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -59,6 +173,7 @@
     <capvar value="10" />
     <mincard value="0" />
     <sndensity value="1" />
+    <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
       <type>DG</type>

@@ -9,5 +9,6 @@ namespace Implementation.Data_Structures
         public MinCardinalityOptions MinCardinalityOption { get; set; }
         public SocialNetworkModel SocialNetworkModel { get; set; }
         public double SocialNetworkDensity { get; set; }
+        public double EventInterestPerct { get; set; }
     }
 }

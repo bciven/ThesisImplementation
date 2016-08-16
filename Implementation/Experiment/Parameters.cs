@@ -14,6 +14,7 @@ namespace Implementation.Experiment
         public double CapmeanValue { get; set; }
         public double CapVarValue { get; set; }
         public double SndensityValue { get; set; }
+        public double EventInterestPerctValue { get; set; }
         public string ExperimentFile { get; set; }
         public List<AlgorithmEnum> ExpTypes { get; set; }
         public MinCardinalityOptions MinCardinalityOption { get; set; }

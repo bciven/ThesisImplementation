@@ -30,6 +30,7 @@ namespace Implementation.Experiment
                                let exptypes = exp.Element("exptypes")
                                let mincard = exp.Element("mincard")
                                let snmodel = exp.Element("snmodel")
+                               let eventinterestperct = exp.Element("eventinterestperct")
                                where users != null && events != null && alpha != null &&
                                      capmean != null && capvar != null && sndensity != null
                                select new Parameters
@@ -40,6 +41,7 @@ namespace Implementation.Experiment
                                    AlphaValue = Convert.ToDouble(alpha.Attribute("value").Value),
                                    CapmeanValue = Convert.ToDouble(capmean.Attribute("value").Value),
                                    CapVarValue = Convert.ToDouble(capvar.Attribute("value").Value),
+                                   EventInterestPerctValue = Convert.ToDouble(eventinterestperct.Attribute("value").Value),
                                    SndensityValue = Convert.ToDouble(sndensity.Attribute("value").Value),
                                    MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
                                    SocialNetworkModel = (SocialNetworkModel)Convert.ToInt32(snmodel.Attribute("value").Value),
@@ -74,7 +76,8 @@ namespace Implementation.Experiment
                 CapacityMean = Convert.ToInt32(parameters.CapmeanValue),
                 CapacityVariance = Convert.ToInt32(parameters.CapVarValue),
                 SocialNetworkModel = parameters.SocialNetworkModel,
-                SocialNetworkDensity = parameters.SndensityValue
+                SocialNetworkDensity = parameters.SndensityValue,
+                EventInterestPerct = parameters.EventInterestPerctValue
             };
 
             switch (feedType)

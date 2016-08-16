@@ -11,8 +11,9 @@ namespace Implementation.Dataset_Reader
 {
     public class DistDataFeed : IDataFeed
     {
-        private readonly Random _rand;
         private readonly DistDataParams _distDataParams;
+        private readonly Normal _maxGenerator;
+        private readonly Normal _normalRandomGenerator;
 
         //public DistDataFeed()
         //{
@@ -24,18 +25,21 @@ namespace Implementation.Dataset_Reader
         public DistDataFeed(DistDataParams distDataParams)
         {
             _distDataParams = distDataParams;
-            _rand = new Random();
+            var rand = new Random();
+            _maxGenerator = Normal.WithMeanVariance(_distDataParams.CapacityMean, _distDataParams.CapacityVariance, rand);
+            _normalRandomGenerator = Normal.WithMeanVariance(1.5, 3, rand);
         }
 
         private Graph GenerateEventGraph(int userNumber, int eventNumber)
         {
             var graph = new Graph(userNumber);
+            var rand = new Random();
             for (int i = 0; i < userNumber; i++)
             {
                 graph.Edges.Add(i, new List<int>(eventNumber));
                 for (int j = 0; j < eventNumber; j++)
                 {
-                    if (_rand.Next(1, 101) <= 5)
+                    if (rand.Next(1, 101) <= _distDataParams.EventInterestPerct)
                     {
                         graph.Edges[i].Add(j);
                     }
@@ -60,13 +64,14 @@ namespace Implementation.Dataset_Reader
         private Graph ErdosModel(int userCount)
         {
             Graph graph = new Graph();
+            var rand = new Random();
             for (int nodeA = 0; nodeA < userCount; nodeA++)
             {
                 for (int nodeB = 0; nodeB < userCount; nodeB++)
                 {
                     if (nodeA != nodeB)
                     {
-                        if (_rand.NextDouble() <= _distDataParams.SocialNetworkDensity)
+                        if (rand.NextDouble() <= _distDataParams.SocialNetworkDensity)
                         {
                             if (!graph.Edges.ContainsKey(nodeA))
                             {
@@ -109,12 +114,12 @@ namespace Implementation.Dataset_Reader
                 {
                     graph.Edges.Add(nodeA, new List<int>());
                 }
-                if (!graph.Edges.ContainsKey(nodeB))
-                {
-                    graph.Edges.Add(nodeB, new List<int>());
-                }
+                //if (!graph.Edges.ContainsKey(nodeB))
+                //{
+                //    graph.Edges.Add(nodeB, new List<int>());
+                //}
                 graph.Edges[nodeA].Add(nodeB);
-                graph.Edges[nodeB].Add(nodeA);
+                //graph.Edges[nodeB].Add(nodeA);
             }
             return graph;
         }
@@ -139,6 +144,7 @@ namespace Implementation.Dataset_Reader
         private int GenerateMinCapacity(int min, int max)
         {
             var ground = min;
+            var rand = new Random();
             switch (_distDataParams.MinCardinalityOption)
             {
                 case MinCardinalityOptions.Half:
@@ -156,7 +162,7 @@ namespace Implementation.Dataset_Reader
                     throw new ArgumentOutOfRangeException();
             }
 
-            return _rand.Next(ground, max);
+            return rand.Next(ground, max);
         }
 
         public List<List<double>> GenerateInnateAffinities(List<int> users, List<int> events)
@@ -172,7 +178,7 @@ namespace Implementation.Dataset_Reader
                     {
                         //double r = 1.0 / Math.Pow(1 - _rand.NextDouble(), 1.5);
                         //r = Math.Round(r, 2);
-                        userInterests.Add(GenerateRandom(0));
+                        userInterests.Add(GenerateNormalRandom(0));
                     }
                     else
                     {
@@ -194,7 +200,7 @@ namespace Implementation.Dataset_Reader
                 var nodeA = edge.Key;
                 foreach (var nodeB in edge.Value)
                 {
-                    var r = GenerateRandom(0);
+                    var r = GenerateNormalRandom(0);
                     r = Math.Round(r, 2);
                     usersInterests[nodeA, nodeB] = r;
                 }
@@ -208,16 +214,16 @@ namespace Implementation.Dataset_Reader
             throw new NotImplementedException();
         }
 
-        private double GenerateRandom(double minimum)
+        private double GenerateNormalRandom(double minimum)
         {
-            var normalDist = Normal.WithMeanVariance(1.5, 3, _rand).Sample();
+            var normalDist = _normalRandomGenerator.Sample();
             return normalDist < Math.Pow(10, -5) ? minimum : normalDist;
         }
 
 
         private int GenerateMaxCapacity(int minimum)
         {
-            var normalDist = Normal.WithMeanVariance(_distDataParams.CapacityMean, _distDataParams.CapacityVariance, _rand).Sample();
+            var normalDist = _maxGenerator.Sample();
             var notmalDistInt = Convert.ToInt32(Math.Floor(normalDist));
             return notmalDistInt < minimum ? minimum : notmalDistInt;
         }

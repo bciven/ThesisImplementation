@@ -106,13 +106,13 @@ namespace Implementation.Dataset_Reader
             var ws = excel.Workbook.Worksheets[2];
             var result = ReadWorksheet(ws);
 
-            double[,] array = new double[result.Count, result[0].Count];
+            double[,] array = new double[result[0].Count, result.Count];
             for (int i = 0; i < result.Count; i++)
             {
                 var list = result[i];
                 for (int j = 0; j < list.Count; j++)
                 {
-                    array[i, j] = list[j];
+                    array[j, i] = list[j];
                 }
             }
             return array;
