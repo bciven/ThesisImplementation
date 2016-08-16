@@ -166,14 +166,12 @@ namespace Implementation
             }
 
             _assignments = _allEvents.Select(x => new List<int>()).ToList();
-            for (int @event = 0; @event < _allEvents.Count; @event++)
+            for (int user = 0; user < _userAssignments.Count; user++)
             {
-                foreach (var userAssignment in _userAssignments)
+                var userAssignment = _userAssignments[user];
+                if (userAssignment.HasValue)
                 {
-                    if (userAssignment.HasValue && userAssignment == @event)
-                    {
-                        _assignments[@event].Add(userAssignment.Value);
-                    }
+                    _assignments[userAssignment.Value].Add(user);
                 }
             }
         }
