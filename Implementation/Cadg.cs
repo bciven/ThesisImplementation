@@ -169,7 +169,7 @@ namespace Implementation
             for (int user = 0; user < _userAssignments.Count; user++)
             {
                 var userAssignment = _userAssignments[user];
-                if (userAssignment.HasValue && EventIsReal(userAssignment.Value))
+                if (userAssignment.HasValue && !_assignments[userAssignment.Value].Contains(user))
                 {
                     _assignments[userAssignment.Value].Add(user);
                 }
@@ -455,7 +455,7 @@ namespace Implementation
                     User = i
                 });
             }
-            SocialWelfare = CalculateSocialWelfare(_userAssignments);
+            SocialWelfare = CalculateSocialWelfare(_assignments);
             Print(result, SocialWelfare, file);
             return result;
         }
@@ -493,7 +493,7 @@ namespace Implementation
             return Math.Round(g, _conf.Percision);
         }
 
-        /*public double CalculateSocialWelfare(List<List<int>> assignments)
+        public double CalculateSocialWelfare(List<List<int>> assignments)
         {
             double u = 0;
             
@@ -507,41 +507,6 @@ namespace Implementation
                 }
 
                 var assignment = assignments[@event];
-
-
-                foreach (var user1 in assignment)
-                {
-                    s1 += _inAffinities[user1][@event];
-                    foreach (var user2 in assignment)
-                    {
-                        if (user1 != user2)
-                        {
-                            s2 += _socAffinities[user1, user2];
-                        }
-                    }
-                }
-                s1 *= (1 - _conf.Alpha);
-                s2 *= _conf.Alpha;
-                u += s1 + s2;
-            }
-
-            return u;
-        }*/
-
-        public double CalculateSocialWelfare(List<int?> userAssignments)
-        {
-            double u = 0;
-            _conf.NumberOfPhantomEvents = _allEvents.Count(x => !EventIsReal(x));
-
-            for (int @event = 0; @event < _assignments.Count; @event++)
-            {
-                double s1 = 0;
-                double s2 = 0;
-                if (!EventIsReal(@event))
-                {
-                    continue;
-                }
-                var assignment = _assignments[@event];
 
                 foreach (var user1 in assignment)
                 {
