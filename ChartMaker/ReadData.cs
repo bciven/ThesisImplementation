@@ -24,7 +24,7 @@ namespace ChartMaker
                 var wb = excelPackage.Workbook;
                 var config = ReadConfig(wb);
                 excelPackage.Dispose();
-                for (int i = 0; i < 1/*@group.Count*/; i++)
+                for (int i = 0; i < @group.Count; i++)
                 {
                     var file = @group[i];
                     excelPackage = new ExcelPackage(file);

@@ -58,9 +58,7 @@ namespace ChartMaker
 
         private void buttonRemove_Click(object sender, EventArgs e)
         {
-            var item = (Item)listBox.SelectedItem;
-            listBox.Items.Remove(item);
-
+            listBox.Items.Clear();
         }
 
         private void buttonOutput_Click(object sender, EventArgs e)
