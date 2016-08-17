@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-<Experiment count="10">
+<Experiment count="5">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -18,7 +18,7 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="10">
+  <Experiment count="5">
     <users count="500" />
     <events count="25" />
     <alpha value="0.5" />
@@ -36,7 +36,7 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="10">
+  <Experiment count="5">
     <users count="500" />
     <events count="35" />
     <alpha value="0.5" />
@@ -55,7 +55,7 @@
     </exptypes>
   </Experiment>
   
-  <Experiment count="11">
+  <Experiment count="6">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -73,7 +73,7 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="11">
+  <Experiment count="6">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -91,7 +91,7 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="11">
+  <Experiment count="6">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -110,7 +110,7 @@
     </exptypes>
   </Experiment>
 
-  <Experiment count="12">
+  <Experiment count="7">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -128,7 +128,7 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="12">
+  <Experiment count="7">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -146,7 +146,7 @@
       <type>IRC</type>
     </exptypes>
   </Experiment>
-  <Experiment count="12">
+  <Experiment count="7">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />

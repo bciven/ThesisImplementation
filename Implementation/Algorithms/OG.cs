@@ -17,6 +17,7 @@ namespace Implementation.Algorithms
         private bool _init;
         private readonly IDataFeed _dataFeeder;
         private CadgConf _conf => (CadgConf) Conf;
+        private Queue<UserEvent> _randomQueue; 
 
         public Og(CadgConf conf, IDataFeed dataFeed)
         {
@@ -30,13 +31,13 @@ namespace Implementation.Algorithms
                 throw new Exception("Not Initialized");
             int hitcount = 0;
 
-            while (!_queue.IsEmpty())
+            while (_randomQueue.Count > 0)
             {
                 hitcount++;
                 PrintQueue();
-                var min = _queue.RemoveMax();
-                var user = min.User;
-                var @event = min.Event;
+                var element = _randomQueue.Dequeue();
+                var user = element.User;
+                var @event = element.Event;
                 var minCapacity = EventCapacity[@event].Min;
                 var maxCapacity = EventCapacity[@event].Max;
                 bool assignmentMade = false;
@@ -145,10 +146,6 @@ namespace Implementation.Algorithms
                     AdjustList(affectedEvents, user, @event, assignmentMade);
                 }
 
-                if (_queue.IsEmpty())
-                {
-                    Refill();
-                }
             }
 
             Assignments = AllEvents.Select(x => new List<int>()).ToList();
@@ -158,41 +155,6 @@ namespace Implementation.Algorithms
                 if (userAssignment.HasValue && !Assignments[userAssignment.Value].Contains(user))
                 {
                     Assignments[userAssignment.Value].Add(user);
-                }
-            }
-        }
-
-        private void Refill()
-        {
-            if (_conf.Reassign && _phantomEvents.Any() && UserAssignments.Any(x => !x.HasValue))
-            {
-                var realOpenEvents =
-                    AllEvents.Where(x => !_phantomEvents.Contains(x) && Assignments[x].Count < EventCapacity[x].Max).ToList();
-                List<int> availableUsers = new List<int>();
-                for (int i = 0; i < UserAssignments.Count; i++)
-                {
-                    if (UserAssignments[i] == null)
-                    {
-                        availableUsers.Add(i);
-                    }
-                }
-
-                foreach (var phantomEvent in _phantomEvents)
-                {
-                    if (Assignments[phantomEvent].Count > 0)
-                    {
-                        availableUsers.AddRange(Assignments[phantomEvent]);
-                        Assignments[phantomEvent].RemoveAll(x => true);
-                    }
-                }
-
-                foreach (var @event in realOpenEvents)
-                {
-                    foreach (var availableUser in availableUsers)
-                    {
-                        var q = Util(@event, availableUser);
-                        _queue.AddOrUpdate(q, new UserEvent { User = availableUser, Event = @event });
-                    }
                 }
             }
         }
@@ -274,7 +236,7 @@ namespace Implementation.Algorithms
             foreach (var ue in userEvents)
             {
                 var newPriority = Util(ue.Event, ue.User);
-                _queue.AddOrUpdate(newPriority, ue);
+                _randomQueue.Enqueue(new UserEvent {Event = ue.Event, User = ue.User, Utility = newPriority});
                 foreach (var user in AllUsers)
                 {
                     Update(ue.User, user, ue.Event);
@@ -310,12 +272,12 @@ namespace Implementation.Algorithms
                 {
                     if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
                     {
-                        _queue.AddOrUpdate(newPriority, new UserEvent { User = user2, Event = @event });
+                        _randomQueue.Enqueue(new UserEvent { User = user2, Event = @event, Utility = newPriority });
                     }
                 }
                 else
                 {
-                    _queue.Update(newPriority, new UserEvent { User = user2, Event = @event });
+                    //_randomQueue.Update(newPriority, new UserEvent { User = user2, Event = @event });
                 }
             }
         }
@@ -327,9 +289,9 @@ namespace Implementation.Algorithms
                 return;
             }
 
-            var max = _queue.Max;
-            Console.WriteLine("User {0}, Event {1}, Value {2}", (char)(max.User + 97),
-                (char)(max.Event + 88), max.Utility);
+            var element = _randomQueue.Peek();
+            Console.WriteLine("User {0}, Event {1}, Value {2}", (char)(element.User + 97),
+                (char)(element.Event + 88), element.Utility);
         }
 
         public override void Initialize()
@@ -367,7 +329,7 @@ namespace Implementation.Algorithms
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
             SocialWelfare = 0;
-            _queue = new FakeHeap/*<double, UserEvent>*/();
+            _randomQueue = new Queue<UserEvent>();
             _phantomEvents = new List<int>();
             //_deficit = 0;
             _init = true;
@@ -401,7 +363,7 @@ namespace Implementation.Algorithms
                         gain = (1 - _conf.Alpha) * InAffinities[u][e];
                         gain = Math.Round(gain, _conf.Percision);
                         var ue = new UserEvent { Event = e, User = u, Utility = gain };
-                        _queue.AddOrUpdate(gain, ue);
+                        _randomQueue.Enqueue(ue);
                     }
                 }
             }
@@ -421,7 +383,7 @@ namespace Implementation.Algorithms
             UserAssignments = null;
             _deficit = 0;
             EventCapacity = null;
-            _queue = null;
+            _randomQueue = null;
             _phantomEvents = null;
             _init = false;
         }

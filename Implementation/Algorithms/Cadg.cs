@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
@@ -12,12 +13,13 @@ namespace Implementation.Algorithms
         private List<int> _users;
         private List<int> _numberOfUserAssignments;
         private List<int> _eventDeficitContribution;
+        private List<List<int>> _permanentAssignments;
         private int _deficit = 0;
         private FakeHeap _queue;
         private List<int> _phantomEvents;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
-        private CadgConf _conf => (CadgConf) Conf;
+        private CadgConf _conf => (CadgConf)Conf;
 
         public Cadg(CadgConf conf, IDataFeed dataFeed)
         {
@@ -86,6 +88,7 @@ namespace Implementation.Algorithms
                     Assignments[@event].Add(user);
                     _numberOfUserAssignments[user]++;
                     assignmentMade = true;
+
                     if (_users.Contains(user))
                     {
                         _users.Remove(user);
@@ -94,6 +97,7 @@ namespace Implementation.Algorithms
                     if (Assignments[@event].Count > minCapacity)
                     {
                         UserAssignments[user] = @event;
+                        _permanentAssignments[@event].Add(user);
 
                         var excludedEvents = _events.Where(x => x != @event && Assignments[x].Contains(user)).ToList();
                         foreach (var e in excludedEvents)
@@ -114,6 +118,7 @@ namespace Implementation.Algorithms
                         {
                             //permanently assign all users to real events
                             UserAssignments[u] = @event;
+                            _permanentAssignments[@event].Add(u);
 
                             //unassign these users from all other events
                             var excludedEvents = _events.Where(x => x != @event && Assignments[x].Contains(u));
@@ -152,14 +157,23 @@ namespace Implementation.Algorithms
                 }
             }
 
-            Assignments = AllEvents.Select(x => new List<int>()).ToList();
-            for (int user = 0; user < UserAssignments.Count; user++)
+            Assignments = _permanentAssignments;
+        }
+
+        private void Traceout()
+        {
+            var assignments = Assignments.SelectMany(x => x).ToList();
+            if (assignments.Count != assignments.Distinct().Count())
             {
-                var userAssignment = UserAssignments[user];
-                if (userAssignment.HasValue && !Assignments[userAssignment.Value].Contains(user))
+                foreach (var assignment in Assignments)
                 {
-                    Assignments[userAssignment.Value].Add(user);
+                    foreach (var u in assignment)
+                    {
+                        Trace.Write(u + "-");
+                    }
+                    Trace.WriteLine("");
                 }
+                Trace.WriteLine("End");
             }
         }
 
@@ -208,9 +222,11 @@ namespace Implementation.Algorithms
 
             if (_conf.CommunityAware)
             {
-                s = _users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(_users.Count - 1, 1);
+                var assignedUsers = Assignments.SelectMany(x => x).ToList();
+                var users = AllUsers.Where(x => !UserAssignments[x].HasValue && !assignedUsers.Contains(x));
+                s = _conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * users.Sum(u => SocAffinities[user, u] + SocAffinities[u, user]) / (double)Math.Max(_users.Count - 1, 1);
 
-                g += s * _conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count);
+                g = s + g;
             }
 
             return Math.Round(g, _conf.Percision);
@@ -364,6 +380,7 @@ namespace Implementation.Algorithms
             _users = new List<int>();
             _events = new List<int>();
             Assignments = new List<List<int>>();
+            _permanentAssignments = new List<List<int>>();
             UserAssignments = new List<int?>();
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
@@ -386,6 +403,7 @@ namespace Implementation.Algorithms
                 _events.Add(i);
                 _eventDeficitContribution.Add(0);
                 Assignments.Add(new List<int>());
+                _permanentAssignments.Add(new List<int>());
             }
 
             EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
