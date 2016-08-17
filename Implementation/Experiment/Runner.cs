@@ -7,6 +7,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Implementation.Algorithms;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
 

@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\Og.cs" />
     <Compile Include="Data Structures\AlgorithmEnum.cs" />
     <Compile Include="Data Structures\Graph.cs" />
     <Compile Include="Data Structures\SgConf.cs" />
@@ -91,7 +92,7 @@
     <Compile Include="Dataset Reader\MinCardinalityOptions.cs" />
     <Compile Include="Experiment\Parameters.cs" />
     <Compile Include="Experiment\Runner.cs" />
-    <Compile Include="Sg.cs" />
+    <Compile Include="Algorithms\Sg.cs" />
     <Compile Include="Data Structures\CADGConf.cs" />
     <Compile Include="Dataset Reader\ExcelFileFeed.cs" />
     <Compile Include="Data Structures\FeedTypeEnum.cs" />
@@ -110,8 +111,8 @@
     <Compile Include="Data Structures\UserEvent.cs" />
     <Compile Include="Dataset Reader\IReader.cs" />
     <Compile Include="Dataset Reader\MeetupReader.cs" />
-    <Compile Include="IAlgorithm.cs" />
-    <Compile Include="Cadg.cs" />
+    <Compile Include="Algorithms\IAlgorithm.cs" />
+    <Compile Include="Algorithms\Cadg.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

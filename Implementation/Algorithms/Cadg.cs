@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
-using Implementation.Experiment;
-using OfficeOpenXml;
 
-namespace Implementation
+namespace Implementation.Algorithms
 {
     public class Cadg : Algorithm<List<UserEvent>>
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using Implementation.Data_Structures;
 using OfficeOpenXml;
 
-namespace Implementation
+namespace Implementation.Algorithms
 {
     public abstract class Algorithm<T>
     {

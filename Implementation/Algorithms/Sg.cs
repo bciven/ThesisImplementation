@@ -1,36 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
 using OfficeOpenXml;
 
-namespace Implementation
+namespace Implementation.Algorithms
 {
     public class Sg : Algorithm<List<UserEvent>>
     {
-        private readonly SgConf _conf;
         private List<List<double>> _inAffinities;
         private double[,] _socAffinities;
         private List<int> _events;
         private List<int> _users;
-        private List<int> _allEvents;
-        private List<int> _allUsers;
-        private List<List<int>> _assignments;
-        private List<int?> _userAssignments;
-        private List<Cardinality> _eventCapacity;
         private List<UserPairEvent> _queue;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
+        private CadgConf _conf => (CadgConf)Conf;
 
         public Sg(SgConf conf, IDataFeed dataFeeder)
         {
-            _conf = conf;
             _dataFeeder = dataFeeder;
+            Conf = conf;
         }
 
         public override void Run()
@@ -45,36 +37,36 @@ namespace Implementation
                 var user1 = min.User1;
                 var user2 = min.User2;
                 var @event = min.Event;
-                var maxCapacity = _eventCapacity[@event].Max;
+                var maxCapacity = EventCapacity[@event].Max;
 
-                if (_userAssignments[user1] == null && _userAssignments[user2] == null && _assignments[@event].Count + 1 < maxCapacity
+                if (UserAssignments[user1] == null && UserAssignments[user2] == null && Assignments[@event].Count + 1 < maxCapacity
 
-                    && !_assignments[@event].Contains(user1) && !_assignments[@event].Contains(user2))
+                    && !Assignments[@event].Contains(user1) && !Assignments[@event].Contains(user2))
                 {
-                    _assignments[@event].Add(user1);
-                    _assignments[@event].Add(user2);
-                    _userAssignments[user1] = @event;
-                    _userAssignments[user2] = @event;
+                    Assignments[@event].Add(user1);
+                    Assignments[@event].Add(user2);
+                    UserAssignments[user1] = @event;
+                    UserAssignments[user2] = @event;
                 }
                 _queue.RemoveAt(0);
 
                 if (_queue.Count == 0)
                 {
                     var phantomEvents = new List<int>();
-                    for (int e = 0; e < _assignments.Count; e++)
+                    for (int e = 0; e < Assignments.Count; e++)
                     {
-                        var assignment = _assignments[e];
-                        if (assignment.Count < _eventCapacity[e].Min)
+                        var assignment = Assignments[e];
+                        if (assignment.Count < EventCapacity[e].Min)
                         {
                             phantomEvents.Add(e);
                         }
                     }
 
-                    var openEvents = _events.Where(x => _assignments[x].Count >= _eventCapacity[x].Min && _assignments[x].Count < _eventCapacity[x].Max);
+                    var openEvents = _events.Where(x => Assignments[x].Count >= EventCapacity[x].Min && Assignments[x].Count < EventCapacity[x].Max);
 
                     foreach (var phantomEvent in phantomEvents)
                     {
-                        List<int> users = _assignments[phantomEvent];
+                        List<int> users = Assignments[phantomEvent];
 
                         foreach (var u1 in users)
                         {
@@ -95,7 +87,7 @@ namespace Implementation
             }
         }
 
-        private void PrintQueue()
+        protected override void PrintQueue()
         {
             if (!_conf.PrintOutEachStep)
             {
@@ -118,11 +110,11 @@ namespace Implementation
             {
                 Console.WriteLine("No assignment made.");
             }
-            for (int i = 0; i < _assignments.Count; i++)
+            for (int i = 0; i < Assignments.Count; i++)
             {
                 Console.WriteLine();
                 Console.Write("Event {0}", (char)(i + 88));
-                var assignment = _assignments[i];
+                var assignment = Assignments[i];
                 if (assignment.Count == 0)
                 {
                     Console.Write(" is empty.");
@@ -156,10 +148,10 @@ namespace Implementation
             ExcelPackage excel = new ExcelPackage(output);
             var usereventsheet = excel.Workbook.Worksheets.Add("Innate Affinities");
             usereventsheet.Cells[1, 1].Value = @"User\Event";
-            foreach (var @event in _allEvents)
+            foreach (var @event in AllEvents)
             {
                 usereventsheet.Cells[1, @event + 2].Value = @event + 1;
-                foreach (var user in _allUsers)
+                foreach (var user in AllUsers)
                 {
                     if (@event == 0)
                     {
@@ -173,10 +165,10 @@ namespace Implementation
 
             var socialaffinitiessheet = excel.Workbook.Worksheets.Add("Social Affinities");
             socialaffinitiessheet.Cells[1, 1].Value = @"User\User";
-            foreach (var user1 in _allUsers)
+            foreach (var user1 in AllUsers)
             {
                 socialaffinitiessheet.Cells[1, user1 + 2].Value = user1 + 1;
-                foreach (var user2 in _allUsers)
+                foreach (var user2 in AllUsers)
                 {
                     if (user1 == 0)
                     {
@@ -192,9 +184,9 @@ namespace Implementation
             cardinalitiessheet.Cells[1, 1].Value = "Event";
             cardinalitiessheet.Cells[1, 2].Value = "Min";
             cardinalitiessheet.Cells[1, 3].Value = "Max";
-            for (int i = 0; i < _eventCapacity.Count; i++)
+            for (int i = 0; i < EventCapacity.Count; i++)
             {
-                var cap = _eventCapacity[i];
+                var cap = EventCapacity[i];
                 cardinalitiessheet.Cells[i + 2, 1].Value = i + 1;
                 cardinalitiessheet.Cells[i + 2, 2].Value = cap.Min;
                 cardinalitiessheet.Cells[i + 2, 3].Value = cap.Max;
@@ -221,44 +213,12 @@ namespace Implementation
             excel.Save();
         }
 
-        public override List<UserEvent> CreateOutput(FileInfo output)
-        {
-            var result = new List<UserEvent>();
-            for (int i = 0; i < _userAssignments.Count; i++)
-            {
-                var userAssignment = _userAssignments[i];
-                result.Add(new UserEvent
-                {
-                    Event = userAssignment ?? -1,
-                    User = i
-                });
-            }
-            SocialWelfare = CalculateSocialWelfare(_assignments);
-            Print(result, SocialWelfare, output);
-            return result;
-        }
-
-        private void SetInputFile(string file)
-        {
-            _conf.InputFilePath = file;
-        }
-
-        public override string GetInputFile()
-        {
-            return _conf.InputFilePath;
-        }
-
-        public override FeedTypeEnum GetFeedType()
-        {
-            return _conf.FeedType;
-        }
-
         private double Util(int @event, int user)
         {
             var g = (1 - _conf.Alpha) * _inAffinities[user][@event];
 
             var s = 0d;
-            foreach (var u in _assignments[@event])
+            foreach (var u in Assignments[@event])
             {
                 s += _socAffinities[user, u];
             }
@@ -271,7 +231,7 @@ namespace Implementation
             {
                 s += _socAffinities[user, u];
             }
-            g += (s * _conf.Alpha * (_eventCapacity[@event].Min - _assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
+            g += (s * _conf.Alpha * (EventCapacity[@event].Min - Assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
             return Math.Round(g, _conf.Percision);
         }
 
@@ -304,8 +264,8 @@ namespace Implementation
 
         public override void Initialize()
         {
-            _allUsers = new List<int>();
-            _allEvents = new List<int>();
+            AllUsers = new List<int>();
+            AllEvents = new List<int>();
             _init = false;
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
@@ -319,18 +279,18 @@ namespace Implementation
 
             for (var i = 0; i < _conf.NumberOfUsers; i++)
             {
-                _allUsers.Add(i);
+                AllUsers.Add(i);
             }
 
             for (var i = 0; i < _conf.NumberOfEvents; i++)
             {
-                _allEvents.Add(i);
+                AllEvents.Add(i);
             }
 
             _users = new List<int>();
             _events = new List<int>();
-            _assignments = new List<List<int>>();
-            _userAssignments = new List<int?>();
+            Assignments = new List<List<int>>();
+            UserAssignments = new List<int?>();
             SocialWelfare = 0;
             _queue = new List<UserPairEvent>(_conf.NumberOfUsers * _conf.NumberOfUsers * _conf.NumberOfEvents);
             _init = true;
@@ -338,16 +298,16 @@ namespace Implementation
             for (var i = 0; i < _conf.NumberOfUsers; i++)
             {
                 _users.Add(i);
-                _userAssignments.Add(null);
+                UserAssignments.Add(null);
             }
 
             for (var i = 0; i < _conf.NumberOfEvents; i++)
             {
                 _events.Add(i);
-                _assignments.Add(new List<int>());
+                Assignments.Add(new List<int>());
             }
 
-            _eventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
+            EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
             _inAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
             _socAffinities = _dataFeeder.GenerateSocialAffinities(_users);
 
