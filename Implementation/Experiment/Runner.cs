@@ -60,6 +60,8 @@ namespace Implementation.Experiment
                                                return AlgorithmEnum.PADG;
                                            case "PCADG":
                                                return AlgorithmEnum.PCADG;
+                                           case "OG":
+                                               return AlgorithmEnum.Og;
                                        }
                                        throw new Exception("Wrong Experiment Type");
                                    }).ToList(),
@@ -166,15 +168,22 @@ namespace Implementation.Experiment
 
         private Algorithm<List<UserEvent>> CreateAlgorithm(List<SgConf> configs, int j, Parameters parameters)
         {
-            var cadgConf = configs[j] as CadgConf;
-            if (cadgConf != null)
+            if (configs[j] is CadgConf)
             {
+                var cadgConf = (CadgConf)configs[j];
                 var feed = CreateFeed(cadgConf.FeedType, cadgConf.InputFilePath, parameters);
                 return new Cadg(cadgConf, feed);
             }
-            else
+
+            if (configs[j] is OgConf)
             {
-                var sgConf = (SgConf) configs[j];
+                var ogConf = (OgConf)configs[j];
+                var feed = CreateFeed(ogConf.FeedType, ogConf.InputFilePath, parameters);
+                return new Og(ogConf, feed);
+            }
+
+            {
+                var sgConf = (SgConf)configs[j];
                 var feed = CreateFeed(sgConf.FeedType, sgConf.InputFilePath, parameters);
                 return new Sg(sgConf, feed);
             }
@@ -202,27 +211,48 @@ namespace Implementation.Experiment
             foreach (var algorithmEnum in parameters.ExpTypes)
             {
                 var alg = (int)algorithmEnum;
-                var conf = new CadgConf();
-                conf = new CadgConf
+                if (algorithmEnum == AlgorithmEnum.Og)
                 {
-                    NumberOfUsers = parameters.UserCount,
-                    NumberOfEvents = parameters.EventCount,
-                    InputFilePath = null,
-                    PhantomAware = alg != (int)AlgorithmEnum.DG,
-                    PostInitializationInsert = true,
-                    ImmediateReaction = alg >= (int)AlgorithmEnum.IRC,
-                    Reassign = alg >= (int)AlgorithmEnum.IRC,
-                    DeficitFix = alg >= (int)AlgorithmEnum.IRC,
-                    LazyAdjustment = false,
-                    PrintOutEachStep = false,
-                    FeedType = FeedTypeEnum.SerialExperiment,
-                    CommunityAware = (alg == (int)AlgorithmEnum.PCADG || alg == (int)AlgorithmEnum.IRC),
-                    Alpha = parameters.AlphaValue,
-                    AlgorithmName = ConvertToString(algorithmEnum),
-                    Parameters = parameters
-                };
+                    var conf = new OgConf();
+                    conf = new OgConf
+                    {
+                        NumberOfUsers = parameters.UserCount,
+                        NumberOfEvents = parameters.EventCount,
+                        InputFilePath = null,
+                        Reassign = true,
+                        PrintOutEachStep = false,
+                        FeedType = FeedTypeEnum.SerialExperiment,
+                        Alpha = parameters.AlphaValue,
+                        AlgorithmName = ConvertToString(algorithmEnum),
+                        Parameters = parameters
+                    };
 
-                configs.Add(conf);
+                    configs.Add(conf);
+                }
+                else
+                {
+                    var conf = new CadgConf();
+                    conf = new CadgConf
+                    {
+                        NumberOfUsers = parameters.UserCount,
+                        NumberOfEvents = parameters.EventCount,
+                        InputFilePath = null,
+                        PhantomAware = alg != (int)AlgorithmEnum.DG,
+                        PostInitializationInsert = true,
+                        ImmediateReaction = alg >= (int)AlgorithmEnum.IRC,
+                        Reassign = alg >= (int)AlgorithmEnum.IRC,
+                        DeficitFix = alg >= (int)AlgorithmEnum.IRC,
+                        LazyAdjustment = false,
+                        PrintOutEachStep = false,
+                        FeedType = FeedTypeEnum.SerialExperiment,
+                        CommunityAware = (alg == (int)AlgorithmEnum.PCADG || alg == (int)AlgorithmEnum.IRC),
+                        Alpha = parameters.AlphaValue,
+                        AlgorithmName = ConvertToString(algorithmEnum),
+                        Parameters = parameters
+                    };
+
+                    configs.Add(conf);
+                }
             }
 
             return configs;
@@ -303,6 +333,7 @@ namespace Implementation.Experiment
                 Console.WriteLine(" ------Choose Algorithm--- ");
                 Console.WriteLine("|1.CADG                   |");
                 Console.WriteLine("|2.SG                     |");
+                Console.WriteLine("|3.OG                     |");
                 Console.WriteLine(" ------------------------- ");
                 Console.WriteLine();
                 Console.Write("Type your choice: ");
@@ -316,12 +347,32 @@ namespace Implementation.Experiment
 
             Console.WriteLine();
 
-            if (algInt == 2)
+            if (algInt == 3)
             {
                 for (int i = 0; i < numberOfExperimentTypes; i++)
                 {
-                    var conf = new SgConf();
-                    conf = new SgConf
+                    var conf = new OgConf()
+                    {
+                        NumberOfUsers = 500,
+                        NumberOfEvents = 50,
+                        InputFilePath = inputFilePath,
+                        FeedType = feedType,
+                        Alpha = parameters.AlphaValue,
+                        AlgorithmName = "OG",
+                        Percision = 7,
+                        NumberOfExperimentTypes = 1,
+                        Reassign = true,
+                        PrintOutEachStep = false,
+                        Parameters = parameters
+                    };
+                    configs.Add(conf);
+                }
+            }
+            else if (algInt == 2)
+            {
+                for (int i = 0; i < numberOfExperimentTypes; i++)
+                {
+                    var conf = new SgConf
                     {
                         NumberOfUsers = 500,
                         NumberOfEvents = 50,

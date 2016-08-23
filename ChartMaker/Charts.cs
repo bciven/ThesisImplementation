@@ -5,7 +5,9 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -74,6 +76,69 @@ namespace ChartMaker
         private void Charts_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void locationbtn_Click(object sender, EventArgs e)
+        {
+            var reader = new StreamReader(File.OpenRead(@"final.csv"));
+            var fileVan = new System.IO.StreamWriter("van.csv");
+            var fileChi = new System.IO.StreamWriter("chi.csv");
+
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                if (line.Contains("van"))
+                {
+                    fileVan.WriteLine(line);
+                }
+                else if (line.Contains("chi"))
+                {
+                    fileChi.WriteLine(line);
+                }
+            }
+            reader.Close();
+            fileVan.Close();
+            fileChi.Close();
+            //TagLocation();
+        }
+
+        private static void TagLocation()
+        {
+            var reader = new StreamReader(File.OpenRead(@"D:\Dataset\Plancast_geo\van_chi_id_geo.csv"));
+            var list = new List<Tuple<int, double, double>>();
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                var values = line.Split(',');
+                list.Add(new Tuple<int, double, double>(int.Parse(values[0]), double.Parse(values[1]), double.Parse(values[2])));
+            }
+            reader.Close();
+            var file = new System.IO.StreamWriter("final.csv");
+            int i = 0;
+            foreach (var value in list)
+            {
+                i++;
+                //var url = string.Format("https://maps.googleapis.com/maps/api/geocode/json?latlng={0},{1}&key={2}", value.Item3, value.Item2, "AIzaSyCAlADj7yFYncBdeDsQKy4vKzmoALFwe24");
+                var url =
+                    string.Format(
+                        "http://dev.virtualearth.net/REST/v1/Locations/{0},{1}?includeEntityTypes=PopulatedPlace&o=xml&includeNeighborhood=1&key={2}&incl=ciso2",
+                        value.Item3, value.Item2, "At-B7ze33uS9pAQ0hkZQ-YI4FDtvKJVTo5HshrGncPX6JXT6fQ-ltmT2UErJ_VX5");
+                var request = WebRequest.Create(url);
+                var response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                responseFromServer = responseFromServer.ToLower();
+                var van = responseFromServer.Contains("vancouver");
+                var chi = responseFromServer.Contains("chicago");
+                if (van || chi)
+                {
+                    file.WriteLine(value.Item1 + (van ? ",van" : ",chi") + "," + value.Item3 + "," + value.Item2);
+                }
+                reader.Close();
+                response.Close();
+            }
+            file.Close();
         }
     }
 }

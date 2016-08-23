@@ -13,5 +13,6 @@ namespace Implementation.Data_Structures
         PCADG = 3,
         IRC = 4,
         IR = 5,
+        Og = 6
     }
 }

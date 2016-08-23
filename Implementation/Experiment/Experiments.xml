@@ -1,6 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-<Experiment count="5">
+  <Experiment count="5">
+    <users count="20" />
+    <events count="5" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" />
+    <exptypes>
+      <type>OG</type>
+    </exptypes>
+  </Experiment>
+  
+<!--<Experiment count="5">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -182,5 +197,5 @@
       <type>IR</type>
       <type>IRC</type>
     </exptypes>
-  </Experiment>
+  </Experiment>-->
 </Experiments>

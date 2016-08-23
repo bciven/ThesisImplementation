@@ -35,6 +35,7 @@
             this.buttonRemove = new System.Windows.Forms.Button();
             this.listBox = new System.Windows.Forms.ListBox();
             this.buttonOutput = new System.Windows.Forms.Button();
+            this.locationbtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBoxFolder
@@ -101,11 +102,22 @@
             this.buttonOutput.UseVisualStyleBackColor = true;
             this.buttonOutput.Click += new System.EventHandler(this.buttonOutput_Click);
             // 
+            // locationbtn
+            // 
+            this.locationbtn.Location = new System.Drawing.Point(15, 274);
+            this.locationbtn.Name = "locationbtn";
+            this.locationbtn.Size = new System.Drawing.Size(628, 23);
+            this.locationbtn.TabIndex = 10;
+            this.locationbtn.Text = "Get Locations";
+            this.locationbtn.UseVisualStyleBackColor = true;
+            this.locationbtn.Click += new System.EventHandler(this.locationbtn_Click);
+            // 
             // Charts
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(659, 285);
+            this.ClientSize = new System.Drawing.Size(659, 304);
+            this.Controls.Add(this.locationbtn);
             this.Controls.Add(this.buttonOutput);
             this.Controls.Add(this.listBox);
             this.Controls.Add(this.buttonRemove);
@@ -132,6 +144,7 @@
         private System.Windows.Forms.Button buttonRemove;
         private System.Windows.Forms.ListBox listBox;
         private System.Windows.Forms.Button buttonOutput;
+        private System.Windows.Forms.Button locationbtn;
     }
 }
 
