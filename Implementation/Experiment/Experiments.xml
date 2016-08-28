@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="5">
+  <!--<Experiment count="5">
     <users count="20" />
     <events count="5" />
     <alpha value="0.5" />
@@ -11,11 +11,11 @@
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
-      <type>OG</type>
+      <type>Random</type>
     </exptypes>
-  </Experiment>
+  </Experiment>-->
   
-<!--<Experiment count="5">
+<Experiment count="5">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -31,6 +31,7 @@
       <type>PCADG</type>
       <type>IR</type>
       <type>IRC</type>
+      <type>Random</type>
     </exptypes>
   </Experiment>
   <Experiment count="5">
@@ -49,6 +50,7 @@
       <type>PCADG</type>
       <type>IR</type>
       <type>IRC</type>
+      <type>Random</type>
     </exptypes>
   </Experiment>
   <Experiment count="5">
@@ -67,6 +69,7 @@
       <type>PCADG</type>
       <type>IR</type>
       <type>IRC</type>
+      <type>Random</type>
     </exptypes>
   </Experiment>
   
@@ -86,6 +89,7 @@
       <type>PCADG</type>
       <type>IR</type>
       <type>IRC</type>
+      <type>Random</type>
     </exptypes>
   </Experiment>
   <Experiment count="6">
@@ -104,6 +108,7 @@
       <type>PCADG</type>
       <type>IR</type>
       <type>IRC</type>
+      <type>Random</type>
     </exptypes>
   </Experiment>
   <Experiment count="6">
@@ -122,6 +127,7 @@
       <type>PCADG</type>
       <type>IR</type>
       <type>IRC</type>
+      <type>Random</type>
     </exptypes>
   </Experiment>
 
@@ -141,6 +147,7 @@
       <type>PCADG</type>
       <type>IR</type>
       <type>IRC</type>
+      <type>Random</type>
     </exptypes>
   </Experiment>
   <Experiment count="7">
@@ -159,6 +166,7 @@
       <type>PCADG</type>
       <type>IR</type>
       <type>IRC</type>
+      <type>Random</type>
     </exptypes>
   </Experiment>
   <Experiment count="7">
@@ -177,6 +185,7 @@
       <type>PCADG</type>
       <type>IR</type>
       <type>IRC</type>
+      <type>Random</type>
     </exptypes>
   </Experiment>
   
@@ -196,6 +205,7 @@
       <type>PCADG</type>
       <type>IR</type>
       <type>IRC</type>
+      <type>Random</type>
     </exptypes>
-  </Experiment>-->
+  </Experiment>
 </Experiments>

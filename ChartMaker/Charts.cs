@@ -80,7 +80,21 @@ namespace ChartMaker
 
         private void locationbtn_Click(object sender, EventArgs e)
         {
-            var reader = new StreamReader(File.OpenRead(@"final.csv"));
+            var reader = new StreamReader(File.OpenRead(@"E:\Concordia\Locations\US\US.csv"));
+            var fileChi = new System.IO.StreamWriter("US.csv");
+
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine().ToLower();
+                if (line.Contains("chicago"))
+                {
+                    fileChi.WriteLine(line);
+                }
+            }
+            fileChi.Close();
+            reader.Close();
+
+            /*var reader = new StreamReader(File.OpenRead(@"final.csv"));
             var fileVan = new System.IO.StreamWriter("van.csv");
             var fileChi = new System.IO.StreamWriter("chi.csv");
 
@@ -98,7 +112,7 @@ namespace ChartMaker
             }
             reader.Close();
             fileVan.Close();
-            fileChi.Close();
+            fileChi.Close();*/
             //TagLocation();
         }
 

@@ -8,13 +8,13 @@ using OfficeOpenXml;
 
 namespace Implementation.Data_Structures
 {
-    public class OgConf : SgConf
+    public class RandomConf : SgConf
     {
         public bool Reassign { get; set; }
         public string AlgorithmName { get; set; }
         public Parameters Parameters{ get; set; }
 
-        public OgConf()
+        public RandomConf()
         {
             NumberOfUsers = 10;
             NumberOfEvents = 4;

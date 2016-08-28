@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Implementation.Algorithms;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
+using Random = Implementation.Algorithms.Random;
 
 namespace Implementation.Experiment
 {
@@ -60,8 +61,8 @@ namespace Implementation.Experiment
                                                return AlgorithmEnum.PADG;
                                            case "PCADG":
                                                return AlgorithmEnum.PCADG;
-                                           case "OG":
-                                               return AlgorithmEnum.Og;
+                                           case "Random":
+                                               return AlgorithmEnum.Random;
                                        }
                                        throw new Exception("Wrong Experiment Type");
                                    }).ToList(),
@@ -175,11 +176,11 @@ namespace Implementation.Experiment
                 return new Cadg(cadgConf, feed);
             }
 
-            if (configs[j] is OgConf)
+            if (configs[j] is RandomConf)
             {
-                var ogConf = (OgConf)configs[j];
+                var ogConf = (RandomConf)configs[j];
                 var feed = CreateFeed(ogConf.FeedType, ogConf.InputFilePath, parameters);
-                return new Og(ogConf, feed);
+                return new Random(ogConf, feed);
             }
 
             {
@@ -211,10 +212,10 @@ namespace Implementation.Experiment
             foreach (var algorithmEnum in parameters.ExpTypes)
             {
                 var alg = (int)algorithmEnum;
-                if (algorithmEnum == AlgorithmEnum.Og)
+                if (algorithmEnum == AlgorithmEnum.Random)
                 {
-                    var conf = new OgConf();
-                    conf = new OgConf
+                    var conf = new RandomConf();
+                    conf = new RandomConf
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
@@ -351,7 +352,7 @@ namespace Implementation.Experiment
             {
                 for (int i = 0; i < numberOfExperimentTypes; i++)
                 {
-                    var conf = new OgConf()
+                    var conf = new RandomConf()
                     {
                         NumberOfUsers = 500,
                         NumberOfEvents = 50,

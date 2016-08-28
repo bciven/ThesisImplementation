@@ -6,7 +6,7 @@ using Implementation.Data_Structures;
 
 namespace Implementation.Algorithms
 {
-    public class Og : Algorithm<List<UserEvent>>
+    public class Expansion : Algorithm<List<UserEvent>>
     {
         private List<int> _events;
         private List<int> _users;
@@ -14,10 +14,10 @@ namespace Implementation.Algorithms
         private List<int> _eventDeficitContribution;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
-        private OgConf _conf => (OgConf)Conf;
+        private RandomConf _conf => (RandomConf)Conf;
         private Queue<UserEvent> _randomQueue;
 
-        public Og(OgConf conf, IDataFeed dataFeed)
+        public Expansion(RandomConf conf, IDataFeed dataFeed)
         {
             _dataFeeder = dataFeed;
             Conf = conf;
@@ -190,6 +190,7 @@ namespace Implementation.Algorithms
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
             SocialWelfare = 0;
+            var randomQueue = new List<UserEvent>();
             _randomQueue = new Queue<UserEvent>();
             //_deficit = 0;
             _init = true;
@@ -213,7 +214,7 @@ namespace Implementation.Algorithms
             InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
             SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
 
-            var rnd = new Random();
+            var rnd = new System.Random();
             _users = _users.OrderBy(item => rnd.Next()).ToList();
             _events = _events.OrderBy(item => rnd.Next()).ToList();
 
@@ -222,8 +223,13 @@ namespace Implementation.Algorithms
                 foreach (var e in _events)
                 {
                     var ue = new UserEvent { Event = e, User = u, Utility = 0 };
-                    _randomQueue.Enqueue(ue);
+                    randomQueue.Add(ue);
                 }
+            }
+
+            foreach (var userEvent in randomQueue.OrderBy(item => rnd.Next()))
+            {
+                _randomQueue.Enqueue(userEvent);
             }
         }
 
