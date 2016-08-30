@@ -8,9 +8,9 @@ using OfficeOpenXml;
 
 namespace ChartMaker
 {
-    public static class ReadData
+    public class ReadData
     {
-        public static List<AlgorithmWelfare> CalcAverageWelfares(string folder)
+        public List<AlgorithmWelfare> CalcAverageWelfares(string folder)
         {
             var directory = new DirectoryInfo(folder);
             var allFiles = directory.GetFiles();
@@ -48,14 +48,14 @@ namespace ChartMaker
             return fResults;
         }
 
-        private static double ReadSocialWelfare(ExcelWorkbook wb)
+        private double ReadSocialWelfare(ExcelWorkbook wb)
         {
             var ws = wb.Worksheets[4];
             var value = ws.Cells[1, 5].Value;
             return Convert.ToDouble(value);
         }
 
-        private static double ReadRegRatio(ExcelWorkbook wb)
+        private double ReadRegRatio(ExcelWorkbook wb)
         {
             var ws = wb.Worksheets[5];
             var cells = ws.Cells[1, 2, ws.Dimension.End.Row, 2];
@@ -70,7 +70,7 @@ namespace ChartMaker
             return avg;
         }
 
-        private static AlgorithmWelfare ReadConfig(ExcelWorkbook wb)
+        private AlgorithmWelfare ReadConfig(ExcelWorkbook wb)
         {
             var ws = wb.Worksheets[6];
             var welfare = new AlgorithmWelfare();

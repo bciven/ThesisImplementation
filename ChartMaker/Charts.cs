@@ -17,7 +17,7 @@ namespace ChartMaker
     public partial class Charts : Form
     {
         private int _index = 0;
-        private readonly List<List<AlgorithmWelfare>> _welfares;
+        private List<List<AlgorithmWelfare>> _welfares;
 
         public Charts()
         {
@@ -50,9 +50,11 @@ namespace ChartMaker
         private void WriteOutput(List<string> files)
         {
             buttonAdd.Enabled = false;
+            var readData = new ReadData();
+            _welfares.RemoveAll(x=> true);
             foreach (var file in files)
             {
-                var stats = ReadData.CalcAverageWelfares(file);
+                var stats = readData.CalcAverageWelfares(file);
                 _welfares.Add(stats);
             }
             MessageBox.Show("Job Completed!");
