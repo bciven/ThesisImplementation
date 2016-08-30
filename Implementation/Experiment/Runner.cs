@@ -47,6 +47,16 @@ namespace Implementation.Experiment
                                    SndensityValue = Convert.ToDouble(sndensity.Attribute("value").Value),
                                    MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
                                    SocialNetworkModel = (SocialNetworkModel)Convert.ToInt32(snmodel.Attribute("value").Value),
+                                   TakeChanceLimits = exptypes.Descendants("type").Select(x =>
+                                   {
+                                       var takechancelimit = x.Attribute("TakeChanceLimit");
+                                       if (takechancelimit != null)
+                                       {
+                                           return Convert.ToInt32(takechancelimit.Value);
+                                       }
+
+                                       return (int?)null;
+                                   }).ToList(),
                                    ExpTypes = exptypes.Descendants("type").Select(x =>
                                    {
                                        switch (x.Value.ToUpper())
@@ -61,8 +71,10 @@ namespace Implementation.Experiment
                                                return AlgorithmEnum.PADG;
                                            case "PCADG":
                                                return AlgorithmEnum.PCADG;
-                                           case "Random":
+                                           case "RANDOM":
                                                return AlgorithmEnum.Random;
+                                           case "RANDOMPLUS":
+                                               return AlgorithmEnum.RandomPlus;
                                        }
                                        throw new Exception("Wrong Experiment Type");
                                    }).ToList(),
@@ -209,10 +221,32 @@ namespace Implementation.Experiment
         private List<SgConf> ToConfigs(Parameters parameters)
         {
             var configs = new List<SgConf>();
-            foreach (var algorithmEnum in parameters.ExpTypes)
+            for (int i = 0; i < parameters.ExpTypes.Count; i++)
             {
-                var alg = (int)algorithmEnum;
-                if (algorithmEnum == AlgorithmEnum.Random)
+                var algorithmEnum = parameters.ExpTypes[i];
+                var alg = (int) algorithmEnum;
+                if (algorithmEnum == AlgorithmEnum.RandomPlus)
+                {
+                    var conf = new RandomPlusConf();
+                    var tcl = parameters.TakeChanceLimits[i] ?? parameters.EventCount;
+
+                    conf = new RandomPlusConf
+                    {
+                        NumberOfUsers = parameters.UserCount,
+                        NumberOfEvents = parameters.EventCount,
+                        InputFilePath = null,
+                        Reassign = true,
+                        PrintOutEachStep = false,
+                        FeedType = FeedTypeEnum.SerialExperiment,
+                        Alpha = parameters.AlphaValue,
+                        AlgorithmName = ConvertToString(algorithmEnum),
+                        Parameters = parameters,
+                        TakeChanceLimit = tcl
+                    };
+
+                    configs.Add(conf);
+                }
+                else if (algorithmEnum == AlgorithmEnum.Random)
                 {
                     var conf = new RandomConf();
                     conf = new RandomConf
@@ -238,15 +272,15 @@ namespace Implementation.Experiment
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
                         InputFilePath = null,
-                        PhantomAware = alg != (int)AlgorithmEnum.DG,
+                        PhantomAware = alg != (int) AlgorithmEnum.DG,
                         PostInitializationInsert = true,
-                        ImmediateReaction = alg >= (int)AlgorithmEnum.IRC,
-                        Reassign = alg >= (int)AlgorithmEnum.IRC,
-                        DeficitFix = alg >= (int)AlgorithmEnum.IRC,
+                        ImmediateReaction = alg >= (int) AlgorithmEnum.IRC,
+                        Reassign = alg >= (int) AlgorithmEnum.IRC,
+                        DeficitFix = alg >= (int) AlgorithmEnum.IRC,
                         LazyAdjustment = false,
                         PrintOutEachStep = false,
                         FeedType = FeedTypeEnum.SerialExperiment,
-                        CommunityAware = (alg == (int)AlgorithmEnum.PCADG || alg == (int)AlgorithmEnum.IRC),
+                        CommunityAware = (alg == (int) AlgorithmEnum.PCADG || alg == (int) AlgorithmEnum.IRC),
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters

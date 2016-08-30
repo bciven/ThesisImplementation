@@ -14,8 +14,8 @@
       <type>Random</type>
     </exptypes>
   </Experiment>-->
-  
-<Experiment count="5">
+
+  <Experiment count="2">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -25,6 +25,7 @@
     <sndensity value="0" />
     <eventinterestperct value="5" />
     <snmodel value="0" />
+    <TakeChanceLimit value="3" />
     <exptypes>
       <type>DG</type>
       <type>PADG</type>
@@ -32,9 +33,12 @@
       <type>IR</type>
       <type>IRC</type>
       <type>Random</type>
+      <type TakeChanceLimit="3">RandomPlus</type>
+      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="5">
+  <Experiment count="2">
     <users count="500" />
     <events count="25" />
     <alpha value="0.5" />
@@ -44,6 +48,7 @@
     <sndensity value="0" />
     <eventinterestperct value="5" />
     <snmodel value="0" />
+    <TakeChanceLimit value="3" />
     <exptypes>
       <type>DG</type>
       <type>PADG</type>
@@ -51,9 +56,12 @@
       <type>IR</type>
       <type>IRC</type>
       <type>Random</type>
+      <type TakeChanceLimit="3">RandomPlus</type>
+      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="5">
+  <Experiment count="2">
     <users count="500" />
     <events count="35" />
     <alpha value="0.5" />
@@ -70,10 +78,13 @@
       <type>IR</type>
       <type>IRC</type>
       <type>Random</type>
+      <type TakeChanceLimit="3">RandomPlus</type>
+      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  
-  <Experiment count="6">
+
+  <Experiment count="2">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -90,9 +101,12 @@
       <type>IR</type>
       <type>IRC</type>
       <type>Random</type>
+      <type TakeChanceLimit="3">RandomPlus</type>
+      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="6">
+  <Experiment count="2">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -109,9 +123,12 @@
       <type>IR</type>
       <type>IRC</type>
       <type>Random</type>
+      <type TakeChanceLimit="3">RandomPlus</type>
+      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="6">
+  <Experiment count="2">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -128,10 +145,13 @@
       <type>IR</type>
       <type>IRC</type>
       <type>Random</type>
+      <type TakeChanceLimit="3">RandomPlus</type>
+      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="7">
+  <Experiment count="2">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -148,9 +168,12 @@
       <type>IR</type>
       <type>IRC</type>
       <type>Random</type>
+      <type TakeChanceLimit="3">RandomPlus</type>
+      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="7">
+  <Experiment count="2">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -167,9 +190,12 @@
       <type>IR</type>
       <type>IRC</type>
       <type>Random</type>
+      <type TakeChanceLimit="3">RandomPlus</type>
+      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="7">
+  <Experiment count="2">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -186,10 +212,13 @@
       <type>IR</type>
       <type>IRC</type>
       <type>Random</type>
+      <type TakeChanceLimit="3">RandomPlus</type>
+      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  
-  <Experiment count="7">
+
+  <Experiment count="2">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -206,6 +235,9 @@
       <type>IR</type>
       <type>IRC</type>
       <type>Random</type>
+      <type TakeChanceLimit="3">RandomPlus</type>
+      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
 </Experiments>

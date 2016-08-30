@@ -82,8 +82,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithms\Og.cs" />
+    <Compile Include="Algorithms\RandomPlus.cs" />
+    <Compile Include="Algorithms\Random.cs" />
     <Compile Include="Data Structures\AlgorithmEnum.cs" />
+    <Compile Include="Data Structures\RandomPlusConf.cs" />
+    <Compile Include="Data Structures\RandomConf.cs" />
     <Compile Include="Data Structures\Graph.cs" />
     <Compile Include="Data Structures\SgConf.cs" />
     <Compile Include="Data Structures\SocialNetworkModels.cs" />

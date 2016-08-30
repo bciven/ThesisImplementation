@@ -28,6 +28,11 @@ namespace Implementation.Data_Structures
 
         public override void Print(ExcelPackage excel)
         {
+            PrintConfig(excel);
+        }
+
+        protected ExcelWorksheet PrintConfig(ExcelPackage excel)
+        {
             var ws = excel.Workbook.Worksheets.Add("Configs");
             int i = 1;
             ws.Cells[i, 1].Value = "FeedType";
@@ -65,7 +70,7 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = AlgorithmName;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
-
+            return ws;
         }
     }
 }

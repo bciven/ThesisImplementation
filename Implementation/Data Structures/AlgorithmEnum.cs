@@ -13,6 +13,7 @@ namespace Implementation.Data_Structures
         PCADG = 3,
         IRC = 4,
         IR = 5,
-        Random = 6
+        Random = 6,
+        RandomPlus = 7
     }
 }
