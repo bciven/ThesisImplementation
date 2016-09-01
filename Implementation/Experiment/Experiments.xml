@@ -15,7 +15,7 @@
     </exptypes>
   </Experiment>-->
 
-  <Experiment count="2">
+  <Experiment count="4">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -25,20 +25,23 @@
     <sndensity value="0" />
     <eventinterestperct value="5" />
     <snmodel value="0" />
-    <TakeChanceLimit value="3" />
     <exptypes>
-      <type>DG</type>
-      <type>PADG</type>
-      <type>PCADG</type>
-      <type>IR</type>
-      <type>IRC</type>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
       <type>Random</type>
-      <type TakeChanceLimit="3">RandomPlus</type>
-      <type TakeChanceLimit="10">RandomPlus</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="2">
+  <Experiment count="4">
     <users count="500" />
     <events count="25" />
     <alpha value="0.5" />
@@ -48,20 +51,23 @@
     <sndensity value="0" />
     <eventinterestperct value="5" />
     <snmodel value="0" />
-    <TakeChanceLimit value="3" />
     <exptypes>
-      <type>DG</type>
-      <type>PADG</type>
-      <type>PCADG</type>
-      <type>IR</type>
-      <type>IRC</type>
-      <type>Random</type>
-      <type TakeChanceLimit="3">RandomPlus</type>
-      <type TakeChanceLimit="10">RandomPlus</type>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
+      <type >Random</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="2">
+  <Experiment count="4">
     <users count="500" />
     <events count="35" />
     <alpha value="0.5" />
@@ -72,19 +78,23 @@
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
-      <type>DG</type>
-      <type>PADG</type>
-      <type>PCADG</type>
-      <type>IR</type>
-      <type>IRC</type>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
       <type>Random</type>
-      <type TakeChanceLimit="3">RandomPlus</type>
-      <type TakeChanceLimit="10">RandomPlus</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="2">
+  <Experiment count="4">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -95,18 +105,22 @@
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
-      <type>DG</type>
-      <type>PADG</type>
-      <type>PCADG</type>
-      <type>IR</type>
-      <type>IRC</type>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
       <type>Random</type>
-      <type TakeChanceLimit="3">RandomPlus</type>
-      <type TakeChanceLimit="10">RandomPlus</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="2">
+  <Experiment count="4">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -117,18 +131,22 @@
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
-      <type>DG</type>
-      <type>PADG</type>
-      <type>PCADG</type>
-      <type>IR</type>
-      <type>IRC</type>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
       <type>Random</type>
-      <type TakeChanceLimit="3">RandomPlus</type>
-      <type TakeChanceLimit="10">RandomPlus</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="2">
+  <Experiment count="4">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -139,19 +157,23 @@
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
-      <type>DG</type>
-      <type>PADG</type>
-      <type>PCADG</type>
-      <type>IR</type>
-      <type>IRC</type>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
       <type>Random</type>
-      <type TakeChanceLimit="3">RandomPlus</type>
-      <type TakeChanceLimit="10">RandomPlus</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="2">
+  <Experiment count="4">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -162,18 +184,22 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type>DG</type>
-      <type>PADG</type>
-      <type>PCADG</type>
-      <type>IR</type>
-      <type>IRC</type>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
       <type>Random</type>
-      <type TakeChanceLimit="3">RandomPlus</type>
-      <type TakeChanceLimit="10">RandomPlus</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="2">
+  <Experiment count="4">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -184,18 +210,22 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type>DG</type>
-      <type>PADG</type>
-      <type>PCADG</type>
-      <type>IR</type>
-      <type>IRC</type>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
       <type>Random</type>
-      <type TakeChanceLimit="3">RandomPlus</type>
-      <type TakeChanceLimit="10">RandomPlus</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="2">
+  <Experiment count="4">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -206,19 +236,23 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type>DG</type>
-      <type>PADG</type>
-      <type>PCADG</type>
-      <type>IR</type>
-      <type>IRC</type>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
       <type>Random</type>
-      <type TakeChanceLimit="3">RandomPlus</type>
-      <type TakeChanceLimit="10">RandomPlus</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="2">
+  <Experiment count="4">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -229,14 +263,18 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type>DG</type>
-      <type>PADG</type>
-      <type>PCADG</type>
-      <type>IR</type>
-      <type>IRC</type>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
       <type>Random</type>
-      <type TakeChanceLimit="3">RandomPlus</type>
-      <type TakeChanceLimit="10">RandomPlus</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>

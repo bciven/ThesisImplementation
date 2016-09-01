@@ -11,7 +11,8 @@ namespace Implementation.Data_Structures
     public class CadgConf : SgConf
     {
         public bool ImmediateReaction { get; set; }
-        public bool Reassign { get; set; }
+        public bool DynamicReassign { get; set; }
+        public bool GreedyReassign { get; set; }
         public bool PhantomAware { get; set; }
         public bool DeficitFix { get; set; }
         public bool PostInitializationInsert { get; set; }
@@ -26,7 +27,8 @@ namespace Implementation.Data_Structures
             NumberOfUsers = 10;
             NumberOfEvents = 4;
             ImmediateReaction = false;
-            Reassign = false;
+            DynamicReassign = false;
+            GreedyReassign = false;
             PrintOutEachStep = false;
             InputFilePath = null;
             PhantomAware = false;
@@ -59,8 +61,8 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = ImmediateReaction;
             i++;
 
-            ws.Cells[i, 1].Value = "Reassign";
-            ws.Cells[i, 2].Value = Reassign;
+            ws.Cells[i, 1].Value = "Dynamic Reassign";
+            ws.Cells[i, 2].Value = DynamicReassign;
             i++;
 
             ws.Cells[i, 1].Value = "Print Each Step";
@@ -106,6 +108,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Algorithm Name";
             ws.Cells[i, 2].Value = AlgorithmName;
+            i++;
+
+            ws.Cells[i, 1].Value = "Greedy Reassign";
+            ws.Cells[i, 2].Value = GreedyReassign;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
 

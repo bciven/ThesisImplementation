@@ -153,53 +153,61 @@ namespace Implementation.Algorithms
 
                 if (_queue.IsEmpty())
                 {
-                    Refill();
+                    DynamicReassign();
                 }
             }
+
+            GreedyAssign();
 
             Assignments = _permanentAssignments;
         }
 
-        private void Traceout()
+        private void GreedyAssign()
         {
-            var assignments = Assignments.SelectMany(x => x).ToList();
-            if (assignments.Count != assignments.Distinct().Count())
+            if (!_conf.GreedyReassign)
+                return;
+
+            if (UserAssignments.Any(x => !x.HasValue))
             {
-                foreach (var assignment in Assignments)
+                List<int> availableUsers;
+                List<int> realOpenEvents;
+                PrepareReassignment(out availableUsers, out realOpenEvents);
+
+                var queue = new FakeHeap();
+                foreach (var @event in realOpenEvents)
                 {
-                    foreach (var u in assignment)
+                    foreach (var availableUser in availableUsers)
                     {
-                        Trace.Write(u + "-");
+                        var q = Util(@event, availableUser);
+                        if (q > 0)
+                        {
+                            queue.AddOrUpdate(q, new UserEvent {User = availableUser, Event = @event});
+                        }
                     }
-                    Trace.WriteLine("");
                 }
-                Trace.WriteLine("End");
+
+                while (!queue.IsEmpty())
+                {
+                    var userEvent = queue.RemoveMax();
+                    if (UserAssignments[userEvent.User] == null && Assignments[userEvent.Event].Count >= EventCapacity[userEvent.Event].Min && Assignments[userEvent.Event].Count < EventCapacity[userEvent.Event].Max)
+                    {
+                        Assignments[userEvent.Event].Add(userEvent.User);
+                        UserAssignments[userEvent.User] = userEvent.Event;
+                    }
+                }
             }
         }
 
-        private void Refill()
+        private void DynamicReassign()
         {
-            if (_conf.Reassign && _phantomEvents.Any() && UserAssignments.Any(x => !x.HasValue))
-            {
-                var realOpenEvents =
-                    AllEvents.Where(x => !_phantomEvents.Contains(x) && Assignments[x].Count < EventCapacity[x].Max).ToList();
-                List<int> availableUsers = new List<int>();
-                for (int i = 0; i < UserAssignments.Count; i++)
-                {
-                    if (UserAssignments[i] == null)
-                    {
-                        availableUsers.Add(i);
-                    }
-                }
+            if (!_conf.DynamicReassign)
+                return;
 
-                foreach (var phantomEvent in _phantomEvents)
-                {
-                    if (Assignments[phantomEvent].Count > 0)
-                    {
-                        availableUsers.AddRange(Assignments[phantomEvent]);
-                        Assignments[phantomEvent].RemoveAll(x => true);
-                    }
-                }
+            if (UserAssignments.Any(x => !x.HasValue))
+            {
+                List<int> availableUsers;
+                List<int> realOpenEvents;
+                PrepareReassignment(out availableUsers, out realOpenEvents);
 
                 foreach (var @event in realOpenEvents)
                 {
@@ -210,6 +218,31 @@ namespace Implementation.Algorithms
                     }
                 }
             }
+        }
+
+        private void PrepareReassignment(out List<int> availableUsers, out List<int> realOpenEvents)
+        {
+            var phantomEvents = AllEvents.Where(x => Assignments[x].Count < EventCapacity[x].Min).ToList();
+            realOpenEvents = AllEvents.Where(x => EventCapacity[x].Min <= Assignments[x].Count && Assignments[x].Count < EventCapacity[x].Max).ToList();
+            availableUsers = new List<int>();
+            for (int i = 0; i < UserAssignments.Count; i++)
+            {
+                if (UserAssignments[i] == null)
+                {
+                    availableUsers.Add(i);
+                }
+            }
+
+            foreach (var phantomEvent in phantomEvents)
+            {
+                if (Assignments[phantomEvent].Count > 0)
+                {
+                    availableUsers.AddRange(Assignments[phantomEvent]);
+                    Assignments[phantomEvent].RemoveAll(x => true);
+                }
+            }
+            availableUsers = availableUsers.Distinct().OrderBy(x => x).ToList();
+            availableUsers.ForEach(x => _numberOfUserAssignments[x] = 0);
         }
 
         private double Util(int @event, int user)
@@ -445,5 +478,21 @@ namespace Implementation.Algorithms
             _init = false;
         }
 
+        private void Traceout()
+        {
+            var assignments = Assignments.SelectMany(x => x).ToList();
+            if (assignments.Count != assignments.Distinct().Count())
+            {
+                foreach (var assignment in Assignments)
+                {
+                    foreach (var u in assignment)
+                    {
+                        Trace.Write(u + "-");
+                    }
+                    Trace.WriteLine("");
+                }
+                Trace.WriteLine("End");
+            }
+        }
     }
 }

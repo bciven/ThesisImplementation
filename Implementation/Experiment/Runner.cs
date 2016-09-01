@@ -61,16 +61,27 @@ namespace Implementation.Experiment
                                    {
                                        switch (x.Value.ToUpper())
                                        {
-                                           case "IR":
-                                               return AlgorithmEnum.IR;
-                                           case "IRC":
-                                               return AlgorithmEnum.IRC;
-                                           case "DG":
-                                               return AlgorithmEnum.DG;
-                                           case "PADG":
-                                               return AlgorithmEnum.PADG;
-                                           case "PCADG":
-                                               return AlgorithmEnum.PCADG;
+                                           case "IR_DR":
+                                               return AlgorithmEnum.IR_DR;
+                                           case "IR_GR":
+                                               return AlgorithmEnum.IR_GR;
+                                           case "IRC_DR":
+                                               return AlgorithmEnum.IRC_DR;
+                                           case "IRC_GR":
+                                               return AlgorithmEnum.IRC_GR;
+                                           case "DG_DR":
+                                               return AlgorithmEnum.DG_DR;
+                                           case "DG_GR":
+                                               return AlgorithmEnum.DG_GR;
+                                           case "PADG_DR":
+                                               return AlgorithmEnum.PADG_DR;
+                                           case "PADG_GR":
+                                               return AlgorithmEnum.PADG_GR;
+                                           case "PCADG_DR":
+                                               return AlgorithmEnum.PCADG_DR;
+                                           case "PCADG_GR":
+                                               return AlgorithmEnum.PCADG_GR;
+
                                            case "RANDOM":
                                                return AlgorithmEnum.Random;
                                            case "RANDOMPLUS":
@@ -267,20 +278,29 @@ namespace Implementation.Experiment
                 else
                 {
                     var conf = new CadgConf();
+                    var DG = alg == (int) AlgorithmEnum.DG_DR || alg == (int) AlgorithmEnum.DG_GR;
+                    var PCADG = alg == (int)AlgorithmEnum.PCADG_DR || alg == (int)AlgorithmEnum.PCADG_GR;
+                    var PADG = alg == (int)AlgorithmEnum.PADG_DR || alg == (int)AlgorithmEnum.PADG_GR;
+                    var IR = alg == (int)AlgorithmEnum.IR_DR || alg == (int)AlgorithmEnum.IR_GR;
+                    var IRC = alg == (int)AlgorithmEnum.IRC_DR || alg == (int)AlgorithmEnum.IRC_GR;
+                    var dynamicReassgin = ConvertToString(algorithmEnum).Contains("DR");
+                    var greedyReassgin = ConvertToString(algorithmEnum).Contains("GR");
+
                     conf = new CadgConf
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
                         InputFilePath = null,
-                        PhantomAware = alg != (int) AlgorithmEnum.DG,
+                        PhantomAware = !DG,
                         PostInitializationInsert = true,
-                        ImmediateReaction = alg >= (int) AlgorithmEnum.IRC,
-                        Reassign = alg >= (int) AlgorithmEnum.IRC,
-                        DeficitFix = alg >= (int) AlgorithmEnum.IRC,
+                        ImmediateReaction = IR || IRC,
+                        DynamicReassign = dynamicReassgin,
+                        GreedyReassign = greedyReassgin,
+                        DeficitFix = IR || IRC,
                         LazyAdjustment = false,
                         PrintOutEachStep = false,
                         FeedType = FeedTypeEnum.SerialExperiment,
-                        CommunityAware = (alg == (int) AlgorithmEnum.PCADG || alg == (int) AlgorithmEnum.IRC),
+                        CommunityAware = IRC || PCADG,
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters
@@ -448,7 +468,7 @@ namespace Implementation.Experiment
                             PhantomAware = input.Contains("1"),
                             PostInitializationInsert = input.Contains("2"),
                             ImmediateReaction = input.Contains("3"),
-                            Reassign = input.Contains("4"),
+                            DynamicReassign = input.Contains("4"),
                             DeficitFix = input.Contains("5"),
                             LazyAdjustment = !input.Contains("6"),
                             CommunityAware = !input.Contains("7"),

@@ -8,12 +8,17 @@ namespace Implementation.Data_Structures
 {
     public enum AlgorithmEnum
     {
-        DG = 1,
-        PADG = 2,
-        PCADG = 3,
-        IRC = 4,
-        IR = 5,
-        Random = 6,
-        RandomPlus = 7
+        DG_DR,
+        DG_GR,
+        PADG_DR,
+        PADG_GR,
+        PCADG_DR,
+        PCADG_GR,
+        IRC_DR,
+        IRC_GR,
+        IR_DR,
+        IR_GR,
+        Random,
+        RandomPlus
     }
 }
