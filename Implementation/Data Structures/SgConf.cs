@@ -19,6 +19,8 @@ namespace Implementation.Data_Structures
         public double Alpha;
         public int Percision { get; set; }
         public int NumberOfExperimentTypes { get; set; }
+        public string AlgorithmName { get; set; }
+        public Parameters Parameters { get; set; }
 
         public SgConf()
         {
@@ -27,8 +29,10 @@ namespace Implementation.Data_Structures
             PrintOutEachStep = false;
             InputFilePath = null;
             Alpha = 0.5;
-            Percision = 20;
+            Percision = 10;
             NumberOfExperimentTypes = 1;
+            AlgorithmName = null;
+            Parameters = null;
         }
 
         public virtual void Print(ExcelPackage excel)
@@ -63,8 +67,18 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = Percision;
             i++;
 
+            ws.Cells[i, 1].Value = "Algorithm Name";
+            ws.Cells[i, 2].Value = AlgorithmName;
+            i++;
+
+            PrintAdditionals(ws, i);
+
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
 
+        }
+
+        protected virtual void PrintAdditionals(ExcelWorksheet ws, int i)
+        {
         }
     }
 }

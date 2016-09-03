@@ -19,6 +19,8 @@ namespace Implementation.Data_Structures
         IR_DR,
         IR_GR,
         Random,
-        RandomPlus
+        RandomPlus,
+        OG,
+        COG
     }
 }

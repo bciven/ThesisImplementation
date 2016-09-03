@@ -114,12 +114,12 @@ namespace Implementation.Dataset_Reader
                 {
                     graph.Edges.Add(nodeA, new List<int>());
                 }
-                //if (!graph.Edges.ContainsKey(nodeB))
-                //{
-                //    graph.Edges.Add(nodeB, new List<int>());
-                //}
+                if (!graph.Edges.ContainsKey(nodeB))
+                {
+                    graph.Edges.Add(nodeB, new List<int>());
+                }
                 graph.Edges[nodeA].Add(nodeB);
-                //graph.Edges[nodeB].Add(nodeA);
+                graph.Edges[nodeB].Add(nodeA);
             }
             return graph;
         }

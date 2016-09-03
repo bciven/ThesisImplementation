@@ -17,7 +17,7 @@ namespace Implementation.Algorithms
         private List<UserPairEvent> _queue;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
-        private CadgConf _conf => (CadgConf)Conf;
+        private SgConf _conf => (SgConf)Conf;
 
         public Sg(SgConf conf, IDataFeed dataFeeder)
         {

@@ -86,6 +86,10 @@ namespace Implementation.Experiment
                                                return AlgorithmEnum.Random;
                                            case "RANDOMPLUS":
                                                return AlgorithmEnum.RandomPlus;
+                                           case "OG":
+                                               return AlgorithmEnum.OG;
+                                           case "COG":
+                                               return AlgorithmEnum.COG;
                                        }
                                        throw new Exception("Wrong Experiment Type");
                                    }).ToList(),
@@ -206,6 +210,13 @@ namespace Implementation.Experiment
                 return new Random(ogConf, feed);
             }
 
+            if (configs[j] is OgConf)
+            {
+                var ogConf = (OgConf)configs[j];
+                var feed = CreateFeed(ogConf.FeedType, ogConf.InputFilePath, parameters);
+                return new Og(ogConf, feed);
+            }
+
             {
                 var sgConf = (SgConf)configs[j];
                 var feed = CreateFeed(sgConf.FeedType, sgConf.InputFilePath, parameters);
@@ -236,7 +247,24 @@ namespace Implementation.Experiment
             {
                 var algorithmEnum = parameters.ExpTypes[i];
                 var alg = (int) algorithmEnum;
-                if (algorithmEnum == AlgorithmEnum.RandomPlus)
+                if (algorithmEnum == AlgorithmEnum.OG || algorithmEnum == AlgorithmEnum.COG)
+                {
+                    var conf = new OgConf
+                    {
+                        NumberOfUsers = parameters.UserCount,
+                        NumberOfEvents = parameters.EventCount,
+                        InputFilePath = null,
+                        PrintOutEachStep = false,
+                        FeedType = FeedTypeEnum.SerialExperiment,
+                        Alpha = parameters.AlphaValue,
+                        AlgorithmName = ConvertToString(algorithmEnum),
+                        Parameters = parameters,
+                        CommunityAware = algorithmEnum == AlgorithmEnum.COG
+                    };
+
+                    configs.Add(conf);
+                }
+                else if (algorithmEnum == AlgorithmEnum.RandomPlus)
                 {
                     var conf = new RandomPlusConf();
                     var tcl = parameters.TakeChanceLimits[i] ?? parameters.EventCount;

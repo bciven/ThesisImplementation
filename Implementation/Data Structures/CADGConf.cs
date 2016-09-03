@@ -19,8 +19,6 @@ namespace Implementation.Data_Structures
         public bool LazyAdjustment { get; set; }
         public int NumberOfPhantomEvents { get; set; }
         public bool CommunityAware { get; set; }
-        public string AlgorithmName { get; set; }
-        public Parameters Parameters{ get; set; }
 
         public CadgConf()
         {
