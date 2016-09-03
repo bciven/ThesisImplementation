@@ -74,7 +74,16 @@ namespace ChartMaker
         {
             var ws = wb.Worksheets[6];
             var welfare = new AlgorithmWelfare();
-            welfare.Version = Convert.ToString(ws.Cells[16, 2].Value);
+            var algorithmIndex = 1;
+            for (; ; algorithmIndex++)
+            {
+                if (Convert.ToString(ws.Cells[algorithmIndex, 1].Value) == "Algorithm Name")
+                {
+                    break;
+                }
+            }
+
+            welfare.Version = Convert.ToString(ws.Cells[algorithmIndex, 2].Value);
             welfare.Alpha = Convert.ToDouble(ws.Cells[11, 2].Value);
             welfare.UserCount = Convert.ToInt32(ws.Cells[2, 2].Value);
             welfare.EventCount = Convert.ToInt32(ws.Cells[3, 2].Value);
