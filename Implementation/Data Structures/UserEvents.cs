@@ -8,37 +8,34 @@ namespace Implementation.Data_Structures
 {
     public class UserEvents
     {
-        private readonly int _numberOfEvents;
         public int User { get; set; }
-        private EventInterest[] EventInterests { get; set; }
+        private Dictionary<int, EventInterest> EventInterests { get; set; }
 
         public UserEvents(int user, int numberOfEvents)
         {
-            _numberOfEvents = numberOfEvents;
             User = user;
-            EventInterests = new EventInterest[numberOfEvents];
+            EventInterests = new Dictionary<int, EventInterest>(numberOfEvents);
         }
 
         public void AddEvent(int @event, double utility)
         {
-            EventInterests[@event] = new EventInterest
+            EventInterests.Add(@event, new EventInterest
             {
                 Event = @event,
                 Utility = utility
-            };
+            });
         }
 
         public EventInterest GetBestEvent()
         {
             double? maxVal = null; //nullable so this works even if you have all super-low negatives
             int index = -1;
-            for (int i = 0; i < EventInterests.Length; i++)
+            foreach (var eventInterest in EventInterests)
             {
-                var eventInterest = EventInterests[i];
-                if (!maxVal.HasValue || eventInterest.Utility > maxVal.Value)
+                if (!maxVal.HasValue || eventInterest.Value.Utility > maxVal.Value)
                 {
-                    maxVal = eventInterest.Utility;
-                    index = i;
+                    maxVal = eventInterest.Value.Utility;
+                    index = eventInterest.Key;
                 }
             }
             return EventInterests[index];
@@ -46,7 +43,10 @@ namespace Implementation.Data_Structures
 
         public void UpdateUserInterest(int @event, double newPriority)
         {
-            EventInterests[@event].Utility = newPriority;
+            if (EventInterests.ContainsKey(@event))
+            {
+                EventInterests[@event].Utility = newPriority;
+            }
         }
     }
 }

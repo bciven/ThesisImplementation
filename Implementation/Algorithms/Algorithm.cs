@@ -288,5 +288,25 @@ namespace Implementation.Algorithms
             var max = EventCapacity[@event].Max;
             return usersCount >= min && usersCount <= max;
         }
+
+        protected double Util(int @event, int user, bool communityAware)
+        {
+            var g = (1 - Conf.Alpha) * InAffinities[user][@event];
+
+            var s = Conf.Alpha * Assignments[@event].Sum(u => SocAffinities[user, u]);
+
+            g = g + s;
+
+            if (communityAware)
+            {
+                var assignedUsers = Assignments.SelectMany(x => x).ToList();
+                var users = AllUsers.Where(x => !UserAssignments[x].HasValue && !assignedUsers.Contains(x)).ToList();
+                s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(users.Count - 1, 1));
+
+                g = s + g;
+            }
+
+            return g;//Math.Round(g, Conf.Percision);
+        }
     }
 }

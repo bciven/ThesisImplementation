@@ -53,33 +53,63 @@ namespace Implementation.Algorithms
 
                 AdjustList(user, @event, assignmentMade);
 
-                //if (_queue.Count == 0)
-                //{
-                //    DynamicReassign();
-                //}
+                if (_queue.Count == 0)
+                {
+                    DynamicReassign();
+                }
             }
 
             //GreedyAssign();
         }
 
-        private double Util(int @event, int user)
+        private void DynamicReassign()
         {
-            var g = (1 - _conf.Alpha) * InAffinities[user][@event];
-
-            var s = _conf.Alpha * Assignments[@event].Sum(u => SocAffinities[user, u]);
-
-            g = g + s;
-
-            if (_conf.CommunityAware)
+            if (UserAssignments.Any(x => !x.HasValue))
             {
-                var assignedUsers = Assignments.SelectMany(x => x).ToList();
-                var users = AllUsers.Where(x => !UserAssignments[x].HasValue && !assignedUsers.Contains(x));
-                s = _conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * users.Sum(u => SocAffinities[user, u] + SocAffinities[u, user]) / (double)Math.Max(_users.Count - 1, 1);
+                List<int> availableUsers;
+                List<int> realOpenEvents;
+                PrepareReassignment(out availableUsers, out realOpenEvents);
+                if (realOpenEvents.Count == 0)
+                {
+                    return;
+                }
 
-                g = s + g;
+                foreach (var availableUser in availableUsers)
+                {
+                    var userInterest = new UserEvents(availableUser, realOpenEvents.Count);
+                    foreach (var @event in realOpenEvents)
+                    {
+                        var q = Util(@event, availableUser, _conf.CommunityAware);
+                        userInterest.AddEvent(@event, q);
+                    }
+                    _queue.Enqueue(userInterest);
+                }
+            }
+        }
+
+        private void PrepareReassignment(out List<int> availableUsers, out List<int> realOpenEvents)
+        {
+            var phantomEvents = AllEvents.Where(x => Assignments[x].Count < EventCapacity[x].Min).ToList();
+            realOpenEvents = AllEvents.Where(x => EventCapacity[x].Min <= Assignments[x].Count && Assignments[x].Count < EventCapacity[x].Max).ToList();
+            availableUsers = new List<int>();
+            for (int i = 0; i < UserAssignments.Count; i++)
+            {
+                if (UserAssignments[i] == null)
+                {
+                    availableUsers.Add(i);
+                }
             }
 
-            return Math.Round(g, _conf.Percision);
+            foreach (var phantomEvent in phantomEvents)
+            {
+                if (Assignments[phantomEvent].Count > 0)
+                {
+                    availableUsers.AddRange(Assignments[phantomEvent]);
+                    Assignments[phantomEvent].RemoveAll(x => true);
+                }
+            }
+            availableUsers = availableUsers.Distinct().OrderBy(x => x).ToList();
+            availableUsers.ForEach(x => _numberOfUserAssignments[x] = 0);
         }
 
         private void AdjustList(int user, int @event, bool assignmentMade)
@@ -110,7 +140,7 @@ namespace Implementation.Algorithms
             if (SocAffinities[user2, user1] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
-                var newPriority = Util(@event, user2);
+                var newPriority = Util(@event, user2, _conf.CommunityAware);
                 if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
                 {
                     foreach (var userInterest in _queue)
@@ -193,7 +223,7 @@ namespace Implementation.Algorithms
                     if (InAffinities[u][e] != 0)
                     {
                         gain = (1 - _conf.Alpha) * InAffinities[u][e];
-                        gain = Math.Round(gain, _conf.Percision);
+                        //gain = Math.Round(gain, _conf.Percision);
                     }
                     ue.AddEvent(e, gain);
                 }
