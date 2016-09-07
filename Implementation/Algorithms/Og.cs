@@ -79,7 +79,7 @@ namespace Implementation.Algorithms
                     var userInterest = new UserEvents(availableUser, realOpenEvents.Count);
                     foreach (var @event in realOpenEvents)
                     {
-                        var q = Util(@event, availableUser, _conf.CommunityAware);
+                        var q = Util(@event, availableUser, _conf.CommunityAware, _users);
                         userInterest.AddEvent(@event, q);
                     }
                     _queue.Enqueue(userInterest);
@@ -140,7 +140,7 @@ namespace Implementation.Algorithms
             if (SocAffinities[user2, user1] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
-                var newPriority = Util(@event, user2, _conf.CommunityAware);
+                var newPriority = Util(@event, user2, _conf.CommunityAware, _users);
                 if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
                 {
                     foreach (var userInterest in _queue)

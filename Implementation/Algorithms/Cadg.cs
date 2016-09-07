@@ -178,7 +178,7 @@ namespace Implementation.Algorithms
                 {
                     foreach (var availableUser in availableUsers)
                     {
-                        var q = Util(@event, availableUser, _conf.CommunityAware);
+                        var q = Util(@event, availableUser, _conf.CommunityAware, _users);
                         if (q > 0)
                         {
                             queue.AddOrUpdate(q, new UserEvent { User = availableUser, Event = @event });
@@ -213,7 +213,7 @@ namespace Implementation.Algorithms
                 {
                     foreach (var availableUser in availableUsers)
                     {
-                        var q = Util(@event, availableUser, _conf.CommunityAware);
+                        var q = Util(@event, availableUser, _conf.CommunityAware, _users);
                         _queue.AddOrUpdate(q, new UserEvent { User = availableUser, Event = @event });
                     }
                 }
@@ -303,7 +303,7 @@ namespace Implementation.Algorithms
 
             foreach (var ue in userEvents)
             {
-                var newPriority = Util(ue.Event, ue.User, _conf.CommunityAware);
+                var newPriority = Util(ue.Event, ue.User, _conf.CommunityAware, _users);
                 _queue.AddOrUpdate(newPriority, ue);
                 foreach (var user in AllUsers)
                 {
@@ -335,7 +335,7 @@ namespace Implementation.Algorithms
             if (SocAffinities[user1, user2] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
-                var newPriority = Util(@event, user2, _conf.CommunityAware);
+                var newPriority = Util(@event, user2, _conf.CommunityAware, _users);
                 if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
                 {
                     _queue.AddOrUpdate(newPriority, new UserEvent { User = user2, Event = @event });
