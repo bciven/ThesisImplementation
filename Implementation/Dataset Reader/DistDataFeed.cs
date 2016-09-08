@@ -108,8 +108,8 @@ namespace Implementation.Dataset_Reader
             foreach (var line in lines)
             {
                 var edge = line.Split(new[] { ',' });
-                int nodeA = Convert.ToInt32(edge[0]) - 1;
-                int nodeB = Convert.ToInt32(edge[1]) - 1;
+                int nodeA = Convert.ToInt32(edge[0]);
+                int nodeB = Convert.ToInt32(edge[1]);
                 if (nodeA == nodeB)
                 {
                     continue;
@@ -119,12 +119,12 @@ namespace Implementation.Dataset_Reader
                 {
                     graph.Edges.Add(nodeA, new List<int>());
                 }
-                if (!graph.Edges.ContainsKey(nodeB))
-                {
-                    graph.Edges.Add(nodeB, new List<int>());
-                }
+                //if (!graph.Edges.ContainsKey(nodeB))
+                //{
+                //    graph.Edges.Add(nodeB, new List<int>());
+                //}
                 graph.Edges[nodeA].Add(nodeB);
-                graph.Edges[nodeB].Add(nodeA);
+                //graph.Edges[nodeB].Add(nodeA);
             }
             return graph;
         }
@@ -206,8 +206,9 @@ namespace Implementation.Dataset_Reader
                 foreach (var nodeB in edge.Value)
                 {
                     var r = GenerateNormalRandom(0);
-                    r = Math.Round(r, 2);
-                    usersInterests[nodeA, nodeB] = r;
+                    //r = Math.Round(r, 2);
+                    usersInterests[nodeA - 1, nodeB - 1] = r;
+                    usersInterests[nodeB - 1, nodeA - 1] = r;
                 }
             }
 

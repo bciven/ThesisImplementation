@@ -223,7 +223,10 @@ namespace Implementation.Algorithms
         private void PrepareReassignment(out List<int> availableUsers, out List<int> realOpenEvents)
         {
             var phantomEvents = AllEvents.Where(x => Assignments[x].Count < EventCapacity[x].Min).ToList();
-            realOpenEvents = AllEvents.Where(x => EventCapacity[x].Min <= Assignments[x].Count && Assignments[x].Count < EventCapacity[x].Max).ToList();
+            realOpenEvents =
+                AllEvents.Where(
+                    x => EventCapacity[x].Min <= Assignments[x].Count && Assignments[x].Count < EventCapacity[x].Max)
+                    .ToList();
             availableUsers = new List<int>();
             for (int i = 0; i < UserAssignments.Count; i++)
             {
@@ -239,10 +242,19 @@ namespace Implementation.Algorithms
                 {
                     availableUsers.AddRange(Assignments[phantomEvent]);
                     Assignments[phantomEvent].RemoveAll(x => true);
+                    if (_conf.PhantomAware)
+                    {
+                        _eventDeficitContribution[phantomEvent] = 0;
+                    }
                 }
             }
             availableUsers = availableUsers.Distinct().OrderBy(x => x).ToList();
+            _users.AddRange(availableUsers);
             availableUsers.ForEach(x => _numberOfUserAssignments[x] = 0);
+            if (_conf.PhantomAware)
+            {
+                _deficit = 0;
+            }
         }
 
         private void AdjustList(List<int> affectedEvents, int user, int @event, bool assignmentMade)
