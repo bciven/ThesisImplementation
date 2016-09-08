@@ -108,8 +108,8 @@ namespace Implementation.Dataset_Reader
             foreach (var line in lines)
             {
                 var edge = line.Split(new[] { ',' });
-                int nodeA = Convert.ToInt32(edge[0]);
-                int nodeB = Convert.ToInt32(edge[1]);
+                int nodeA = Convert.ToInt32(edge[0]) - 1;
+                int nodeB = Convert.ToInt32(edge[1]) - 1;
                 if (nodeA == nodeB)
                 {
                     continue;
@@ -207,8 +207,8 @@ namespace Implementation.Dataset_Reader
                 {
                     var r = GenerateNormalRandom(0);
                     //r = Math.Round(r, 2);
-                    usersInterests[nodeA - 1, nodeB - 1] = r;
-                    usersInterests[nodeB - 1, nodeA - 1] = r;
+                    usersInterests[nodeA, nodeB] = r;
+                    usersInterests[nodeB, nodeA] = r;
                 }
             }
 
