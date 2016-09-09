@@ -1,6 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-<Experiment count="4">
+  <Experiment count="1">
+    <users count="20" />
+    <events count="4" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" />
+    <exptypes>
+      <type>PADG_DR</type>
+      <type>PCADG_DR</type>
+    </exptypes>
+  </Experiment>
+  
+<!--<Experiment count="4">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -282,5 +298,5 @@
       <type>OG</type>
       <type>COG</type>
     </exptypes>
-  </Experiment>
+  </Experiment>-->
 </Experiments>

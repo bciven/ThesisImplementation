@@ -51,7 +51,7 @@ namespace Implementation.Algorithms
                     {
                         if (Assignments[@event].Count == 0)
                         {
-                            if (_eventDeficitContribution.Sum(x => x) + minCapacity <= _users.Count)
+                            if ((_conf.DeficitFix && _eventDeficitContribution.Sum(x => x) + minCapacity <= _users.Count) || (_deficit + minCapacity <= _users.Count))
                             {
                                 if (!_conf.DeficitFix)
                                 {
