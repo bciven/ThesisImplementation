@@ -19,6 +19,7 @@ namespace Implementation.Data_Structures
         public bool LazyAdjustment { get; set; }
         public int NumberOfPhantomEvents { get; set; }
         public bool CommunityAware { get; set; }
+        public bool CommunityFix { get; set; }
 
         public CadgConf()
         {
@@ -38,6 +39,7 @@ namespace Implementation.Data_Structures
             LazyAdjustment = false;
             CommunityAware = false;
             AlgorithmName = null;
+            CommunityFix = false;
         }
 
         public override void Print(ExcelPackage excel)
@@ -110,6 +112,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Greedy Reassign";
             ws.Cells[i, 2].Value = GreedyReassign;
+            i++;
+
+            ws.Cells[i, 1].Value = "Community Fix";
+            ws.Cells[i, 2].Value = CommunityFix;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
 

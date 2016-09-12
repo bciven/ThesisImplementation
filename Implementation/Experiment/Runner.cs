@@ -33,8 +33,9 @@ namespace Implementation.Experiment
                                let mincard = exp.Element("mincard")
                                let snmodel = exp.Element("snmodel")
                                let eventinterestperct = exp.Element("eventinterestperct")
+                               let communityfix = exp.Element("communityfix")
                                where users != null && events != null && alpha != null &&
-                                     capmean != null && capvar != null && sndensity != null
+                                     capmean != null && capvar != null && sndensity != null && communityfix != null
                                select new Parameters
                                {
                                    ExpCount = Convert.ToInt32(exp.Attribute("count").Value),
@@ -47,6 +48,7 @@ namespace Implementation.Experiment
                                    SndensityValue = Convert.ToDouble(sndensity.Attribute("value").Value),
                                    MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
                                    SocialNetworkModel = (SocialNetworkModel)Convert.ToInt32(snmodel.Attribute("value").Value),
+                                   CommunityFix = Convert.ToBoolean(Convert.ToInt32(communityfix.Attribute("value").Value)),
                                    TakeChanceLimits = exptypes.Descendants("type").Select(x =>
                                    {
                                        var takechancelimit = x.Attribute("TakeChanceLimit");
@@ -259,7 +261,8 @@ namespace Implementation.Experiment
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
-                        CommunityAware = algorithmEnum == AlgorithmEnum.COG
+                        CommunityAware = algorithmEnum == AlgorithmEnum.COG,
+                        CommunityFix = parameters.CommunityFix
                     };
 
                     configs.Add(conf);
@@ -331,7 +334,8 @@ namespace Implementation.Experiment
                         CommunityAware = IRC || PCADG,
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
-                        Parameters = parameters
+                        Parameters = parameters,
+                        CommunityFix = parameters.CommunityFix
                     };
 
                     configs.Add(conf);

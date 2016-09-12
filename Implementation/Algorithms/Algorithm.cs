@@ -289,7 +289,7 @@ namespace Implementation.Algorithms
             return usersCount >= min && usersCount <= max;
         }
 
-        protected double Util(int @event, int user, bool communityAware, List<int> users)
+        protected double Util(int @event, int user, bool communityAware, bool communityFix, List<int> users)
         {
             var g = (1 - Conf.Alpha) * InAffinities[user][@event];
 
@@ -301,7 +301,19 @@ namespace Implementation.Algorithms
             {
                 //var assignedUsers = Assignments.SelectMany(x => x).ToList();
                 //var users = AllUsers.Where(x => !UserAssignments[x].HasValue && !assignedUsers.Contains(x)).ToList();
-                s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(users.Count - 1, 1));
+                if (!communityFix)
+                {
+                    s = Conf.Alpha*(EventCapacity[@event].Max - Assignments[@event].Count)*
+                        (users.Sum(u => SocAffinities[user, u])/(double) Math.Max(users.Count - 1, 1));
+                }
+                else
+                {
+                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
+                        (users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(users.Count - 1, 1));
+
+                    s += Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
+                        (users.Sum(u => InAffinities[u][@event]) / (double)Math.Max(users.Count - 1, 1));
+                }
 
                 g = s + g;
                 /*var firstNotSecond = usersints.Except(users).ToList();

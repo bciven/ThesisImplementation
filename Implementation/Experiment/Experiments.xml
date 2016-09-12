@@ -1,31 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="1">
-    <users count="20" />
-    <events count="4" />
-    <alpha value="0.5" />
-    <capmean value="20" />
-    <capvar value="10" />
-    <mincard value="0" />
-    <sndensity value="0" />
-    <eventinterestperct value="5" />
-    <snmodel value="0" />
-    <exptypes>
-      <type>PADG_DR</type>
-      <type>PCADG_DR</type>
-    </exptypes>
-  </Experiment>
-  
-<!--<Experiment count="4">
+<Experiment count="10">
     <users count="500" />
-    <events count="10" />
+    <events count="50" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capvar value="10" />
     <mincard value="0" />
     <sndensity value="0" />
     <eventinterestperct value="5" />
-    <snmodel value="0" />
+    <snmodel value="2" />
+    <communityfix value="0" />
     <exptypes>
       <type>DG_GR</type>
       <type>DG_DR</type>
@@ -44,16 +29,17 @@
       <type>COG</type>
     </exptypes>
   </Experiment>
-  <Experiment count="4">
+  <Experiment count="10">
     <users count="500" />
-    <events count="25" />
+    <events count="50" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capvar value="10" />
     <mincard value="0" />
     <sndensity value="0" />
     <eventinterestperct value="5" />
-    <snmodel value="0" />
+    <snmodel value="2" />
+    <communityfix value="1" />
     <exptypes>
       <type>DG_GR</type>
       <type>DG_DR</type>
@@ -72,7 +58,67 @@
       <type>COG</type>
     </exptypes>
   </Experiment>
-  <Experiment count="4">
+
+  <Experiment count="10">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" />
+    <communityfix value="0" />
+    <exptypes>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
+      <type>Random</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
+      <type>OG</type>
+      <type>COG</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="10">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" />
+    <communityfix value="1" />
+    <exptypes>
+      <type>DG_GR</type>
+      <type>DG_DR</type>
+      <type>PADG_GR</type>
+      <type>PADG_DR</type>
+      <type>PCADG_GR</type>
+      <type>PCADG_DR</type>
+      <type>IR_GR</type>
+      <type>IR_DR</type>
+      <type>IRC_GR</type>
+      <type>IRC_DR</type>
+      <type >Random</type>
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
+      <type>OG</type>
+      <type>COG</type>
+    </exptypes>
+  </Experiment>
+  
+  <!--  <Experiment count="1">
     <users count="500" />
     <events count="35" />
     <alpha value="0.5" />
@@ -81,7 +127,7 @@
     <mincard value="0" />
     <sndensity value="0" />
     <eventinterestperct value="5" />
-    <snmodel value="0" />
+    <snmodel value="2" />
     <exptypes>
       <type>DG_GR</type>
       <type>DG_DR</type>
@@ -101,7 +147,7 @@
     </exptypes>
   </Experiment>
 
-  <Experiment count="4">
+<Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -110,7 +156,7 @@
     <mincard value="2" />
     <sndensity value="0" />
     <eventinterestperct value="5" />
-    <snmodel value="0" />
+    <snmodel value="2" />
     <exptypes>
       <type>DG_GR</type>
       <type>DG_DR</type>
@@ -129,7 +175,7 @@
       <type>COG</type>
     </exptypes>
   </Experiment>
-  <Experiment count="4">
+  <Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -138,7 +184,7 @@
     <mincard value="4" />
     <sndensity value="0" />
     <eventinterestperct value="5" />
-    <snmodel value="0" />
+    <snmodel value="2" />
     <exptypes>
       <type>DG_GR</type>
       <type>DG_DR</type>
@@ -157,7 +203,7 @@
       <type>COG</type>
     </exptypes>
   </Experiment>
-  <Experiment count="4">
+  <Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -166,7 +212,7 @@
     <mincard value="8" />
     <sndensity value="0" />
     <eventinterestperct value="5" />
-    <snmodel value="0" />
+    <snmodel value="2" />
     <exptypes>
       <type>DG_GR</type>
       <type>DG_DR</type>
@@ -186,7 +232,7 @@
     </exptypes>
   </Experiment>
 
-  <Experiment count="4">
+  <Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -214,7 +260,7 @@
       <type>COG</type>
     </exptypes>
   </Experiment>
-  <Experiment count="4">
+  <Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -242,7 +288,7 @@
       <type>COG</type>
     </exptypes>
   </Experiment>
-  <Experiment count="4">
+  <Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -271,7 +317,7 @@
     </exptypes>
   </Experiment>
 
-  <Experiment count="4">
+  <Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />

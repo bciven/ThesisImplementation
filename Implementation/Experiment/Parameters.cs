@@ -20,5 +20,6 @@ namespace Implementation.Experiment
         public List<AlgorithmEnum> ExpTypes { get; set; }
         public MinCardinalityOptions MinCardinalityOption { get; set; }
         public SocialNetworkModel SocialNetworkModel { get; set; }
+        public bool CommunityFix { get; set; }
     }
 }

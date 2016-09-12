@@ -51,7 +51,7 @@ namespace Implementation.Algorithms
                     UserAssignments[user] = @event;
                 }
 
-                AdjustList(user, @event, assignmentMade);
+                //AdjustList(user, @event, assignmentMade);
 
                 if (_queue.Count == 0)
                 {
@@ -79,7 +79,7 @@ namespace Implementation.Algorithms
                     var userInterest = new UserEvents(availableUser, realOpenEvents.Count);
                     foreach (var @event in realOpenEvents)
                     {
-                        var q = Util(@event, availableUser, _conf.CommunityAware, _users);
+                        var q = Util(@event, availableUser, _conf.CommunityAware, _conf.CommunityFix, _users);
                         userInterest.AddEvent(@event, q);
                     }
                     _queue.Enqueue(userInterest);
@@ -140,7 +140,7 @@ namespace Implementation.Algorithms
             if (SocAffinities[user2, user1] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
-                var newPriority = Util(@event, user2, _conf.CommunityAware, _users);
+                var newPriority = Util(@event, user2, _conf.CommunityAware, _conf.CommunityFix, _users);
                 if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
                 {
                     foreach (var userInterest in _queue)
@@ -220,11 +220,12 @@ namespace Implementation.Algorithms
                 foreach (var e in _events)
                 {
                     var gain = 0d;
-                    if (InAffinities[u][e] != 0)
+                    gain = (1 - _conf.Alpha) * InAffinities[u][e];
+                    if (_conf.CommunityAware && _conf.CommunityFix)
                     {
-                        gain = (1 - _conf.Alpha) * InAffinities[u][e];
-                        //gain = Math.Round(gain, _conf.Percision);
+                        gain += _users.OrderBy(x=> InAffinities[x][e]).Take(EventCapacity[e].Max).Sum(x => SocAffinities[u, x] + SocAffinities[x, u]);
                     }
+                    //gain = Math.Round(gain, _conf.Percision);
                     ue.AddEvent(e, gain);
                 }
                 _queue.Enqueue(ue);

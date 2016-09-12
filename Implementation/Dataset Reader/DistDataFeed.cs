@@ -13,7 +13,8 @@ namespace Implementation.Dataset_Reader
     {
         private readonly DistDataParams _distDataParams;
         private readonly Normal _maxGenerator;
-        private readonly Normal _normalRandomGenerator;
+        private readonly Normal _innateNormalRandomGenerator;
+        private readonly Normal _socialNormalRandomGenerator;
 
         //public DistDataFeed()
         //{
@@ -27,7 +28,8 @@ namespace Implementation.Dataset_Reader
             _distDataParams = distDataParams;
             var rand = new Random();
             _maxGenerator = Normal.WithMeanVariance(_distDataParams.CapacityMean, _distDataParams.CapacityVariance, rand);
-            _normalRandomGenerator = Normal.WithMeanVariance(1.5, 3, rand);
+            _innateNormalRandomGenerator = Normal.WithMeanVariance(1.5, 3, rand);
+            _socialNormalRandomGenerator = Normal.WithMeanVariance(1.5, 3, rand);
         }
 
         private Graph GenerateEventGraph(int userNumber, int eventNumber)
@@ -54,11 +56,46 @@ namespace Implementation.Dataset_Reader
             {
                 case SocialNetworkModel.PowerLawModel:
                     return PowerLawModel(userCount);
+                case SocialNetworkModel.BarabasiAlbertModel:
+                    return BarabasiAlbertModel(userCount);
                 case SocialNetworkModel.ErdosModel:
                     return ErdosModel(userCount);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private Graph BarabasiAlbertModel(int userCount)
+        {
+            List<string> lines;
+            using (WebClient client = new WebClient())
+            {
+                var ip = ConfigurationManager.AppSettings["IP"];
+                var csv = client.DownloadString(ip + $"/barabasialbert/{userCount}");
+                lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            }
+
+            //var lines = File.ReadAllLines("graph.csv");
+
+            Graph graph = new Graph();
+
+            foreach (var line in lines)
+            {
+                var edge = line.Split(new[] { ',' });
+                int nodeA = Convert.ToInt32(edge[0]) - 1;
+                int nodeB = Convert.ToInt32(edge[1]) - 1;
+                if (nodeA == nodeB)
+                {
+                    continue;
+                }
+
+                if (!graph.Edges.ContainsKey(nodeA))
+                {
+                    graph.Edges.Add(nodeA, new List<int>());
+                }
+                graph.Edges[nodeA].Add(nodeB);
+            }
+            return graph;
         }
 
         private Graph ErdosModel(int userCount)
@@ -97,7 +134,7 @@ namespace Implementation.Dataset_Reader
             using (WebClient client = new WebClient())
             {
                 var ip = ConfigurationManager.AppSettings["IP"];
-                var csv = client.DownloadString(ip + $"/getgraph/{userCount}");
+                var csv = client.DownloadString(ip + $"/powerlaw/{userCount}");
                 lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             }
 
@@ -119,12 +156,12 @@ namespace Implementation.Dataset_Reader
                 {
                     graph.Edges.Add(nodeA, new List<int>());
                 }
-                //if (!graph.Edges.ContainsKey(nodeB))
-                //{
-                //    graph.Edges.Add(nodeB, new List<int>());
-                //}
+                if (!graph.Edges.ContainsKey(nodeB))
+                {
+                    graph.Edges.Add(nodeB, new List<int>());
+                }
                 graph.Edges[nodeA].Add(nodeB);
-                //graph.Edges[nodeB].Add(nodeA);
+                graph.Edges[nodeB].Add(nodeA);
             }
             return graph;
         }
@@ -183,7 +220,7 @@ namespace Implementation.Dataset_Reader
                     {
                         //double r = 1.0 / Math.Pow(1 - _rand.NextDouble(), 1.5);
                         //r = Math.Round(r, 2);
-                        userInterests.Add(GenerateNormalRandom(0));
+                        userInterests.Add(GenerateInnateAffinity(0));
                     }
                     else
                     {
@@ -205,10 +242,13 @@ namespace Implementation.Dataset_Reader
                 var nodeA = edge.Key;
                 foreach (var nodeB in edge.Value)
                 {
-                    var r = GenerateNormalRandom(0);
+                    var r = GenerateSocialAffinity(0);
                     //r = Math.Round(r, 2);
                     usersInterests[nodeA, nodeB] = r;
-                    usersInterests[nodeB, nodeA] = r;
+                    if (_distDataParams.SocialNetworkModel != SocialNetworkModel.BarabasiAlbertModel)
+                    {
+                        usersInterests[nodeB, nodeA] = r;
+                    }
                 }
             }
 
@@ -220,9 +260,15 @@ namespace Implementation.Dataset_Reader
             throw new NotImplementedException();
         }
 
-        private double GenerateNormalRandom(double minimum)
+        private double GenerateInnateAffinity(double minimum)
         {
-            var normalDist = _normalRandomGenerator.Sample();
+            var normalDist = _innateNormalRandomGenerator.Sample();
+            return normalDist < Math.Pow(10, -5) ? minimum : normalDist;
+        }
+
+        private double GenerateSocialAffinity(double minimum)
+        {
+            var normalDist = _socialNormalRandomGenerator.Sample();
             return normalDist < Math.Pow(10, -5) ? minimum : normalDist;
         }
 
