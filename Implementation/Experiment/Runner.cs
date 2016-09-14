@@ -33,9 +33,8 @@ namespace Implementation.Experiment
                                let mincard = exp.Element("mincard")
                                let snmodel = exp.Element("snmodel")
                                let eventinterestperct = exp.Element("eventinterestperct")
-                               let communityfix = exp.Element("communityfix")
                                where users != null && events != null && alpha != null &&
-                                     capmean != null && capvar != null && sndensity != null && communityfix != null
+                                     capmean != null && capvar != null && sndensity != null
                                select new Parameters
                                {
                                    ExpCount = Convert.ToInt32(exp.Attribute("count").Value),
@@ -48,52 +47,64 @@ namespace Implementation.Experiment
                                    SndensityValue = Convert.ToDouble(sndensity.Attribute("value").Value),
                                    MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
                                    SocialNetworkModel = (SocialNetworkModel)Convert.ToInt32(snmodel.Attribute("value").Value),
-                                   CommunityFix = Convert.ToBoolean(Convert.ToInt32(communityfix.Attribute("value").Value)),
-                                   TakeChanceLimits = exptypes.Descendants("type").Select(x =>
-                                   {
-                                       var takechancelimit = x.Attribute("TakeChanceLimit");
-                                       if (takechancelimit != null)
-                                       {
-                                           return Convert.ToInt32(takechancelimit.Value);
-                                       }
-
-                                       return (int?)null;
-                                   }).ToList(),
                                    ExpTypes = exptypes.Descendants("type").Select(x =>
                                    {
+                                       var communityfix = x.Attribute("CommunityFix") != null && Convert.ToBoolean(x.Attribute("CommunityFix").Value);
+                                       var reassignment = AlgorithmSpec.ReassignmentEnum.None;
+                                       if(x.Attribute("Reassignment") != null)
+                                       {
+                                           reassignment = x.Attribute("Reassignment").Value == "dynamic"
+                                               ? AlgorithmSpec.ReassignmentEnum.Dynamic
+                                               : AlgorithmSpec.ReassignmentEnum.Greedy;
+                                       }
+                                       int? takechancelimit = null;
+                                       if (x.Attribute("TakeChanceLimit") != null)
+                                       {
+                                           takechancelimit = Convert.ToInt32(x.Attribute("TakeChanceLimit").Value);
+                                       }
+
+                                       var algspec = new AlgorithmSpec
+                                       {
+                                           CommunityFix = communityfix,
+                                           Reassignment = reassignment,
+                                           TakeChanceLimit = takechancelimit
+                                       };
+
                                        switch (x.Value.ToUpper())
                                        {
-                                           case "IR_DR":
-                                               return AlgorithmEnum.IR_DR;
-                                           case "IR_GR":
-                                               return AlgorithmEnum.IR_GR;
-                                           case "IRC_DR":
-                                               return AlgorithmEnum.IRC_DR;
-                                           case "IRC_GR":
-                                               return AlgorithmEnum.IRC_GR;
-                                           case "DG_DR":
-                                               return AlgorithmEnum.DG_DR;
-                                           case "DG_GR":
-                                               return AlgorithmEnum.DG_GR;
-                                           case "PADG_DR":
-                                               return AlgorithmEnum.PADG_DR;
-                                           case "PADG_GR":
-                                               return AlgorithmEnum.PADG_GR;
-                                           case "PCADG_DR":
-                                               return AlgorithmEnum.PCADG_DR;
-                                           case "PCADG_GR":
-                                               return AlgorithmEnum.PCADG_GR;
+                                           case "IR":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.IR;
+                                               break;
+                                           case "IRC":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.IRC;
+                                               break;
+                                           case "DG":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.DG;
+                                               break;
+                                           case "PADG":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.PADG;
+                                               break;
+                                           case "PCADG":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.PCADG;
+                                               break;
 
                                            case "RANDOM":
-                                               return AlgorithmEnum.Random;
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.Random;
+                                               break;
                                            case "RANDOMPLUS":
-                                               return AlgorithmEnum.RandomPlus;
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.RandomPlus;
+                                               break;
                                            case "OG":
-                                               return AlgorithmEnum.OG;
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.OG;
+                                               break;
                                            case "COG":
-                                               return AlgorithmEnum.COG;
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.COG;
+                                               break;
+                                           default:
+                                               throw new Exception("Wrong Experiment Type");
                                        }
-                                       throw new Exception("Wrong Experiment Type");
+                                       return algspec;
+
                                    }).ToList(),
                                    ExperimentFile = experimentFile
                                }).ToList();
@@ -164,7 +175,7 @@ namespace Implementation.Experiment
                         SetInputFile(serial, round, configs);
                         var algorithm = CreateAlgorithm(configs, round, parameters);
                         var output = CreateOutputFileInfo(configs, numOfExp, i, round, dir);
-                        Run(i, algorithm, output, parameters.ExpTypes[round]);
+                        Run(i, algorithm, output, parameters.ExpTypes[round].Algorithm);
                     }
                 }
             }
@@ -247,9 +258,9 @@ namespace Implementation.Experiment
             var configs = new List<SgConf>();
             for (int i = 0; i < parameters.ExpTypes.Count; i++)
             {
-                var algorithmEnum = parameters.ExpTypes[i];
-                var alg = (int) algorithmEnum;
-                if (algorithmEnum == AlgorithmEnum.OG || algorithmEnum == AlgorithmEnum.COG)
+                var algorithmEnum = parameters.ExpTypes[i].Algorithm;
+                var alg = (int)algorithmEnum;
+                if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.OG || algorithmEnum == AlgorithmSpec.AlgorithmEnum.COG)
                 {
                     var conf = new OgConf
                     {
@@ -261,16 +272,16 @@ namespace Implementation.Experiment
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
-                        CommunityAware = algorithmEnum == AlgorithmEnum.COG,
-                        CommunityFix = parameters.CommunityFix
+                        CommunityAware = algorithmEnum == AlgorithmSpec.AlgorithmEnum.COG,
+                        CommunityFix = parameters.ExpTypes[i].CommunityFix
                     };
 
                     configs.Add(conf);
                 }
-                else if (algorithmEnum == AlgorithmEnum.RandomPlus)
+                else if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.RandomPlus)
                 {
                     var conf = new RandomPlusConf();
-                    var tcl = parameters.TakeChanceLimits[i] ?? parameters.EventCount;
+                    var tcl = parameters.ExpTypes[i].TakeChanceLimit ?? parameters.EventCount;
 
                     conf = new RandomPlusConf
                     {
@@ -288,7 +299,7 @@ namespace Implementation.Experiment
 
                     configs.Add(conf);
                 }
-                else if (algorithmEnum == AlgorithmEnum.Random)
+                else if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.Random)
                 {
                     var conf = new RandomConf();
                     conf = new RandomConf
@@ -309,13 +320,11 @@ namespace Implementation.Experiment
                 else
                 {
                     var conf = new CadgConf();
-                    var DG = alg == (int) AlgorithmEnum.DG_DR || alg == (int) AlgorithmEnum.DG_GR;
-                    var PCADG = alg == (int)AlgorithmEnum.PCADG_DR || alg == (int)AlgorithmEnum.PCADG_GR;
-                    var PADG = alg == (int)AlgorithmEnum.PADG_DR || alg == (int)AlgorithmEnum.PADG_GR;
-                    var IR = alg == (int)AlgorithmEnum.IR_DR || alg == (int)AlgorithmEnum.IR_GR;
-                    var IRC = alg == (int)AlgorithmEnum.IRC_DR || alg == (int)AlgorithmEnum.IRC_GR;
-                    var dynamicReassgin = ConvertToString(algorithmEnum).Contains("DR");
-                    var greedyReassgin = ConvertToString(algorithmEnum).Contains("GR");
+                    var DG = alg == (int)AlgorithmSpec.AlgorithmEnum.DG;
+                    var PCADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PCADG;
+                    var PADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PADG;
+                    var IR = alg == (int)AlgorithmSpec.AlgorithmEnum.IR;
+                    var IRC = alg == (int)AlgorithmSpec.AlgorithmEnum.IRC;
 
                     conf = new CadgConf
                     {
@@ -325,8 +334,7 @@ namespace Implementation.Experiment
                         PhantomAware = !DG,
                         PostInitializationInsert = true,
                         ImmediateReaction = IR || IRC,
-                        DynamicReassign = dynamicReassgin,
-                        GreedyReassign = greedyReassgin,
+                        Reassignment = parameters.ExpTypes[i].Reassignment,
                         DeficitFix = IR || IRC,
                         LazyAdjustment = false,
                         PrintOutEachStep = false,
@@ -335,7 +343,7 @@ namespace Implementation.Experiment
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
-                        CommunityFix = parameters.CommunityFix
+                        CommunityFix = parameters.ExpTypes[i].CommunityFix
                     };
 
                     configs.Add(conf);
@@ -479,7 +487,7 @@ namespace Implementation.Experiment
                     Console.WriteLine("|1.Phantom Awareness           |");
                     Console.WriteLine("|2.Post Initialization Insert  |");
                     Console.WriteLine("|3.Immediate Reaction          |");
-                    Console.WriteLine("|4.Reassignment                |");
+                    Console.WriteLine("|4.Dynamic Reassignment        |");
                     Console.WriteLine("|5.Deficit Fix                 |");
                     Console.WriteLine("|6.Agile Adjustment            |");
                     Console.WriteLine("|7.Community Aware             |");
@@ -500,7 +508,7 @@ namespace Implementation.Experiment
                             PhantomAware = input.Contains("1"),
                             PostInitializationInsert = input.Contains("2"),
                             ImmediateReaction = input.Contains("3"),
-                            DynamicReassign = input.Contains("4"),
+                            Reassignment = input.Contains("4") ? AlgorithmSpec.ReassignmentEnum.Dynamic : AlgorithmSpec.ReassignmentEnum.Greedy,
                             DeficitFix = input.Contains("5"),
                             LazyAdjustment = !input.Contains("6"),
                             CommunityAware = !input.Contains("7"),
@@ -532,7 +540,7 @@ namespace Implementation.Experiment
             Console.WriteLine();
         }
 
-        private void Run(int round, Algorithm<List<UserEvent>> alg, FileInfo output, AlgorithmEnum algorithmEnum)
+        private void Run(int round, Algorithm<List<UserEvent>> alg, FileInfo output, AlgorithmSpec.AlgorithmEnum algorithmEnum)
         {
             Console.WriteLine("....Round {0}-{1}....", round, ConvertToString(algorithmEnum));
             alg.Initialize();

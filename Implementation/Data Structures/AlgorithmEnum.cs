@@ -6,21 +6,33 @@ using System.Threading.Tasks;
 
 namespace Implementation.Data_Structures
 {
-    public enum AlgorithmEnum
+    public class AlgorithmSpec
     {
-        DG_DR,
-        DG_GR,
-        PADG_DR,
-        PADG_GR,
-        PCADG_DR,
-        PCADG_GR,
-        IRC_DR,
-        IRC_GR,
-        IR_DR,
-        IR_GR,
-        Random,
-        RandomPlus,
-        OG,
-        COG
+        public ReassignmentEnum Reassignment { get; set; }
+
+        public enum ReassignmentEnum
+        {
+            None,
+            Dynamic,
+            Greedy
+        }
+
+        public int? TakeChanceLimit { get; set; }
+        public bool CommunityFix { get; set; }
+
+        public AlgorithmEnum Algorithm { get; set; }
+
+        public enum AlgorithmEnum
+        {
+            DG,
+            PADG,
+            PCADG,
+            IRC,
+            IR,
+            Random,
+            RandomPlus,
+            OG,
+            COG
+        }
     }
 }

@@ -11,8 +11,7 @@ namespace Implementation.Data_Structures
     public class CadgConf : SgConf
     {
         public bool ImmediateReaction { get; set; }
-        public bool DynamicReassign { get; set; }
-        public bool GreedyReassign { get; set; }
+        public AlgorithmSpec.ReassignmentEnum Reassignment { get; set; }
         public bool PhantomAware { get; set; }
         public bool DeficitFix { get; set; }
         public bool PostInitializationInsert { get; set; }
@@ -26,8 +25,7 @@ namespace Implementation.Data_Structures
             NumberOfUsers = 10;
             NumberOfEvents = 4;
             ImmediateReaction = false;
-            DynamicReassign = false;
-            GreedyReassign = false;
+            Reassignment = AlgorithmSpec.ReassignmentEnum.None;
             PrintOutEachStep = false;
             InputFilePath = null;
             PhantomAware = false;
@@ -61,8 +59,8 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = ImmediateReaction;
             i++;
 
-            ws.Cells[i, 1].Value = "Dynamic Reassign";
-            ws.Cells[i, 2].Value = DynamicReassign;
+            ws.Cells[i, 1].Value = "Reassignment Type";
+            ws.Cells[i, 2].Value = Reassignment;
             i++;
 
             ws.Cells[i, 1].Value = "Print Each Step";
@@ -108,10 +106,6 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Algorithm Name";
             ws.Cells[i, 2].Value = AlgorithmName;
-            i++;
-
-            ws.Cells[i, 1].Value = "Greedy Reassign";
-            ws.Cells[i, 2].Value = GreedyReassign;
             i++;
 
             ws.Cells[i, 1].Value = "Community Fix";

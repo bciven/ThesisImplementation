@@ -1,120 +1,80 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-<Experiment count="10">
+<Experiment count="60">
     <users count="500" />
-    <events count="50" />
+    <events count="30" />
     <alpha value="0.5" />
-    <capmean value="20" />
-    <capvar value="10" />
+    <capmean value="30" />
+    <capvar value="20" />
     <mincard value="0" />
     <sndensity value="0" />
     <eventinterestperct value="5" />
-    <snmodel value="2" />
+    <snmodel value="0" />
     <communityfix value="0" />
     <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
-      <type>Random</type>
-      <type TakeChanceLimit="5">RandomPlus</type>
-      <type>RandomPlus</type>
-      <type>OG</type>
-      <type>COG</type>
-    </exptypes>
-  </Experiment>
-  <Experiment count="10">
-    <users count="500" />
-    <events count="50" />
-    <alpha value="0.5" />
-    <capmean value="20" />
-    <capvar value="10" />
-    <mincard value="0" />
-    <sndensity value="0" />
-    <eventinterestperct value="5" />
-    <snmodel value="2" />
-    <communityfix value="1" />
-    <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
-      <type >Random</type>
-      <type TakeChanceLimit="5">RandomPlus</type>
-      <type>RandomPlus</type>
-      <type>OG</type>
-      <type>COG</type>
-    </exptypes>
-  </Experiment>
+      <type Reassignment="dynamic" CommunityFix="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="true">DG</type>
+      
+      <type Reassignment="dynamic" CommunityFix="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="true">PADG</type>
 
-  <Experiment count="10">
-    <users count="500" />
-    <events count="50" />
-    <alpha value="0.5" />
-    <capmean value="20" />
-    <capvar value="10" />
-    <mincard value="0" />
-    <sndensity value="0" />
-    <eventinterestperct value="5" />
-    <snmodel value="0" />
-    <communityfix value="0" />
-    <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
-      <type>Random</type>
-      <type TakeChanceLimit="5">RandomPlus</type>
-      <type>RandomPlus</type>
-      <type>OG</type>
-      <type>COG</type>
+      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="true">IR</type>
+      
+      <type Reassignment="dynamic" CommunityFix="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="true">IRC</type>
+      
+      <type Reassignment="dynamic" CommunityFix="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="true">OG</type>
+      
+      <type Reassignment="dynamic" CommunityFix="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="true">COG</type>
+      
+      <type Reassignment="dynamic">Random</type>
+      <type Reassignment="dynamic" TakeChanceLimit="5">RandomPlus</type>
+      <type Reassignment="dynamic">RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="10">
+  
+  <Experiment count="60">
     <users count="500" />
-    <events count="50" />
+    <events count="30" />
     <alpha value="0.5" />
-    <capmean value="20" />
-    <capvar value="10" />
+    <capmean value="30" />
+    <capvar value="20" />
     <mincard value="0" />
-    <sndensity value="0" />
+    <sndensity value="2" />
     <eventinterestperct value="5" />
-    <snmodel value="0" />
-    <communityfix value="1" />
+    <snmodel value="2" />
+    <communityfix value="0" />
     <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
-      <type >Random</type>
-      <type TakeChanceLimit="5">RandomPlus</type>
-      <type>RandomPlus</type>
-      <type>OG</type>
-      <type>COG</type>
+      <type Reassignment="dynamic" CommunityFix="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="true">DG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="true">PADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="true">IR</type>
+
+      <type Reassignment="dynamic" CommunityFix="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="true">IRC</type>
+
+      <type Reassignment="dynamic" CommunityFix="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="true">OG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="true">COG</type>
+
+      <type Reassignment="dynamic">Random</type>
+      <type Reassignment="dynamic" TakeChanceLimit="5">RandomPlus</type>
+      <type Reassignment="dynamic">RandomPlus</type>
     </exptypes>
   </Experiment>
   
@@ -129,16 +89,16 @@
     <eventinterestperct value="5" />
     <snmodel value="2" />
     <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
+      <type>DG</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IR</type>
+      <type>IRC</type>
+      <type>IRC</type>
       <type>Random</type>
       <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
@@ -158,16 +118,16 @@
     <eventinterestperct value="5" />
     <snmodel value="2" />
     <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
+      <type>DG</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IR</type>
+      <type>IRC</type>
+      <type>IRC</type>
       <type>Random</type>
       <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
@@ -186,16 +146,16 @@
     <eventinterestperct value="5" />
     <snmodel value="2" />
     <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
+      <type>DG</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IR</type>
+      <type>IRC</type>
+      <type>IRC</type>
       <type>Random</type>
       <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
@@ -214,16 +174,16 @@
     <eventinterestperct value="5" />
     <snmodel value="2" />
     <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
+      <type>DG</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IR</type>
+      <type>IRC</type>
+      <type>IRC</type>
       <type>Random</type>
       <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
@@ -243,16 +203,16 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
+      <type>DG</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IR</type>
+      <type>IRC</type>
+      <type>IRC</type>
       <type>Random</type>
       <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
@@ -271,16 +231,16 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
+      <type>DG</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IR</type>
+      <type>IRC</type>
+      <type>IRC</type>
       <type>Random</type>
       <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
@@ -299,16 +259,16 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
+      <type>DG</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IR</type>
+      <type>IRC</type>
+      <type>IRC</type>
       <type>Random</type>
       <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
@@ -328,16 +288,16 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type>DG_GR</type>
-      <type>DG_DR</type>
-      <type>PADG_GR</type>
-      <type>PADG_DR</type>
-      <type>PCADG_GR</type>
-      <type>PCADG_DR</type>
-      <type>IR_GR</type>
-      <type>IR_DR</type>
-      <type>IRC_GR</type>
-      <type>IRC_DR</type>
+      <type>DG</type>
+      <type>DG</type>
+      <type>PADG</type>
+      <type>PADG</type>
+      <type>PCADG</type>
+      <type>PCADG</type>
+      <type>IR</type>
+      <type>IR</type>
+      <type>IRC</type>
+      <type>IRC</type>
       <type>Random</type>
       <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>

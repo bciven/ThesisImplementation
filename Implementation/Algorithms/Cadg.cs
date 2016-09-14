@@ -164,7 +164,7 @@ namespace Implementation.Algorithms
 
         private void GreedyAssign()
         {
-            if (!_conf.GreedyReassign)
+            if (_conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Greedy)
                 return;
 
             if (UserAssignments.Any(x => !x.HasValue))
@@ -200,7 +200,7 @@ namespace Implementation.Algorithms
 
         private void DynamicReassign()
         {
-            if (!_conf.DynamicReassign)
+            if (_conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Dynamic)
                 return;
 
             if (UserAssignments.Any(x => !x.HasValue))
