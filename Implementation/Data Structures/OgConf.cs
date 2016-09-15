@@ -22,5 +22,10 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 1].Value = "Community Fix";
             ws.Cells[i, 2].Value = CommunityFix;
         }
+
+        public enum PotentialSocialGainEnum
+        {
+            None = 0,
+        }
     }
 }

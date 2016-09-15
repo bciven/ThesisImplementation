@@ -445,14 +445,23 @@ namespace Implementation.Algorithms
             {
                 foreach (var e in _events)
                 {
-                    var gain = 0d;
-                    if (InAffinities[u][e] != 0)
+                    var ue = new UserEvent { Event = e, User = u, Utility = 0d };
+                    if (_conf.CommunityAware && _conf.CommunityFix)
                     {
-                        gain = (1 - _conf.Alpha) * InAffinities[u][e];
-                        //gain = Math.Round(gain, _conf.Percision);
-                        var ue = new UserEvent { Event = e, User = u, Utility = gain };
-                        _queue.AddOrUpdate(gain, ue);
+                        var friends = _users.Where(x => SocAffinities[u, x] > 0 || SocAffinities[x, u] > 0 || InAffinities[u][e] > 0);
+                        var bestFriends = friends.OrderByDescending(x => ((_conf.Alpha) * (SocAffinities[u, x] + SocAffinities[x, u])) + ((1 - _conf.Alpha) * InAffinities[u][e])).Take(EventCapacity[e].Max).ToList();
+                        var worstFriends = friends.OrderBy(x => ((_conf.Alpha) * (SocAffinities[u, x] + SocAffinities[x, u])) + ((1 - _conf.Alpha) * InAffinities[u][e])).Take(EventCapacity[e].Max).ToList();
+                        var bestGain = bestFriends.Sum(x => SocAffinities[u, x] + SocAffinities[x, u]);
+                        var worstGain = worstFriends.Sum(x => SocAffinities[u, x] + SocAffinities[x, u]);
+                        var potentialSocialGain = (bestGain + worstGain)/2;
+                        ue.Utility += ((1 - _conf.Alpha) * InAffinities[u][e]) + (_conf.Alpha * potentialSocialGain);
                     }
+                    else if (InAffinities[u][e] != 0)
+                    {
+                        ue.Utility += (1 - _conf.Alpha) * InAffinities[u][e];
+                        //gain = Math.Round(gain, _conf.Percision);
+                    }
+                    _queue.AddOrUpdate(ue.Utility, ue);
                 }
             }
         }

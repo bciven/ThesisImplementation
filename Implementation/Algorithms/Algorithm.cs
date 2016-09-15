@@ -301,10 +301,11 @@ namespace Implementation.Algorithms
             {
                 //var assignedUsers = Assignments.SelectMany(x => x).ToList();
                 //var users = AllUsers.Where(x => !UserAssignments[x].HasValue && !assignedUsers.Contains(x)).ToList();
+
                 if (!communityFix)
                 {
-                    s = Conf.Alpha*(EventCapacity[@event].Max - Assignments[@event].Count)*
-                        (users.Sum(u => SocAffinities[user, u])/(double) Math.Max(users.Count - 1, 1));
+                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
+                        (users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(users.Count - 1, 1));
                 }
                 else
                 {

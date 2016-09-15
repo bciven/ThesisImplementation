@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-<Experiment count="60">
+  <Experiment count="1">
     <users count="500" />
     <events count="30" />
     <alpha value="0.5" />
@@ -26,20 +26,20 @@
       
       <type Reassignment="dynamic" CommunityFix="false">IRC</type>
       <type Reassignment="dynamic" CommunityFix="true">IRC</type>
-      
+
       <type Reassignment="dynamic" CommunityFix="false">OG</type>
       <type Reassignment="dynamic" CommunityFix="true">OG</type>
-      
+
       <type Reassignment="dynamic" CommunityFix="false">COG</type>
       <type Reassignment="dynamic" CommunityFix="true">COG</type>
-      
+
       <type Reassignment="dynamic">Random</type>
       <type Reassignment="dynamic" TakeChanceLimit="5">RandomPlus</type>
       <type Reassignment="dynamic">RandomPlus</type>
     </exptypes>
   </Experiment>
-  
-  <Experiment count="60">
+
+  <!--<Experiment count="1">
     <users count="500" />
     <events count="30" />
     <alpha value="0.5" />
@@ -76,8 +76,8 @@
       <type Reassignment="dynamic" TakeChanceLimit="5">RandomPlus</type>
       <type Reassignment="dynamic">RandomPlus</type>
     </exptypes>
-  </Experiment>
-  
+  </Experiment>-->
+
   <!--  <Experiment count="1">
     <users count="500" />
     <events count="35" />
