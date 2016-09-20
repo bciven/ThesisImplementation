@@ -76,11 +76,11 @@ namespace Implementation.Algorithms
 
                 foreach (var availableUser in availableUsers)
                 {
-                    var userInterest = new UserEvents(availableUser, realOpenEvents.Count);
+                    var userInterest = new UserEvents(availableUser, realOpenEvents.Count, _conf.DoublePriority);
                     foreach (var @event in realOpenEvents)
                     {
-                        var q = Util(@event, availableUser, _conf.CommunityAware, _conf.CommunityFix, _users);
-                        userInterest.AddEvent(@event, q);
+                        var q = Util(@event, availableUser, _conf.CommunityAware, _conf.DoublePriority, _users);
+                        userInterest.AddEvent(@event, q.Utility, q.Priority);
                     }
                     _queue.Enqueue(userInterest);
                 }
@@ -140,14 +140,14 @@ namespace Implementation.Algorithms
             if (SocAffinities[user2, user1] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
-                var newPriority = Util(@event, user2, _conf.CommunityAware, _conf.CommunityFix, _users);
+                var newPriority = Util(@event, user2, _conf.CommunityAware, _conf.DoublePriority, _users);
                 if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
                 {
                     foreach (var userInterest in _queue)
                     {
                         if (userInterest.User == user1)
                         {
-                            userInterest.UpdateUserInterest(@event, newPriority);
+                            userInterest.UpdateUserInterest(@event, newPriority.Utility);
                         }
                     }
                 }
@@ -216,23 +216,23 @@ namespace Implementation.Algorithms
 
             foreach (var u in _users)
             {
-                var ue = new UserEvents(u, _conf.NumberOfEvents);
+                var ue = new UserEvents(u, _conf.NumberOfEvents, _conf.DoublePriority);
                 foreach (var e in _events)
                 {
                     var gain = 0d;
+                    var priority = 0d;
                     gain = (1 - _conf.Alpha) * InAffinities[u][e];
-                    if (_conf.CommunityAware && _conf.CommunityFix)
+                    if (_conf.DoublePriority)
                     {
-                        var friends = _users.Where(x => SocAffinities[u, x] > 0 || SocAffinities[x, u] > 0 || InAffinities[u][e] > 0);
-                        var bestFriends = friends.OrderByDescending(x => ((_conf.Alpha) * (SocAffinities[u, x] + SocAffinities[x, u])) + ((1 - _conf.Alpha) * InAffinities[u][e])).Take(EventCapacity[e].Max).ToList();
-                        var worstFriends = friends.OrderBy(x => ((_conf.Alpha) * (SocAffinities[u, x] + SocAffinities[x, u])) + ((1 - _conf.Alpha) * InAffinities[u][e])).Take(EventCapacity[e].Max).ToList();
-                        var bestGain = bestFriends.Sum(x => SocAffinities[u, x] + SocAffinities[x, u]);
-                        var worstGain = worstFriends.Sum(x => SocAffinities[u, x] + SocAffinities[x, u]);
-                        var potentialSocialGain = (bestGain + worstGain) / 2;
-                        gain += (_conf.Alpha * potentialSocialGain);
+                        var friends = _users.Where(x => SocAffinities[u, x] > 0 || SocAffinities[x, u] > 0 || InAffinities[x][e] > 0);
+                        var bestFriends = friends.OrderByDescending(x => SocAffinities[u, x] + SocAffinities[x, u] + InAffinities[x][e]).Take(EventCapacity[e].Max - 1).ToList();
+                        var worstFriends = friends.OrderBy(x => SocAffinities[u, x] + SocAffinities[x, u] + InAffinities[x][e]).Take(EventCapacity[e].Max - 1).ToList();
+                        var bestGain = bestFriends.Sum(x => SocAffinities[u, x]);
+                        var worstGain = worstFriends.Sum(x => SocAffinities[u, x]);
+                        priority = (bestGain + worstGain) / 2;
                     }
                     //gain = Math.Round(gain, _conf.Percision);
-                    ue.AddEvent(e, gain);
+                    ue.AddEvent(e, gain, priority);
                 }
                 _queue.Enqueue(ue);
             }

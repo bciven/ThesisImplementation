@@ -19,6 +19,7 @@ namespace Implementation.Data_Structures
         public int NumberOfPhantomEvents { get; set; }
         public bool CommunityAware { get; set; }
         public bool CommunityFix { get; set; }
+        public bool DoublePriority { get; set; }
 
         public CadgConf()
         {
@@ -38,6 +39,7 @@ namespace Implementation.Data_Structures
             CommunityAware = false;
             AlgorithmName = null;
             CommunityFix = false;
+            DoublePriority = false;
         }
 
         public override void Print(ExcelPackage excel)
@@ -110,6 +112,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Community Fix";
             ws.Cells[i, 2].Value = CommunityFix;
+            i++;
+
+            ws.Cells[i, 1].Value = "Double Priority";
+            ws.Cells[i, 2].Value = DoublePriority;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
 

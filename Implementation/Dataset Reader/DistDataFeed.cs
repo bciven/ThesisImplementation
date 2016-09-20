@@ -60,6 +60,8 @@ namespace Implementation.Dataset_Reader
                     return BarabasiAlbertModel(userCount);
                 case SocialNetworkModel.ErdosModel:
                     return ErdosModel(userCount);
+                case SocialNetworkModel.ClusteredRandom:
+                    return ClusteredRandomModel(userCount);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -75,13 +77,33 @@ namespace Implementation.Dataset_Reader
                 lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             }
 
+            var graph = CreateGraph(lines);
+            return graph;
+        }
+
+        private Graph ClusteredRandomModel(int userCount)
+        {
+            List<string> lines;
+            using (WebClient client = new WebClient())
+            {
+                var ip = ConfigurationManager.AppSettings["IP"];
+                var csv = client.DownloadString(ip + $"/clusteredrandom/{userCount}");
+                lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            }
+
             //var lines = File.ReadAllLines("graph.csv");
 
+            var graph = CreateGraph(lines);
+            return graph;
+        }
+
+        private static Graph CreateGraph(List<string> lines)
+        {
             Graph graph = new Graph();
 
             foreach (var line in lines)
             {
-                var edge = line.Split(new[] { ',' });
+                var edge = line.Split(new[] {','});
                 int nodeA = Convert.ToInt32(edge[0]) - 1;
                 int nodeB = Convert.ToInt32(edge[1]) - 1;
                 if (nodeA == nodeB)

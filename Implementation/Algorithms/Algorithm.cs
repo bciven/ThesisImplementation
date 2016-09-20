@@ -289,8 +289,13 @@ namespace Implementation.Algorithms
             return usersCount >= min && usersCount <= max;
         }
 
-        protected double Util(int @event, int user, bool communityAware, bool communityFix, List<int> users)
+        protected UserEvent Util(int @event, int user, bool communityAware, bool communityFix, List<int> users)
         {
+            var userevent = new UserEvent
+            {
+                Event = @event,
+                User = user
+            };
             var g = (1 - Conf.Alpha) * InAffinities[user][@event];
 
             var s = Conf.Alpha * Assignments[@event].Sum(u => SocAffinities[user, u]);
@@ -305,15 +310,15 @@ namespace Implementation.Algorithms
                 if (!communityFix)
                 {
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(users.Count - 1, 1));
+                        users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(users.Count - 1, 1);
                 }
                 else
                 {
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
                         (users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(users.Count - 1, 1));
 
-                    s += Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (users.Sum(u => InAffinities[u][@event]) / (double)Math.Max(users.Count - 1, 1));
+                    //s += Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
+                        //(users.Sum(u => InAffinities[u][@event]) / (double)Math.Max(users.Count - 1, 1));
                 }
 
                 g = s + g;
@@ -324,8 +329,9 @@ namespace Implementation.Algorithms
                     Console.WriteLine("|_user| bigger than |users| is {0}.", firstNotSecond.Count > secondNotFirst.Count);
                 }*/
             }
+            userevent.Utility = g;
 
-            return g;//Math.Round(g, Conf.Percision);
+            return userevent;//Math.Round(g, Conf.Percision);
         }
     }
 }

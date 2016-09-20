@@ -63,11 +63,25 @@ namespace Implementation.Experiment
                                            takechancelimit = Convert.ToInt32(x.Attribute("TakeChanceLimit").Value);
                                        }
 
+                                       bool deficitFix = false;
+                                       if (x.Attribute("DeficitFix") != null)
+                                       {
+                                           deficitFix = Convert.ToBoolean(x.Attribute("DeficitFix").Value);
+                                       }
+
+                                       bool doublePriority = false;
+                                       if (x.Attribute("DoublePriority") != null)
+                                       {
+                                           doublePriority = Convert.ToBoolean(x.Attribute("DoublePriority").Value);
+                                       }
+
                                        var algspec = new AlgorithmSpec
                                        {
                                            CommunityFix = communityfix,
                                            Reassignment = reassignment,
-                                           TakeChanceLimit = takechancelimit
+                                           TakeChanceLimit = takechancelimit,
+                                           DeficitFix = deficitFix,
+                                           DoublePriority = doublePriority
                                        };
 
                                        switch (x.Value.ToUpper())
@@ -273,7 +287,7 @@ namespace Implementation.Experiment
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
                         CommunityAware = algorithmEnum == AlgorithmSpec.AlgorithmEnum.COG,
-                        CommunityFix = parameters.ExpTypes[i].CommunityFix
+                        DoublePriority = parameters.ExpTypes[i].DoublePriority
                     };
 
                     configs.Add(conf);
@@ -335,7 +349,7 @@ namespace Implementation.Experiment
                         PostInitializationInsert = true,
                         ImmediateReaction = IR || IRC,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
-                        DeficitFix = IR || IRC,
+                        DeficitFix = parameters.ExpTypes[i].DeficitFix,
                         LazyAdjustment = false,
                         PrintOutEachStep = false,
                         FeedType = FeedTypeEnum.SerialExperiment,
@@ -343,7 +357,8 @@ namespace Implementation.Experiment
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
-                        CommunityFix = parameters.ExpTypes[i].CommunityFix
+                        CommunityFix = parameters.ExpTypes[i].CommunityFix,
+                        DoublePriority = parameters.ExpTypes[i].DoublePriority
                     };
 
                     configs.Add(conf);

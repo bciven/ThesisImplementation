@@ -6,28 +6,43 @@ namespace Implementation.Data_Structures
 {
     public class FakeHeap
     {
+        private readonly bool _doublePriority;
         public readonly Dictionary<string, UserEvent> _sortedSet;
-
+        
         // O(1)
         public UserEvent Max
         {
             get
             {
-                var max = new UserEvent { Utility = double.MinValue };
+                var max1 = new UserEvent { Utility = double.MinValue, Priority = double.MinValue };
+                var max2 = new UserEvent { Utility = double.MinValue, Priority = double.MinValue};
 
                 foreach (var pair in _sortedSet)
                 {
-                    if (pair.Value.Utility > max.Utility)
+                    if (pair.Value.Utility > max1.Utility)
                     {
-                        max = pair.Value;
+                        max1 = pair.Value;
                     }
                 }
-                return max;
+                if (_doublePriority)
+                {
+                    foreach (var pair in _sortedSet)
+                    {
+                        if (Math.Abs(pair.Value.Utility - max1.Utility) < 0.00001 &&
+                            pair.Value.Priority > max2.Priority)
+                        {
+                            max2 = pair.Value;
+                        }
+                    }
+                    max1 = max2;
+                }
+                return max1;
             }
         }
 
-        public FakeHeap()
+        public FakeHeap(bool doublePriority)
         {
+            _doublePriority = doublePriority;
             _sortedSet = new Dictionary<string, UserEvent>();
         }
 
@@ -36,10 +51,12 @@ namespace Implementation.Data_Structures
         {
             value.Utility = key;
             var stringKey = CreateKey(value.User, value.Event);
+
             UserEvent newValue;
             if (_sortedSet.TryGetValue(stringKey, out newValue))
             {
                 _sortedSet[stringKey].Utility = key;
+                _sortedSet[stringKey].Priority = value.Priority;
             }
             else
             {
@@ -55,6 +72,7 @@ namespace Implementation.Data_Structures
             if (_sortedSet.TryGetValue(stringKey, out newValue))
             {
                 _sortedSet[stringKey].Utility = key;
+                _sortedSet[stringKey].Priority = value.Priority;
             }
         }
 

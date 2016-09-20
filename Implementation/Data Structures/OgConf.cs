@@ -5,12 +5,12 @@ namespace Implementation.Data_Structures
     public class OgConf : SgConf
     {
         public bool CommunityAware { get; set; }
-        public bool CommunityFix { get; set; }
+        public bool DoublePriority { get; set; }
 
         public OgConf()
         {
             CommunityAware = false;
-            CommunityFix = false;
+            DoublePriority = false;
         }
 
         protected override void PrintAdditionals(ExcelWorksheet ws, int i)
@@ -19,8 +19,8 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = CommunityAware;
             i++;
 
-            ws.Cells[i, 1].Value = "Community Fix";
-            ws.Cells[i, 2].Value = CommunityFix;
+            ws.Cells[i, 1].Value = "Double Priority";
+            ws.Cells[i, 2].Value = DoublePriority;
         }
 
         public enum PotentialSocialGainEnum

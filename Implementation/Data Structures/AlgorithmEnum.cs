@@ -21,6 +21,8 @@ namespace Implementation.Data_Structures
         public bool CommunityFix { get; set; }
 
         public AlgorithmEnum Algorithm { get; set; }
+        public bool DeficitFix { get; set; }
+        public bool DoublePriority { get; set; }
 
         public enum AlgorithmEnum
         {

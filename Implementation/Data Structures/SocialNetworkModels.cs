@@ -10,6 +10,7 @@ namespace Implementation.Data_Structures
     {
         PowerLawModel = 0,
         ErdosModel = 1,
-        BarabasiAlbertModel = 2
+        BarabasiAlbertModel = 2,
+        ClusteredRandom = 3
     }
 }
