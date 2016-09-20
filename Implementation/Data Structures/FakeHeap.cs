@@ -56,7 +56,7 @@ namespace Implementation.Data_Structures
             if (_sortedSet.TryGetValue(stringKey, out newValue))
             {
                 _sortedSet[stringKey].Utility = key;
-                _sortedSet[stringKey].Priority = value.Priority;
+                //_sortedSet[stringKey].Priority = value.Priority;
             }
             else
             {
@@ -72,7 +72,7 @@ namespace Implementation.Data_Structures
             if (_sortedSet.TryGetValue(stringKey, out newValue))
             {
                 _sortedSet[stringKey].Utility = key;
-                _sortedSet[stringKey].Priority = value.Priority;
+                //_sortedSet[stringKey].Priority = value.Priority;
             }
         }
 

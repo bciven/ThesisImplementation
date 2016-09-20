@@ -1,48 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <!--<Experiment count="1">
-    <users count="500" />
-    <events count="30" />
-    <alpha value="0.5" />
-    <capmean value="20" />
-    <capvar value="10" />
-    <mincard value="0" />
-    <sndensity value="0" />
-    <eventinterestperct value="5" />
-    <snmodel value="0" />
-    <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
-    </exptypes>
-  </Experiment>
-    <Experiment count="1">
-    <users count="500" />
-    <events count="20" />
-    <alpha value="0.5" />
-    <capmean value="30" />
-    <capvar value="10" />
-    <mincard value="0" />
-    <sndensity value="0" />
-    <eventinterestperct value="5" />
-    <snmodel value="2" />
-    <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
-    </exptypes>
-  </Experiment>-->
-
-
   <Experiment count="10">
-    <users count="300" />
+    <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capvar value="10" />
     <mincard value="0" />
-    <sndensity value="0.5" />
+    <sndensity value="0" />
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">DG</type>
+
       <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PADG</type>
       <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PADG</type>
 
@@ -57,64 +28,88 @@
 
       <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">OG</type>
       <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">OG</type>
-      
+
       <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">COG</type>
       <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">COG</type>
+
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-
-  <!--<Experiment count="5">
+  <Experiment count="10">
     <users count="500" />
-    <events count="20" />
+    <events count="25" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capvar value="10" />
     <mincard value="0" />
-    <sndensity value="0.5" />
+    <sndensity value="0" />
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true">PADG</type>
-      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">DG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PADG</type>
+
+      <type Reassignment="dyn1252amic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IR</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IRC</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">OG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">COG</type>
+
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  
-    <Experiment count="5">
+  <Experiment count="10">
     <users count="500" />
-    <events count="50" />
+    <events count="35" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capvar value="10" />
     <mincard value="0" />
-    <sndensity value="0.5" />
+    <sndensity value="0" />
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true">PADG</type>
-      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true">IR</type>
-      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">DG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IR</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IRC</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">OG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">COG</type>
+
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  
-    <Experiment count="5">
-    <users count="500" />
-    <events count="100" />
-    <alpha value="0.5" />
-    <capmean value="20" />
-    <capvar value="10" />
-    <mincard value="0" />
-    <sndensity value="0.5" />
-    <eventinterestperct value="5" />
-    <snmodel value="0" />
-    <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true">PADG</type>
-      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true">PCADG</type>
-    </exptypes>
-  </Experiment>-->
 
-
-  <!--<Experiment count="1">
+  <Experiment count="10">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -125,11 +120,32 @@
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">DG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IR</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IRC</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">OG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">COG</type>
+
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="1">
+  <Experiment count="10">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -140,11 +156,32 @@
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">DG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IR</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IRC</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">OG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">COG</type>
+
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="1">
+  <Experiment count="10">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -155,12 +192,33 @@
     <eventinterestperct value="5" />
     <snmodel value="0" />
     <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">DG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IR</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IRC</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">OG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">COG</type>
+
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="1">
+  <Experiment count="10">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -171,11 +229,32 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">DG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IR</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IRC</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">OG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">COG</type>
+
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="1">
+  <Experiment count="10">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -186,11 +265,32 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">DG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IR</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IRC</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">OG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">COG</type>
+
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="1">
+  <Experiment count="10">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -201,12 +301,33 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">DG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IR</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IRC</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">OG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">COG</type>
+
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="1">
+  <Experiment count="10">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -217,8 +338,29 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type Reassignment="dynamic" CommunityFix="false">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">DG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">DG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IR</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IR</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">IRC</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">OG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">OG</type>
+
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="false">COG</type>
+      <type Reassignment="dynamic" CommunityFix="false" DeficitFix="true" DoublePriority="true">COG</type>
+
+      <type TakeChanceLimit="5">RandomPlus</type>
+      <type>RandomPlus</type>
     </exptypes>
-  </Experiment>-->
+  </Experiment>
 </Experiments>
