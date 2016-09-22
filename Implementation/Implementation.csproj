@@ -86,6 +86,7 @@
     <Compile Include="Algorithms\RandomPlus.cs" />
     <Compile Include="Algorithms\Random.cs" />
     <Compile Include="Data Structures\AlgorithmEnum.cs" />
+    <Compile Include="Data Structures\LinkedListHeap.cs" />
     <Compile Include="Data Structures\OgConf.cs" />
     <Compile Include="Data Structures\RandomPlusConf.cs" />
     <Compile Include="Data Structures\RandomConf.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Data Structures\SgConf.cs" />
     <Compile Include="Data Structures\SocialNetworkModels.cs" />
     <Compile Include="Data Structures\EventInterest.cs" />
+    <Compile Include="Data Structures\Welfare.cs" />
     <Compile Include="Data Structures\UserEvents.cs" />
     <Compile Include="Data Structures\UserPairEvent.cs" />
     <Compile Include="Data Structures\DistDataParams.cs" />

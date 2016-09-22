@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Implementation.Data_Structures;
@@ -14,7 +15,7 @@ namespace Implementation.Algorithms
         //public abstract T CreateOutput(FileInfo file);
         //public abstract string GetInputFile();
         //public abstract FeedTypeEnum GetFeedType();
-        public double SocialWelfare { get; set; }
+        public Welfare SocialWelfare { get; set; }
 
         protected List<int> AllEvents;
         protected List<int> AllUsers;
@@ -24,6 +25,21 @@ namespace Implementation.Algorithms
         protected List<List<double>> InAffinities;
         protected double[,] SocAffinities;
         protected SgConf Conf;
+        protected Stopwatch _watch;
+
+        protected Algorithm()
+        {
+            _watch = new Stopwatch();
+        }
+
+        public Stopwatch Execute()
+        {
+            _watch.Reset();
+            _watch.Start();
+            Run();
+            _watch.Stop();
+            return _watch;
+        }
 
         protected void PrintAssignments(bool assignmentMade)
         {
@@ -59,7 +75,7 @@ namespace Implementation.Algorithms
 
         protected abstract void PrintQueue();
 
-        private void Print(List<UserEvent> result, double welfare, FileInfo output)
+        private void Print(List<UserEvent> result, Welfare welfare, FileInfo output)
         {
             ExcelPackage excel = new ExcelPackage(output);
             var usereventsheet = excel.Workbook.Worksheets.Add("Innate Affinities");
@@ -121,8 +137,14 @@ namespace Implementation.Algorithms
                     assignmentssheet.Cells[i + 2, 2].Value = userEvent.Event + 1;
                 }
             }
-            assignmentssheet.Cells[1, 4].Value = "Social Welfare";
-            assignmentssheet.Cells[1, 5].Value = welfare;
+            assignmentssheet.Cells[1, 4].Value = "Total Welfare";
+            assignmentssheet.Cells[1, 5].Value = welfare.TotalWelfare;
+
+            assignmentssheet.Cells[2, 4].Value = "Innate Welfare";
+            assignmentssheet.Cells[2, 5].Value = welfare.InnateWelfare;
+
+            assignmentssheet.Cells[3, 4].Value = "Social Welfare";
+            assignmentssheet.Cells[3, 5].Value = welfare.SocialWelfare;
             assignmentssheet.Cells[assignmentssheet.Dimension.Address].AutoFitColumns();
 
             var regRatiosheet = excel.Workbook.Worksheets.Add("RegRatios");
@@ -136,7 +158,7 @@ namespace Implementation.Algorithms
             }
             regRatiosheet.Cells[regRatiosheet.Dimension.Address].AutoFitColumns();
 
-            Conf.Print(excel);
+            Conf.Print(excel, _watch);
 
             var eventAssignmentsSheet = excel.Workbook.Worksheets.Add("Event Assignments");
             eventAssignmentsSheet.Cells[1, 1].Value = "Event";
@@ -198,9 +220,14 @@ namespace Implementation.Algorithms
             return Conf.FeedType;
         }
 
-        public double CalculateSocialWelfare(List<List<int>> assignments)
+        public Welfare CalculateSocialWelfare(List<List<int>> assignments)
         {
-            double u = 0;
+            var welfare = new Welfare
+            {
+                TotalWelfare = 0d,
+                InnateWelfare = 0d,
+                SocialWelfare = 0d
+            };
 
             for (int @event = 0; @event < assignments.Count; @event++)
             {
@@ -224,12 +251,14 @@ namespace Implementation.Algorithms
                         }
                     }
                 }
-                s1 *= (1 - Conf.Alpha);
-                s2 *= Conf.Alpha;
-                u += s1 + s2;
+                s1 = (1 - Conf.Alpha) * s1;
+                s2 = Conf.Alpha * s2;
+                welfare.InnateWelfare += s1;
+                welfare.SocialWelfare += s2;
+                welfare.TotalWelfare += s1 + s2;
             }
 
-            return u;
+            return welfare;
         }
 
         public Dictionary<int, double> CalcRegRatios(List<int> allUsers)
@@ -318,7 +347,7 @@ namespace Implementation.Algorithms
                         (users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(users.Count - 1, 1));
 
                     //s += Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        //(users.Sum(u => InAffinities[u][@event]) / (double)Math.Max(users.Count - 1, 1));
+                    //(users.Sum(u => InAffinities[u][@event]) / (double)Math.Max(users.Count - 1, 1));
                 }
 
                 g = s + g;

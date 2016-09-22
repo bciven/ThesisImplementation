@@ -43,20 +43,26 @@ namespace Implementation.Data_Structures
                 }
             }
 
-            if (!_doublePriority)
+            if (index == -1)
             {
-                return EventInterests[index];
+                return null;
             }
 
-            foreach (var eventInterest in EventInterests)
+            if (_doublePriority)
             {
-                if (Math.Abs(eventInterest.Value.Utility - maxVal1.Value) < 0.001 && (maxVal2 == null || eventInterest.Value.Priority > maxVal2.Value))
+                foreach (var eventInterest in EventInterests)
                 {
-                    maxVal2 = eventInterest.Value.Priority;
-                    index = eventInterest.Key;
+                    if (Math.Abs(eventInterest.Value.Utility - maxVal1.Value) < 0.001 && (maxVal2 == null || eventInterest.Value.Priority > maxVal2.Value))
+                    {
+                        maxVal2 = eventInterest.Value.Priority;
+                        index = eventInterest.Key;
+                    }
                 }
             }
-            return EventInterests[index];
+
+            var ei = EventInterests[index];
+            EventInterests.Remove(ei.Event);
+            return ei;
         }
 
         public void UpdateUserInterest(int @event, double newPriority)

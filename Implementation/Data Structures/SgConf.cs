@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,7 @@ namespace Implementation.Data_Structures
             Parameters = null;
         }
 
-        public virtual void Print(ExcelPackage excel)
+        public virtual void Print(ExcelPackage excel, Stopwatch stopwatch)
         {
             var ws = excel.Workbook.Worksheets.Add("Configs");
             int i = 1;
@@ -69,6 +70,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Algorithm Name";
             ws.Cells[i, 2].Value = AlgorithmName;
+            i++;
+
+            ws.Cells[i, 1].Value = "Execution Time";
+            ws.Cells[i, 2].Value = stopwatch.ElapsedMilliseconds;
             i++;
 
             PrintAdditionals(ws, i);

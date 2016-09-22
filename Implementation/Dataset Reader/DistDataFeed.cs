@@ -15,6 +15,7 @@ namespace Implementation.Dataset_Reader
         private readonly Normal _maxGenerator;
         private readonly Normal _innateNormalRandomGenerator;
         private readonly Normal _socialNormalRandomGenerator;
+        private Random _rand;
 
         //public DistDataFeed()
         //{
@@ -26,10 +27,10 @@ namespace Implementation.Dataset_Reader
         public DistDataFeed(DistDataParams distDataParams)
         {
             _distDataParams = distDataParams;
-            var rand = new Random();
-            _maxGenerator = Normal.WithMeanVariance(_distDataParams.CapacityMean, _distDataParams.CapacityVariance, rand);
-            _innateNormalRandomGenerator = Normal.WithMeanVariance(1.5, 3, rand);
-            _socialNormalRandomGenerator = Normal.WithMeanVariance(1.5, 3, rand);
+            _rand = new Random();
+            _maxGenerator = Normal.WithMeanVariance(_distDataParams.CapacityMean, _distDataParams.CapacityVariance, _rand);
+            _innateNormalRandomGenerator = Normal.WithMeanVariance(1.5, 3, _rand);
+            _socialNormalRandomGenerator = Normal.WithMeanVariance(1.5, 3, _rand);
         }
 
         private Graph GenerateEventGraph(int userNumber, int eventNumber)
@@ -103,7 +104,7 @@ namespace Implementation.Dataset_Reader
 
             foreach (var line in lines)
             {
-                var edge = line.Split(new[] {','});
+                var edge = line.Split(new[] { ',' });
                 int nodeA = Convert.ToInt32(edge[0]) - 1;
                 int nodeB = Convert.ToInt32(edge[1]) - 1;
                 if (nodeA == nodeB)
@@ -290,7 +291,13 @@ namespace Implementation.Dataset_Reader
 
         private double GenerateSocialAffinity(double minimum)
         {
-            var normalDist = _socialNormalRandomGenerator.Sample();
+            //var normalDist = _socialNormalRandomGenerator.Sample();
+            //return normalDist < Math.Pow(10, -5) ? minimum : normalDist;
+            double u1 = _rand.NextDouble(); //these are uniform(0,1) random doubles
+            double u2 = _rand.NextDouble();
+            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+            var variance = Math.Sqrt(3);
+            double normalDist = 1.5 + variance * randStdNormal; //random normal(mean,stdDev^2)
             return normalDist < Math.Pow(10, -5) ? minimum : normalDist;
         }
 

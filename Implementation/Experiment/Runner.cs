@@ -548,10 +548,13 @@ namespace Implementation.Experiment
             return configs;
         }
 
-        private void Print(List<UserEvent> result, double gain, Stopwatch watch)
+        private void Print(List<UserEvent> result, Welfare welfare, Stopwatch watch)
         {
+            Console.WriteLine("Date: {0}", DateTime.Now.ToString("HH:mm:ss"));
             Console.WriteLine("Exection Time: {0}ms", watch.ElapsedMilliseconds);
-            Console.WriteLine("Social Welfare: {0}", gain);
+            Console.WriteLine("Social Welfare: {0}", welfare.SocialWelfare);
+            Console.WriteLine("Innate Welfare: {0}", welfare.InnateWelfare);
+            Console.WriteLine("Total Welfare: {0}", welfare.TotalWelfare);
             Console.WriteLine();
         }
 
@@ -559,13 +562,9 @@ namespace Implementation.Experiment
         {
             Console.WriteLine("....Round {0}-{1}....", round, ConvertToString(algorithmEnum));
             alg.Initialize();
-            var watch = new Stopwatch();
-            watch.Start();
-            alg.Run();
+            var watch = alg.Execute();
             var result = alg.CreateOutput(output);
-            watch.Stop();
             Print(result, alg.SocialWelfare, watch);
-            watch.Reset();
         }
 
         public string ConvertToString(Enum eff)

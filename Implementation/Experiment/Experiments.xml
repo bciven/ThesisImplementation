@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="10">
+  <!--<Experiment count="10">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -216,9 +216,9 @@
       <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
-  </Experiment>
+  </Experiment>-->
 
-  <Experiment count="10">
+  <Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -254,7 +254,7 @@
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="10">
+  <Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -290,7 +290,7 @@
       <type>RandomPlus</type>
     </exptypes>
   </Experiment>
-  <Experiment count="10">
+  <Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -327,7 +327,7 @@
     </exptypes>
   </Experiment>
 
-  <Experiment count="10">
+  <Experiment count="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />

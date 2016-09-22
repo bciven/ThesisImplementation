@@ -209,7 +209,7 @@ namespace Implementation.Algorithms
             assignmentssheet.Cells[result.Count + 3, 2].Value = welfare;
 
             assignmentssheet.Cells[assignmentssheet.Dimension.Address].AutoFitColumns();
-            _conf.Print(excel);
+            _conf.Print(excel, _watch);
             excel.Save();
         }
 
@@ -291,7 +291,7 @@ namespace Implementation.Algorithms
             _events = new List<int>();
             Assignments = new List<List<int>>();
             UserAssignments = new List<int?>();
-            SocialWelfare = 0;
+            SocialWelfare = new Welfare();
             _queue = new List<UserPairEvent>(_conf.NumberOfUsers * _conf.NumberOfUsers * _conf.NumberOfEvents);
             _init = true;
 

@@ -38,17 +38,31 @@ namespace Implementation.Algorithms
                 var userEvents = _queue.Dequeue();
                 var user = userEvents.User;
                 var eventInterest = userEvents.GetBestEvent();
+                if (eventInterest == null)
+                {
+                    continue;
+                }
+
                 var @event = eventInterest.Event;
                 var minCapacity = EventCapacity[@event].Min;
                 var maxCapacity = EventCapacity[@event].Max;
                 bool assignmentMade = false;
 
-                if (UserAssignments[user] == null && Assignments[@event].Count < maxCapacity)
+                if (UserAssignments[user] != null)
+                {
+                    continue;
+                }
+
+                if (Assignments[@event].Count < maxCapacity)
                 {
                     Assignments[@event].Add(user);
                     _numberOfUserAssignments[user]++;
                     assignmentMade = true;
                     UserAssignments[user] = @event;
+                }
+                else
+                {
+                    _queue.Enqueue(userEvents);
                 }
 
                 //AdjustList(user, @event, assignmentMade);
@@ -187,7 +201,7 @@ namespace Implementation.Algorithms
             UserAssignments = new List<int?>();
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
-            SocialWelfare = 0;
+            SocialWelfare = new Welfare();
             _queue = new Queue<UserEvents>();
             //_deficit = 0;
             _init = true;

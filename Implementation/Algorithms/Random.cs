@@ -189,7 +189,7 @@ namespace Implementation.Algorithms
             UserAssignments = new List<int?>();
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
-            SocialWelfare = 0;
+            SocialWelfare = new Welfare();
             var randomQueue = new List<UserEvent>();
             _randomQueue = new Queue<UserEvent>();
             //_deficit = 0;

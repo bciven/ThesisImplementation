@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +13,9 @@ namespace Implementation.Data_Structures
     {
         public int TakeChanceLimit { get; set; }
 
-        public override void Print(ExcelPackage excel)
+        public override void Print(ExcelPackage excel, Stopwatch stopwatch)
         {
-            var ws = PrintConfig(excel);
+            var ws = PrintConfig(excel, stopwatch);
             var i = ws.Dimension.Rows + 1;
             ws.Cells[i, 1].Value = "TakeChanceLimit";
             ws.Cells[i, 2].Value = TakeChanceLimit;
