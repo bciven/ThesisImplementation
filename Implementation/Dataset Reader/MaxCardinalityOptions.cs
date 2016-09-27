@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace Implementation.Dataset_Reader
 {
-    public enum MinCardinalityOptions
+    public enum MaxCardinalityOptions
     {
         Random = 0,
-        Min = 1,
-        Half = 2,
-        Fourth = 4,
-        Eighth = 8
+        Max = 1,
 
     }
 }

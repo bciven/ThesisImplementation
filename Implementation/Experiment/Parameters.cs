@@ -19,5 +19,6 @@ namespace Implementation.Experiment
         public List<AlgorithmSpec> ExpTypes { get; set; }
         public MinCardinalityOptions MinCardinalityOption { get; set; }
         public SocialNetworkModel SocialNetworkModel { get; set; }
+        public MaxCardinalityOptions MaxCardinalityOption { get; set; }
     }
 }

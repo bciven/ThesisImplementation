@@ -43,11 +43,11 @@ namespace Implementation.Data_Structures
             DoublePriority = false;
         }
 
-        public override void Print(ExcelPackage excel, Stopwatch stopwatch)
+        protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
         {
             var ws = excel.Workbook.Worksheets.Add("Configs");
             int i = 1;
-            ws.Cells[i, 1].Value = "FeedType";
+            ws.Cells[i, 1].Value = "Feed Type";
             ws.Cells[i, 2].Value = FeedType;
             i++;
             ws.Cells[i, 1].Value = "Number Of Users";

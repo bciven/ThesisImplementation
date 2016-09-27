@@ -29,7 +29,9 @@ namespace ChartMaker
                     var file = @group[i];
                     excelPackage = new ExcelPackage(file);
                     wb = excelPackage.Workbook;
-                    config.AvgWelfare += ReadSocialWelfare(wb);
+                    config.AvgTotalWelfare += ReadTotalWelfare(wb);
+                    config.AvgSocialWelfare += ReadSocialWelfare(wb);
+                    config.AvgInnatelWelfare += ReadInnateWelfare(wb);
                     config.AvgRegRatio += ReadRegRatio(wb);
                     config.Count++;
                     excelPackage.Dispose();
@@ -39,7 +41,9 @@ namespace ChartMaker
 
             for (int i = 0; i < fResults.Count; i++)
             {
-                fResults[i].AvgWelfare = fResults[i].AvgWelfare / fResults[i].Count;
+                fResults[i].AvgTotalWelfare = fResults[i].AvgTotalWelfare / fResults[i].Count;
+                fResults[i].AvgInnatelWelfare = fResults[i].AvgInnatelWelfare / fResults[i].Count;
+                fResults[i].AvgSocialWelfare = fResults[i].AvgSocialWelfare / fResults[i].Count;
                 fResults[i].AvgRegRatio = fResults[i].AvgRegRatio / fResults[i].Count;
             }
             //var maxWelfare = fResults.Max(x => x.AvgWelfare);
@@ -48,7 +52,21 @@ namespace ChartMaker
             return fResults;
         }
 
+        private double ReadInnateWelfare(ExcelWorkbook wb)
+        {
+            var ws = wb.Worksheets[4];
+            var value = ws.Cells[2, 5].Value;
+            return Convert.ToDouble(value);
+        }
+
         private double ReadSocialWelfare(ExcelWorkbook wb)
+        {
+            var ws = wb.Worksheets[4];
+            var value = ws.Cells[3, 5].Value;
+            return Convert.ToDouble(value);
+        }
+
+        private double ReadTotalWelfare(ExcelWorkbook wb)
         {
             var ws = wb.Worksheets[4];
             var value = ws.Cells[1, 5].Value;
@@ -72,21 +90,58 @@ namespace ChartMaker
 
         private AlgorithmWelfare ReadConfig(ExcelWorkbook wb)
         {
-            var ws = wb.Worksheets[6];
+            var wsConfigs = wb.Worksheets[6];
             var welfare = new AlgorithmWelfare();
             var algorithmIndex = 1;
             for (; ; algorithmIndex++)
             {
-                if (Convert.ToString(ws.Cells[algorithmIndex, 1].Value) == "Algorithm Name")
+                if (Convert.ToString(wsConfigs.Cells[algorithmIndex, 1].Value) == "Algorithm Name")
                 {
                     break;
                 }
             }
 
-            welfare.Version = Convert.ToString(ws.Cells[algorithmIndex, 2].Value);
-            welfare.Alpha = Convert.ToDouble(ws.Cells[11, 2].Value);
-            welfare.UserCount = Convert.ToInt32(ws.Cells[2, 2].Value);
-            welfare.EventCount = Convert.ToInt32(ws.Cells[3, 2].Value);
+            welfare.Version = Convert.ToString(wsConfigs.Cells[algorithmIndex, 2].Value);
+            welfare.Alpha = Convert.ToDouble(wsConfigs.Cells[11, 2].Value);
+            welfare.UserCount = Convert.ToInt32(wsConfigs.Cells[2, 2].Value);
+            welfare.EventCount = Convert.ToInt32(wsConfigs.Cells[3, 2].Value);
+
+            var wsParameters = wb.Worksheets["Parameters"];
+            if (wsParameters == null)
+            {
+                return welfare;
+            }
+
+            var snDensityIndex = 1;
+            for (; ; snDensityIndex++)
+            {
+                if (Convert.ToString(wsParameters.Cells[snDensityIndex, 1].Value) == "SndensityValue")
+                {
+                    break;
+                }
+            }
+            welfare.NetworkDensity = Convert.ToDouble(wsParameters.Cells[snDensityIndex, 2].Value);
+
+            var minCardinalityOptionIndex = 1;
+            for (; ; minCardinalityOptionIndex++)
+            {
+                if (Convert.ToString(wsParameters.Cells[minCardinalityOptionIndex, 1].Value) == "MinCardinalityOption")
+                {
+                    break;
+                }
+            }
+            welfare.MinCardinalityOption = Convert.ToString(wsParameters.Cells[minCardinalityOptionIndex, 2].Value);
+
+            var socialNetworkModelIndex = 1;
+            for (; ; minCardinalityOptionIndex++)
+            {
+                if (Convert.ToString(wsParameters.Cells[socialNetworkModelIndex, 1].Value) == "SocialNetworkModel")
+                {
+                    break;
+                }
+            }
+            welfare.SocialNetworkModel = Convert.ToString(wsParameters.Cells[socialNetworkModelIndex, 2].Value);
+
             return welfare;
         }
     }
@@ -94,11 +149,16 @@ namespace ChartMaker
     public class AlgorithmWelfare
     {
         public string Version { get; set; }
-        public double AvgWelfare { get; set; }
+        public double AvgTotalWelfare { get; set; }
+        public double AvgSocialWelfare { get; set; }
+        public double AvgInnatelWelfare { get; set; }
         public double AvgRegRatio { get; set; }
         public int UserCount { get; set; }
         public int EventCount { get; set; }
+        public double NetworkDensity { get; set; }
         public double Alpha { get; set; }
         public int Count { get; set; }
+        public string MinCardinalityOption { get; set; }
+        public string SocialNetworkModel { get; set; }
     }
 }

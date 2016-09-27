@@ -36,7 +36,13 @@ namespace Implementation.Data_Structures
             Parameters = null;
         }
 
-        public virtual void Print(ExcelPackage excel, Stopwatch stopwatch)
+        public void Print(ExcelPackage excel, Stopwatch stopwatch)
+        {
+            PrintConfigs(excel, stopwatch);
+            PrintParameters(excel);
+        }
+
+        protected virtual void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
         {
             var ws = excel.Workbook.Worksheets.Add("Configs");
             int i = 1;
@@ -84,6 +90,39 @@ namespace Implementation.Data_Structures
 
         protected virtual void PrintAdditionals(ExcelWorksheet ws, int i)
         {
+        }
+
+        protected void PrintParameters(ExcelPackage excel)
+        {
+            if (Parameters == null)
+            {
+                return;
+            }
+
+            var ws = excel.Workbook.Worksheets.Add("Parameters");
+            int i = 1;
+            ws.Cells[i, 1].Value = "SndensityValue";
+            ws.Cells[i, 2].Value = Parameters.SndensityValue;
+            i++;
+
+            ws.Cells[i, 1].Value = "CapVarValue";
+            ws.Cells[i, 2].Value = Parameters.CapVarValue;
+            i++;
+
+            ws.Cells[i, 1].Value = "CapmeanValue";
+            ws.Cells[i, 2].Value = Parameters.CapmeanValue;
+            i++;
+
+            ws.Cells[i, 1].Value = "EventInterestPerctValue";
+            ws.Cells[i, 2].Value = Parameters.EventInterestPerctValue;
+            i++;
+
+            ws.Cells[i, 1].Value = "SocialNetworkModel";
+            ws.Cells[i, 2].Value = Parameters.SocialNetworkModel;
+            i++;
+
+            ws.Cells[i, 1].Value = "MinCardinalityOption";
+            ws.Cells[i, 2].Value = Parameters.MinCardinalityOption;
         }
     }
 }

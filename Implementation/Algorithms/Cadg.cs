@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
@@ -21,13 +22,31 @@ namespace Implementation.Algorithms
         private readonly IDataFeed _dataFeeder;
         private CadgConf _conf => (CadgConf)Conf;
 
-        public Cadg(CadgConf conf, IDataFeed dataFeed)
+        public Cadg(CadgConf conf, IDataFeed dataFeed, int index) : base(index)
         {
             _dataFeeder = dataFeed;
             Conf = conf;
         }
 
-        public override void Run()
+        protected void WriteQueue(int hitCount, FileInfo output)
+        {
+            if (hitCount % 10 != 0)
+            {
+                return;
+            }
+
+            var list = _queue._sortedSet.OrderByDescending(x => x.Value.Utility).ToList();
+            var dir = Directory.CreateDirectory(output.DirectoryName + @"\" + Conf.AlgorithmName + "-" + _index);
+            var path = dir.FullName + @"\" + hitCount + ".csv";
+            var file = new StreamWriter(path);
+            foreach (var item in list)
+            {
+                file.WriteLine("{0}, {1}, {2}", item.Value.Utility, item.Value.User, item.Value.Event);
+            }
+            file.Close();
+        }
+
+        public override void Run(FileInfo output)
         {
             if (!_init)
                 throw new Exception("Not Initialized");
@@ -36,6 +55,7 @@ namespace Implementation.Algorithms
             while (!_queue.IsEmpty())
             {
                 hitcount++;
+                //WriteQueue(hitcount, output);
                 PrintQueue();
                 var min = _queue.RemoveMax();
                 var user = min.User;

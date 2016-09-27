@@ -13,7 +13,7 @@ namespace Implementation.Data_Structures
     {
         public int TakeChanceLimit { get; set; }
 
-        public override void Print(ExcelPackage excel, Stopwatch stopwatch)
+        protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
         {
             var ws = PrintConfig(excel, stopwatch);
             var i = ws.Dimension.Rows + 1;

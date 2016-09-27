@@ -27,7 +27,7 @@ namespace Implementation.Data_Structures
             AlgorithmName = null;
         }
 
-        public override void Print(ExcelPackage excel, Stopwatch stopwatch)
+        protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
         {
             PrintConfig(excel, stopwatch);
         }

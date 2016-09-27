@@ -193,7 +193,7 @@ namespace Implementation.Dataset_Reader
         {
             var result = events.Select(x =>
             {
-                var end = GenerateMaxCapacity(1);
+                var end = GenerateMaxCapacity(1, users.Count);
                 var start = GenerateMinCapacity(1, end);
                 var c = new Cardinality
                 {
@@ -221,6 +221,8 @@ namespace Implementation.Dataset_Reader
                 case MinCardinalityOptions.Eighth:
                     ground = max - Convert.ToInt32(Math.Floor((double)max / 8));
                     break;
+                case MinCardinalityOptions.Min:
+                    return min;
                 case MinCardinalityOptions.Random:
                     break;
                 default:
@@ -302,11 +304,21 @@ namespace Implementation.Dataset_Reader
         }
 
 
-        private int GenerateMaxCapacity(int minimum)
+        private int GenerateMaxCapacity(int minimum, int numberOfUsers)
         {
-            var normalDist = _maxGenerator.Sample();
-            var notmalDistInt = Convert.ToInt32(Math.Floor(normalDist));
-            return notmalDistInt < minimum ? minimum : notmalDistInt;
+            if (_distDataParams.MaxCardinalityOption == MaxCardinalityOptions.Random)
+            {
+                var normalDist = _maxGenerator.Sample();
+                var notmalDistInt = Convert.ToInt32(Math.Floor(normalDist));
+                return notmalDistInt < minimum ? minimum : notmalDistInt;
+            }
+
+            if(_distDataParams.MaxCardinalityOption == MaxCardinalityOptions.Max)
+            {
+                return numberOfUsers;
+            }
+
+            throw new NotImplementedException("Max Cardinality Unknown");
         }
     }
 }

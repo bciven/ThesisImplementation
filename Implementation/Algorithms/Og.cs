@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
@@ -19,13 +20,13 @@ namespace Implementation.Algorithms
         private readonly IDataFeed _dataFeeder;
         private OgConf _conf => (OgConf)Conf;
 
-        public Og(SgConf conf, IDataFeed dataFeed)
+        public Og(SgConf conf, IDataFeed dataFeed, int index) : base(index)
         {
             _dataFeeder = dataFeed;
             Conf = conf;
         }
 
-        public override void Run()
+        public override void Run(FileInfo output)
         {
             if (!_init)
                 throw new Exception("Not Initialized");

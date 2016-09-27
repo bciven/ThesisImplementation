@@ -19,13 +19,13 @@ namespace Implementation.Algorithms
         private readonly IDataFeed _dataFeeder;
         private SgConf _conf => (SgConf)Conf;
 
-        public Sg(SgConf conf, IDataFeed dataFeeder)
+        public Sg(SgConf conf, IDataFeed dataFeeder, int index): base(index)
         {
             _dataFeeder = dataFeeder;
             Conf = conf;
         }
 
-        public override void Run()
+        public override void Run(FileInfo output)
         {
             if (!_init)
                 throw new Exception("Not Initialized");

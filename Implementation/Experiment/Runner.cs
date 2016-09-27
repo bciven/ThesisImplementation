@@ -31,6 +31,7 @@ namespace Implementation.Experiment
                                let sndensity = exp.Element("sndensity")
                                let exptypes = exp.Element("exptypes")
                                let mincard = exp.Element("mincard")
+                               let maxcard = exp.Element("maxcard")
                                let snmodel = exp.Element("snmodel")
                                let eventinterestperct = exp.Element("eventinterestperct")
                                where users != null && events != null && alpha != null &&
@@ -46,6 +47,7 @@ namespace Implementation.Experiment
                                    EventInterestPerctValue = Convert.ToDouble(eventinterestperct.Attribute("value").Value),
                                    SndensityValue = Convert.ToDouble(sndensity.Attribute("value").Value),
                                    MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
+                                   MaxCardinalityOption = maxcard != null ? (MaxCardinalityOptions)Convert.ToInt32(maxcard.Attribute("value").Value) : MaxCardinalityOptions.Random,
                                    SocialNetworkModel = (SocialNetworkModel)Convert.ToInt32(snmodel.Attribute("value").Value),
                                    ExpTypes = exptypes.Descendants("type").Select(x =>
                                    {
@@ -135,7 +137,8 @@ namespace Implementation.Experiment
                 CapacityVariance = Convert.ToInt32(parameters.CapVarValue),
                 SocialNetworkModel = parameters.SocialNetworkModel,
                 SocialNetworkDensity = parameters.SndensityValue,
-                EventInterestPerct = parameters.EventInterestPerctValue
+                EventInterestPerct = parameters.EventInterestPerctValue,
+                MaxCardinalityOption = parameters.MaxCardinalityOption
             };
 
             switch (feedType)
@@ -187,8 +190,8 @@ namespace Implementation.Experiment
                     for (int round = 0; round < configs.Count; round++)
                     {
                         SetInputFile(serial, round, configs);
-                        var algorithm = CreateAlgorithm(configs, round, parameters);
                         var output = CreateOutputFileInfo(configs, numOfExp, i, round, dir);
+                        var algorithm = CreateAlgorithm(configs, round, parameters, round);
                         Run(i, algorithm, output, parameters.ExpTypes[round].Algorithm);
                     }
                 }
@@ -221,33 +224,33 @@ namespace Implementation.Experiment
             }
         }
 
-        private Algorithm<List<UserEvent>> CreateAlgorithm(List<SgConf> configs, int j, Parameters parameters)
+        private Algorithm<List<UserEvent>> CreateAlgorithm(List<SgConf> configs, int j, Parameters parameters, int index)
         {
             if (configs[j] is CadgConf)
             {
                 var cadgConf = (CadgConf)configs[j];
                 var feed = CreateFeed(cadgConf.FeedType, cadgConf.InputFilePath, parameters);
-                return new Cadg(cadgConf, feed);
+                return new Cadg(cadgConf, feed, index);
             }
 
             if (configs[j] is RandomConf)
             {
                 var ogConf = (RandomConf)configs[j];
                 var feed = CreateFeed(ogConf.FeedType, ogConf.InputFilePath, parameters);
-                return new Random(ogConf, feed);
+                return new Random(ogConf, feed, index);
             }
 
             if (configs[j] is OgConf)
             {
                 var ogConf = (OgConf)configs[j];
                 var feed = CreateFeed(ogConf.FeedType, ogConf.InputFilePath, parameters);
-                return new Og(ogConf, feed);
+                return new Og(ogConf, feed, index);
             }
 
             {
                 var sgConf = (SgConf)configs[j];
                 var feed = CreateFeed(sgConf.FeedType, sgConf.InputFilePath, parameters);
-                return new Sg(sgConf, feed);
+                return new Sg(sgConf, feed, index);
             }
         }
 
@@ -506,8 +509,9 @@ namespace Implementation.Experiment
                     Console.WriteLine("|5.Deficit Fix                 |");
                     Console.WriteLine("|6.Agile Adjustment            |");
                     Console.WriteLine("|7.Community Aware             |");
-                    Console.WriteLine("|8.Print Stack                 |");
-                    Console.WriteLine("|9.Pure                        |");
+                    Console.WriteLine("|8.Community Fix               |");
+                    Console.WriteLine("|9.Print Stack                 |");
+                    Console.WriteLine("|10.Pure                       |");
                     Console.WriteLine(" ------------------------------ ");
                     Console.WriteLine();
                     Console.Write("Type your choice: ");
@@ -526,8 +530,9 @@ namespace Implementation.Experiment
                             Reassignment = input.Contains("4") ? AlgorithmSpec.ReassignmentEnum.Dynamic : AlgorithmSpec.ReassignmentEnum.Greedy,
                             DeficitFix = input.Contains("5"),
                             LazyAdjustment = !input.Contains("6"),
-                            CommunityAware = !input.Contains("7"),
-                            PrintOutEachStep = input.Contains("8"),
+                            CommunityAware = input.Contains("7"),
+                            CommunityFix = input.Contains("8"),
+                            PrintOutEachStep = input.Contains("9"),
                             FeedType = feedType,
                             Alpha = parameters.AlphaValue,
                             AlgorithmName = ""
@@ -562,7 +567,7 @@ namespace Implementation.Experiment
         {
             Console.WriteLine("....Round {0}-{1}....", round, ConvertToString(algorithmEnum));
             alg.Initialize();
-            var watch = alg.Execute();
+            var watch = alg.Execute(output);
             var result = alg.CreateOutput(output);
             Print(result, alg.SocialWelfare, watch);
         }

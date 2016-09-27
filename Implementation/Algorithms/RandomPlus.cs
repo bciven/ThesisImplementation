@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
@@ -18,13 +19,13 @@ namespace Implementation.Algorithms
         private RandomPlusConf _conf => (RandomPlusConf)Conf;
         private Queue<UserEvent> _randomQueue;
 
-        public RandomPlus(RandomPlusConf conf, IDataFeed dataFeed)
+        public RandomPlus(RandomPlusConf conf, IDataFeed dataFeed, int index) : base(index)
         {
             _dataFeeder = dataFeed;
             Conf = conf;
         }
 
-        public override void Run()
+        public override void Run(FileInfo output)
         {
             if (!_init)
                 throw new Exception("Not Initialized");
