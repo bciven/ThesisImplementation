@@ -85,7 +85,10 @@
     <Compile Include="Algorithms\Og.cs" />
     <Compile Include="Algorithms\RandomPlus.cs" />
     <Compile Include="Algorithms\Random.cs" />
+    <Compile Include="Data Structures\OutputFiles.cs" />
+    <Compile Include="Data Structures\OutputEnum.cs" />
     <Compile Include="Data Structures\AlgorithmEnum.cs" />
+    <Compile Include="Data Structures\CommunityFixEnum.cs" />
     <Compile Include="Data Structures\LinkedListHeap.cs" />
     <Compile Include="Data Structures\OgConf.cs" />
     <Compile Include="Data Structures\RandomPlusConf.cs" />
@@ -98,6 +101,9 @@
     <Compile Include="Data Structures\UserEvents.cs" />
     <Compile Include="Data Structures\UserPairEvent.cs" />
     <Compile Include="Data Structures\DistDataParams.cs" />
+    <Compile Include="Dataset Reader\CsvReader.cs" />
+    <Compile Include="Dataset Reader\TextFileFeed.cs" />
+    <Compile Include="Dataset Reader\MaxCardinalityOptions.cs" />
     <Compile Include="Dataset Reader\MinCardinalityOptions.cs" />
     <Compile Include="Experiment\Parameters.cs" />
     <Compile Include="Experiment\Runner.cs" />
