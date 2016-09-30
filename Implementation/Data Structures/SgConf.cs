@@ -22,6 +22,7 @@ namespace Implementation.Data_Structures
         public int NumberOfExperimentTypes { get; set; }
         public string AlgorithmName { get; set; }
         public Parameters Parameters { get; set; }
+        public OutputTypeEnum OutputType { get; set; }
 
         public SgConf()
         {
@@ -34,12 +35,19 @@ namespace Implementation.Data_Structures
             NumberOfExperimentTypes = 1;
             AlgorithmName = null;
             Parameters = null;
+            OutputType = OutputTypeEnum.Excel;
         }
 
-        public void Print(ExcelPackage excel, Stopwatch stopwatch)
+        public void PrintToExcel(ExcelPackage excel, Stopwatch stopwatch)
         {
             PrintConfigs(excel, stopwatch);
             PrintParameters(excel);
+        }
+
+        public void PrintToText(DirectoryInfo directory, Stopwatch stopwatch)
+        {
+            PrintConfigs(directory, stopwatch);
+            PrintParameters(directory);
         }
 
         protected virtual void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
@@ -85,10 +93,40 @@ namespace Implementation.Data_Structures
             PrintAdditionals(ws, i);
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
+        }
 
+        protected virtual void PrintConfigs(DirectoryInfo directoryInfo, Stopwatch stopwatch)
+        {
+            var configsFile = new StreamWriter(Path.Combine(directoryInfo.FullName, OutputFiles.Configs), true);
+
+            configsFile.WriteLine("{0},{1}", "FeedType", FeedType);
+
+            configsFile.WriteLine("{0},{1}", "Number Of Users", NumberOfUsers);
+
+            configsFile.WriteLine("{0},{1}", "Number Of Events", NumberOfEvents);
+
+            configsFile.WriteLine("{0},{1}", "Print Each Step", PrintOutEachStep);
+
+            configsFile.WriteLine("{0},{1}", "Input File Path", InputFilePath);
+
+            configsFile.WriteLine("{0},{1}", "Alpha", Alpha);
+
+            configsFile.WriteLine("{0},{1}", "Percision", Percision);
+
+            configsFile.WriteLine("{0},{1}", "Algorithm Name", AlgorithmName);
+
+            configsFile.WriteLine("{0},{1}", "Execution Time", stopwatch.ElapsedMilliseconds);
+
+            PrintAdditionals(configsFile);
+
+            configsFile.Close();
         }
 
         protected virtual void PrintAdditionals(ExcelWorksheet ws, int i)
+        {
+        }
+
+        protected virtual void PrintAdditionals(StreamWriter streamWriter)
         {
         }
 
@@ -123,6 +161,30 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "MinCardinalityOption";
             ws.Cells[i, 2].Value = Parameters.MinCardinalityOption;
+        }
+
+        protected void PrintParameters(DirectoryInfo directoryInfo)
+        {
+            if (Parameters == null)
+            {
+                return;
+            }
+
+            var parametersFile = new StreamWriter(Path.Combine(directoryInfo.FullName, OutputFiles.Parameters), true);
+
+            parametersFile.WriteLine("{0},{1}", "SndensityValue", Parameters.SndensityValue);
+
+            parametersFile.WriteLine("{0},{1}", "CapVarValue", Parameters.CapVarValue);
+
+            parametersFile.WriteLine("{0},{1}", "CapmeanValue", Parameters.CapmeanValue);
+
+            parametersFile.WriteLine("{0},{1}", "EventInterestPerctValue", Parameters.EventInterestPerctValue);
+
+            parametersFile.WriteLine("{0},{1}", "SocialNetworkModel", Parameters.SocialNetworkModel);
+
+            parametersFile.WriteLine("{0},{1}", "MinCardinalityOption", Parameters.MinCardinalityOption);
+
+            parametersFile.Close();
         }
     }
 }

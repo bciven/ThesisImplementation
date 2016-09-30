@@ -20,5 +20,6 @@ namespace Implementation.Experiment
         public MinCardinalityOptions MinCardinalityOption { get; set; }
         public SocialNetworkModel SocialNetworkModel { get; set; }
         public MaxCardinalityOptions MaxCardinalityOption { get; set; }
+        public OutputTypeEnum OutputType { get; set; }
     }
 }

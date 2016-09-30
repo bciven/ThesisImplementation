@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace Implementation.Data_Structures
         public bool LazyAdjustment { get; set; }
         public int NumberOfPhantomEvents { get; set; }
         public bool CommunityAware { get; set; }
-        public bool CommunityFix { get; set; }
+        public CommunityFixEnum CommunityFix { get; set; }
         public bool DoublePriority { get; set; }
 
         public CadgConf()
@@ -39,7 +40,7 @@ namespace Implementation.Data_Structures
             LazyAdjustment = false;
             CommunityAware = false;
             AlgorithmName = null;
-            CommunityFix = false;
+            CommunityFix = CommunityFixEnum.None;
             DoublePriority = false;
         }
 
@@ -124,6 +125,53 @@ namespace Implementation.Data_Structures
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
 
+        }
+
+        protected override void PrintConfigs(DirectoryInfo directoryInfo, Stopwatch stopwatch)
+        {
+            var configsFile = new StreamWriter(Path.Combine(directoryInfo.FullName, OutputFiles.Configs), true);
+
+            configsFile.WriteLine("{0},{1}", "FeedType", FeedType);
+
+            configsFile.WriteLine("{0},{1}", "Number Of Users", NumberOfUsers);
+
+            configsFile.WriteLine("{0},{1}", "Number Of Events", NumberOfEvents);
+
+            configsFile.WriteLine("{0},{1}", "Immediate Reaction", ImmediateReaction);
+
+            configsFile.WriteLine("{0},{1}", "Reassignment Type", Reassignment);
+
+            configsFile.WriteLine("{0},{1}", "Print Each Step", PrintOutEachStep);
+
+            configsFile.WriteLine("{0},{1}", "Input File Path", InputFilePath);
+
+            configsFile.WriteLine("{0},{1}", "Phantom Aware", PhantomAware);
+
+            configsFile.WriteLine("{0},{1}", "Deficit Fix", DeficitFix);
+
+            configsFile.WriteLine("{0},{1}", "Post Initialization Insert", PostInitializationInsert);
+
+            configsFile.WriteLine("{0},{1}", "Alpha", Alpha);
+
+            configsFile.WriteLine("{0},{1}", "Percision", Percision);
+
+            configsFile.WriteLine("{0},{1}", "Lazy Adjustment", LazyAdjustment);
+
+            configsFile.WriteLine("{0},{1}", "Community Aware", CommunityAware);
+
+            configsFile.WriteLine("{0},{1}", "Number Of Phantom Events", NumberOfPhantomEvents);
+
+            configsFile.WriteLine("{0},{1}", "Algorithm Name", AlgorithmName);
+
+            configsFile.WriteLine("{0},{1}", "Execution Time", stopwatch.ElapsedMilliseconds);
+
+            configsFile.WriteLine("{0},{1}", "Community Fix", CommunityFix);
+
+            configsFile.WriteLine("{0},{1}", "Double Priority", DoublePriority);
+
+            PrintAdditionals(configsFile);
+
+            configsFile.Close();
         }
     }
 }

@@ -94,12 +94,22 @@ namespace Implementation.Algorithms
                     var userInterest = new UserEvents(availableUser, realOpenEvents.Count, _conf.DoublePriority);
                     foreach (var @event in realOpenEvents)
                     {
-                        var q = Util(@event, availableUser, _conf.CommunityAware, _conf.DoublePriority, _users);
+                        var q = Util(@event, availableUser, _conf.CommunityAware, GetCommunityFix(_conf.DoublePriority), _users);
                         userInterest.AddEvent(@event, q.Utility, q.Priority);
                     }
                     _queue.Enqueue(userInterest);
                 }
             }
+        }
+
+        private CommunityFixEnum GetCommunityFix(bool doublePriority)
+        {
+            if (doublePriority)
+            {
+                return CommunityFixEnum.Version1;
+            }
+
+            return CommunityFixEnum.None;
         }
 
         private void PrepareReassignment(out List<int> availableUsers, out List<int> realOpenEvents)
@@ -155,7 +165,7 @@ namespace Implementation.Algorithms
             if (SocAffinities[user2, user1] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
-                var newPriority = Util(@event, user2, _conf.CommunityAware, _conf.DoublePriority, _users);
+                var newPriority = Util(@event, user2, _conf.CommunityAware, GetCommunityFix(_conf.DoublePriority), _users);
                 if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
                 {
                     foreach (var userInterest in _queue)
@@ -202,7 +212,7 @@ namespace Implementation.Algorithms
             UserAssignments = new List<int?>();
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
-            SocialWelfare = new Welfare();
+            Welfare = new Welfare();
             _queue = new Queue<UserEvents>();
             //_deficit = 0;
             _init = true;

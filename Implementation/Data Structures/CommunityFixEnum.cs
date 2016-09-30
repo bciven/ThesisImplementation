@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Implementation.Data_Structures
 {
-    public enum FeedTypeEnum
+    public enum CommunityFixEnum
     {
-        Random, Example1, OriginalExperiment, XlsxFile, TextFile, SerialExperiment
+        None = 0,
+        Version1 = 1,
+        Version2 = 2,
+        Version3 = 3
     }
 }

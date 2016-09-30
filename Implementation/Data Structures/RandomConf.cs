@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +13,6 @@ namespace Implementation.Data_Structures
     public class RandomConf : SgConf
     {
         public bool Reassign { get; set; }
-        public string AlgorithmName { get; set; }
-        public Parameters Parameters{ get; set; }
 
         public RandomConf()
         {
@@ -30,6 +29,42 @@ namespace Implementation.Data_Structures
         protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
         {
             PrintConfig(excel, stopwatch);
+        }
+
+        protected override void PrintConfigs(DirectoryInfo directoryInfo, Stopwatch stopwatch)
+        {
+            PrintConfig(directoryInfo, stopwatch);
+        }
+
+        protected StreamWriter PrintConfig(DirectoryInfo directoryInfo, Stopwatch stopwatch)
+        {
+            var configsFile = new StreamWriter(Path.Combine(directoryInfo.FullName, OutputFiles.Configs), true);
+
+            configsFile.WriteLine("{0},{1}", "FeedType", FeedType);
+
+            configsFile.WriteLine("{0},{1}", "Number Of Users", NumberOfUsers);
+
+            configsFile.WriteLine("{0},{1}", "Number Of Events", NumberOfEvents);
+
+            configsFile.WriteLine("{0},{1}", "Reassign", Reassign);
+
+            configsFile.WriteLine("{0},{1}", "Print Each Step", PrintOutEachStep);
+
+            configsFile.WriteLine("{0},{1}", "Input File Path", InputFilePath);
+
+            configsFile.WriteLine("{0},{1}", "Alpha", Alpha);
+
+            configsFile.WriteLine("{0},{1}", "Percision", Percision);
+
+            configsFile.WriteLine("{0},{1}", "Algorithm Name", AlgorithmName);
+
+            configsFile.WriteLine("{0},{1}", "Execution Time", stopwatch.ElapsedMilliseconds);
+
+            PrintAdditionals(configsFile);
+
+            configsFile.Close();
+
+            return configsFile;
         }
 
         protected ExcelWorksheet PrintConfig(ExcelPackage excel, Stopwatch stopwatch)

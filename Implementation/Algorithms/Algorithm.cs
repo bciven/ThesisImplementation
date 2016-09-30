@@ -15,7 +15,7 @@ namespace Implementation.Algorithms
         //public abstract T CreateOutput(FileInfo file);
         //public abstract string GetInputFile();
         //public abstract FeedTypeEnum GetFeedType();
-        public Welfare SocialWelfare { get; set; }
+        public Welfare Welfare { get; set; }
 
         protected List<int> AllEvents;
         protected List<int> AllUsers;
@@ -77,7 +77,7 @@ namespace Implementation.Algorithms
 
         protected abstract void PrintQueue();
 
-        private void Print(List<UserEvent> result, Welfare welfare, FileInfo output)
+        private void PrintToExcel(List<UserEvent> result, Welfare welfare, FileInfo output)
         {
             ExcelPackage excel = new ExcelPackage(output);
             var usereventsheet = excel.Workbook.Worksheets.Add("Innate Affinities");
@@ -160,7 +160,7 @@ namespace Implementation.Algorithms
             }
             regRatiosheet.Cells[regRatiosheet.Dimension.Address].AutoFitColumns();
 
-            Conf.Print(excel, _watch);
+            Conf.PrintToExcel(excel, _watch);
 
             var eventAssignmentsSheet = excel.Workbook.Worksheets.Add("Event Assignments");
             eventAssignmentsSheet.Cells[1, 1].Value = "Event";
@@ -210,6 +210,91 @@ namespace Implementation.Algorithms
             excel.Save();
         }
 
+        private void PrintToText(List<UserEvent> result, Welfare welfare, FileInfo output)
+        {
+            var dir = Directory.CreateDirectory(output.FullName);
+            var usereventFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.InnateAffinity));
+            foreach (var user in AllUsers)
+            {
+                foreach (var @event in AllEvents)
+                {
+
+                    usereventFile.WriteLine("{0},{1},{2}", user + 1, @event + 1, InAffinities[user][@event]);
+                }
+            }
+            usereventFile.Close();
+
+            var socialAffinityFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.SocialAffinity));
+            foreach (var user1 in AllUsers)
+            {
+                foreach (var user2 in AllUsers)
+                {
+                    socialAffinityFile.WriteLine("{0},{1},{2}", user1 + 1, user2 + 1, SocAffinities[user1, user2]);
+                }
+            }
+            socialAffinityFile.Close();
+
+            var cardinalitiesFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.Cardinality));
+            for (int i = 0; i < EventCapacity.Count; i++)
+            {
+                var cap = EventCapacity[i];
+                cardinalitiesFile.WriteLine("{0},{1},{2}", i + 1, cap.Min, cap.Max);
+            }
+            cardinalitiesFile.Close();
+
+            var assignmentsFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.UserAssignment));
+            for (int i = 0; i < result.Count; i++)
+            {
+                var userEvent = result[i];
+                if (userEvent.Event >= 0)
+                {
+                    assignmentsFile.WriteLine("{0},{1}", userEvent.User + 1, userEvent.Event + 1);
+                }
+            }
+            assignmentsFile.Close();
+
+            var welfareFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.Welfare));
+            welfareFile.WriteLine("{0},{1}", "Total Welfare", welfare.TotalWelfare);
+            welfareFile.WriteLine("{0},{1}", "Innate Welfare", welfare.InnateWelfare);
+            welfareFile.WriteLine("{0},{1}", "Social Welfare", welfare.SocialWelfare);
+            welfareFile.Close();
+
+
+            var regRatiosFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.RegretRatio));
+            var ratios = CalcRegRatios(AllUsers);
+            foreach (var ratio in ratios)
+            {
+                regRatiosFile.WriteLine("{0},{1}", ratio.Key, ratio.Value);
+            }
+
+            regRatiosFile.Close();
+
+            Conf.PrintToText(dir, _watch);
+
+            var eventAssignmentsFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.EventAssignment));
+            int e = 0;
+            for (e = 0; e < Assignments.Count; e++)
+            {
+                var assignment = Assignments[e];
+                eventAssignmentsFile.Write("{0},{1},{2},{3}", e + 1, EventCapacity[e].Min, assignment.Count, EventCapacity[e].Max);
+
+                for (int j = 0; j < assignment.Count; j++)
+                {
+                    eventAssignmentsFile.Write(",{0}", assignment[j] + 1);
+                }
+                eventAssignmentsFile.Write(Environment.NewLine);
+            }
+            eventAssignmentsFile.Close();
+
+            var userGainFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.UserGain));
+            foreach (var user in AllUsers)
+            {
+                var userWelfare = CalculateSocialWelfare(Assignments, user);
+                userGainFile.WriteLine("{0},{1},{2},{3},{4}", user + 1, UserAssignments[user], userWelfare.InnateWelfare, userWelfare.SocialWelfare, userWelfare.TotalWelfare);
+            }
+            userGainFile.Close();
+        }
+
         public List<UserEvent> CreateOutput(FileInfo file)
         {
             SetInputFile(file.FullName);
@@ -223,9 +308,22 @@ namespace Implementation.Algorithms
                     User = i
                 });
             }
-            SocialWelfare = CalculateSocialWelfare(Assignments);
-            Print(result, SocialWelfare, file);
+            Welfare = CalculateSocialWelfare(Assignments);
+            Print(result, Welfare, file);
             return result;
+        }
+
+        private void Print(List<UserEvent> result, Welfare welfare, FileInfo file)
+        {
+            switch (Conf.OutputType)
+            {
+                case OutputTypeEnum.Excel:
+                    PrintToExcel(result, Welfare, file);
+                    break;
+                case OutputTypeEnum.Text:
+                    PrintToText(result, Welfare, file);
+                    break;
+            }
         }
 
         protected void SetInputFile(string file)
@@ -386,7 +484,7 @@ namespace Implementation.Algorithms
             return usersCount >= min && usersCount <= max;
         }
 
-        protected UserEvent Util(int @event, int user, bool communityAware, bool communityFix, List<int> users)
+        protected UserEvent Util(int @event, int user, bool communityAware, CommunityFixEnum communityFix, List<int> users)
         {
             var userevent = new UserEvent
             {
@@ -404,12 +502,12 @@ namespace Implementation.Algorithms
                 //var assignedUsers = Assignments.SelectMany(x => x).ToList();
                 //var users = AllUsers.Where(x => !UserAssignments[x].HasValue && !assignedUsers.Contains(x)).ToList();
 
-                if (!communityFix)
+                if (communityFix == CommunityFixEnum.None)
                 {
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
                         users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(users.Count - 1, 1);
                 }
-                else
+                else if (communityFix == CommunityFixEnum.Version1)
                 {
                     var lowInterestedUsers = users.OrderBy(x => SocAffinities[user, x]).Take(EventCapacity[@event].Max).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
@@ -417,6 +515,18 @@ namespace Implementation.Algorithms
 
                     //s += Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
                     //(users.Sum(u => InAffinities[u][@event]) / (double)Math.Max(users.Count - 1, 1));
+                }
+                else if (communityFix == CommunityFixEnum.Version2)
+                {
+                    var highInterestedUsers = users.OrderBy(x => SocAffinities[user, x]).Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
+                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
+                        (highInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(highInterestedUsers.Count - 1, 1));
+                }
+                else if (communityFix == CommunityFixEnum.Version3)
+                {
+                    var highInterestedUsers = users.OrderBy(x => SocAffinities[user, x] + InAffinities[x][@event]).Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
+                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
+                        (highInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(highInterestedUsers.Count - 1, 1));
                 }
 
                 g = s + g;

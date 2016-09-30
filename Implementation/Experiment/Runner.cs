@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -49,11 +50,12 @@ namespace Implementation.Experiment
                                    MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
                                    MaxCardinalityOption = maxcard != null ? (MaxCardinalityOptions)Convert.ToInt32(maxcard.Attribute("value").Value) : MaxCardinalityOptions.Random,
                                    SocialNetworkModel = (SocialNetworkModel)Convert.ToInt32(snmodel.Attribute("value").Value),
+                                   OutputType = (OutputTypeEnum)Convert.ToInt32(exp.Attribute("output").Value),
                                    ExpTypes = exptypes.Descendants("type").Select(x =>
                                    {
-                                       var communityfix = x.Attribute("CommunityFix") != null && Convert.ToBoolean(x.Attribute("CommunityFix").Value);
+                                       var communityfix = x.Attribute("CommunityFix") != null ? (CommunityFixEnum)Convert.ToInt32(x.Attribute("CommunityFix").Value) : CommunityFixEnum.None;
                                        var reassignment = AlgorithmSpec.ReassignmentEnum.None;
-                                       if(x.Attribute("Reassignment") != null)
+                                       if (x.Attribute("Reassignment") != null)
                                        {
                                            reassignment = x.Attribute("Reassignment").Value == "dynamic"
                                                ? AlgorithmSpec.ReassignmentEnum.Dynamic
@@ -152,6 +154,9 @@ namespace Implementation.Experiment
                 case FeedTypeEnum.XlsxFile:
                     dataFeeder = new ExcelFileFeed(inputFilePath);
                     break;
+                case FeedTypeEnum.TextFile:
+                    dataFeeder = new TextFileFeed(inputFilePath);
+                    break;
                 case FeedTypeEnum.OriginalExperiment:
                     dataFeeder = new DistDataFeed(distDataParams);
                     break;
@@ -160,14 +165,17 @@ namespace Implementation.Experiment
                     {
                         dataFeeder = new DistDataFeed(distDataParams);
                     }
-                    else
+                    else if (parameters.OutputType == OutputTypeEnum.Excel)
                     {
                         dataFeeder = new ExcelFileFeed(inputFilePath);
+                    }
+                    else
+                    {
+                        dataFeeder = new TextFileFeed(inputFilePath);
                     }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-
             }
             return dataFeeder;
         }
@@ -205,8 +213,19 @@ namespace Implementation.Experiment
             var algDigits = Convert.ToInt32(Math.Floor(Math.Log10(configs.Count) + 1));
             var expDigits = Convert.ToInt32(Math.Floor(Math.Log10(numOfExp) + 1));
             var fileName = i.ToString().PadLeft(expDigits, '0') + "-" + round.ToString().PadLeft(algDigits, '0');
-            var output = new FileInfo(Path.Combine(dir.Name, fileName + ".xlsx"));
-            return output;
+            if (configs[round].OutputType == OutputTypeEnum.Excel)
+            {
+                var output = new FileInfo(Path.Combine(dir.Name, fileName + ".xlsx"));
+                return output;
+            }
+
+            if (configs[round].OutputType == OutputTypeEnum.Text)
+            {
+                var output = new FileInfo(Path.Combine(dir.Name, fileName));
+                return output;
+            }
+
+            throw new InvalidEnumArgumentException("Output type is invalid");
         }
 
         private static void SetInputFile(bool serial, int round, List<SgConf> configs)
@@ -290,7 +309,8 @@ namespace Implementation.Experiment
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
                         CommunityAware = algorithmEnum == AlgorithmSpec.AlgorithmEnum.COG,
-                        DoublePriority = parameters.ExpTypes[i].DoublePriority
+                        DoublePriority = parameters.ExpTypes[i].DoublePriority,
+                        OutputType = parameters.OutputType
                     };
 
                     configs.Add(conf);
@@ -311,7 +331,8 @@ namespace Implementation.Experiment
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
-                        TakeChanceLimit = tcl
+                        TakeChanceLimit = tcl,
+                        OutputType = parameters.OutputType
                     };
 
                     configs.Add(conf);
@@ -329,7 +350,8 @@ namespace Implementation.Experiment
                         FeedType = FeedTypeEnum.SerialExperiment,
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
-                        Parameters = parameters
+                        Parameters = parameters,
+                        OutputType = parameters.OutputType
                     };
 
                     configs.Add(conf);
@@ -361,7 +383,8 @@ namespace Implementation.Experiment
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
                         CommunityFix = parameters.ExpTypes[i].CommunityFix,
-                        DoublePriority = parameters.ExpTypes[i].DoublePriority
+                        DoublePriority = parameters.ExpTypes[i].DoublePriority,
+                        OutputType = parameters.OutputType
                     };
 
                     configs.Add(conf);
@@ -404,13 +427,14 @@ namespace Implementation.Experiment
                 Console.WriteLine("|2.Original Experiment         |");
                 Console.WriteLine("|3.Example1                    |");
                 Console.WriteLine("|4.From Excel File             |");
-                Console.WriteLine("|5.Serial Experiments          |");
+                Console.WriteLine("|5.From Text File              |");
+                Console.WriteLine("|6.Serial Experiments          |");
                 Console.WriteLine(" ------------------------------ ");
                 Console.WriteLine();
                 Console.Write("Type your choice: ");
                 var input = Console.ReadLine();
                 var inputInt = 1;
-                if (int.TryParse(input, out inputInt) && inputInt >= 1 && inputInt <= 5)
+                if (int.TryParse(input, out inputInt) && inputInt >= 1 && inputInt <= 6)
                 {
                     switch (inputInt)
                     {
@@ -429,6 +453,11 @@ namespace Implementation.Experiment
                             inputFilePath = Console.ReadLine();
                             break;
                         case 5:
+                            feedType = FeedTypeEnum.TextFile;
+                            Console.Write("Enter File Name:");
+                            inputFilePath = Console.ReadLine();
+                            break;
+                        case 6:
                             feedType = FeedTypeEnum.SerialExperiment;
                             Console.Write("Enter Number Of Experiment Types:");
                             numberOfExperimentTypes = Convert.ToInt32(Console.ReadLine());
@@ -476,7 +505,8 @@ namespace Implementation.Experiment
                         NumberOfExperimentTypes = 1,
                         Reassign = true,
                         PrintOutEachStep = false,
-                        Parameters = parameters
+                        Parameters = parameters,
+                        OutputType = OutputTypeEnum.Text
                     };
                     configs.Add(conf);
                 }
@@ -491,7 +521,8 @@ namespace Implementation.Experiment
                         NumberOfEvents = 50,
                         InputFilePath = inputFilePath,
                         FeedType = feedType,
-                        Alpha = parameters.AlphaValue
+                        Alpha = parameters.AlphaValue,
+                        OutputType = OutputTypeEnum.Text
                     };
                     configs.Add(conf);
                 }
@@ -531,11 +562,12 @@ namespace Implementation.Experiment
                             DeficitFix = input.Contains("5"),
                             LazyAdjustment = !input.Contains("6"),
                             CommunityAware = input.Contains("7"),
-                            CommunityFix = input.Contains("8"),
+                            CommunityFix = input.Contains("8") ? CommunityFixEnum.Version1 : CommunityFixEnum.None,
                             PrintOutEachStep = input.Contains("9"),
                             FeedType = feedType,
                             Alpha = parameters.AlphaValue,
-                            AlgorithmName = ""
+                            AlgorithmName = "",
+                            OutputType = OutputTypeEnum.Text
                         };
 
                         Console.WriteLine();
@@ -569,7 +601,7 @@ namespace Implementation.Experiment
             alg.Initialize();
             var watch = alg.Execute(output);
             var result = alg.CreateOutput(output);
-            Print(result, alg.SocialWelfare, watch);
+            Print(result, alg.Welfare, watch);
         }
 
         public string ConvertToString(Enum eff)

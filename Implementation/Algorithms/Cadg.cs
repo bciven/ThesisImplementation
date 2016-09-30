@@ -435,7 +435,7 @@ namespace Implementation.Algorithms
             UserAssignments = new List<int?>();
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
-            SocialWelfare = new Welfare();
+            Welfare = new Welfare();
             _queue = new FakeHeap/*<double, UserEvent>*/(_conf.DoublePriority);
             _phantomEvents = new List<int>();
             //_deficit = 0;

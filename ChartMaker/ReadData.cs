@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Implementation.Dataset_Reader;
+using Implementation.Data_Structures;
 using OfficeOpenXml;
 
 namespace ChartMaker
@@ -14,13 +16,22 @@ namespace ChartMaker
         {
             var directory = new DirectoryInfo(folder);
             var allFiles = directory.GetFiles();
+            if (allFiles.Any(x => x.Extension.Contains("xlsx")))
+            {
+                return Read(allFiles);
+            }
+            var allDirectories = directory.GetDirectories();
+            return Read(allDirectories);
+        }
 
+        private List<AlgorithmWelfare> Read(FileInfo[] allFiles)
+        {
             var files = allFiles.Where(x => Path.GetExtension(x.Name).ToLower() == ".xlsx" && !x.Attributes.HasFlag(FileAttributes.Hidden));
             var groups = files.GroupBy(x => x.Name.Split('-')[1], (key, g) => g.ToList()).ToList();
             var fResults = new List<AlgorithmWelfare>();
             foreach (var @group in groups)
             {
-                var excelPackage = new ExcelPackage(group.ElementAt(0));
+                var excelPackage = new ExcelPackage(@group.ElementAt(0));
                 var wb = excelPackage.Workbook;
                 var config = ReadConfig(wb);
                 excelPackage.Dispose();
@@ -39,17 +50,47 @@ namespace ChartMaker
                 fResults.Add(config);
             }
 
-            for (int i = 0; i < fResults.Count; i++)
-            {
-                fResults[i].AvgTotalWelfare = fResults[i].AvgTotalWelfare / fResults[i].Count;
-                fResults[i].AvgInnatelWelfare = fResults[i].AvgInnatelWelfare / fResults[i].Count;
-                fResults[i].AvgSocialWelfare = fResults[i].AvgSocialWelfare / fResults[i].Count;
-                fResults[i].AvgRegRatio = fResults[i].AvgRegRatio / fResults[i].Count;
-            }
-            //var maxWelfare = fResults.Max(x => x.AvgWelfare);
-            //fResults.ForEach(x => x.AvgWelfare = x.AvgWelfare / maxWelfare);
+            TakeAverage(fResults);
 
             return fResults;
+        }
+
+        private List<AlgorithmWelfare> Read(DirectoryInfo[] allDirectories)
+        {
+            var groups = allDirectories.GroupBy(x => x.Name.Split('-')[1], (key, g) => g.ToList()).ToList();
+            var fResults = new List<AlgorithmWelfare>();
+            foreach (var @group in groups)
+            {
+                var directory = new DirectoryInfo(@group.ElementAt(0).FullName);
+                var config = ReadConfig(directory);
+                for (int i = 0; i < @group.Count; i++)
+                {
+                    var file = @group[i];
+                    directory = new DirectoryInfo(file.FullName);
+                    var configLines = File.ReadAllLines(Path.Combine(directory.FullName, OutputFiles.Welfare));
+                    config.AvgTotalWelfare += ReadTotalWelfare(configLines);
+                    config.AvgSocialWelfare += ReadSocialWelfare(configLines);
+                    config.AvgInnatelWelfare += ReadInnateWelfare(configLines);
+                    config.AvgRegRatio += ReadRegRatio(directory);
+                    config.Count++;
+                }
+                fResults.Add(config);
+            }
+
+            TakeAverage(fResults);
+
+            return fResults;
+        }
+
+        private static void TakeAverage(List<AlgorithmWelfare> fResults)
+        {
+            foreach (AlgorithmWelfare welfare in fResults)
+            {
+                welfare.AvgTotalWelfare = welfare.AvgTotalWelfare / welfare.Count;
+                welfare.AvgInnatelWelfare = welfare.AvgInnatelWelfare / welfare.Count;
+                welfare.AvgSocialWelfare = welfare.AvgSocialWelfare / welfare.Count;
+                welfare.AvgRegRatio = welfare.AvgRegRatio / welfare.Count;
+            }
         }
 
         private double ReadInnateWelfare(ExcelWorkbook wb)
@@ -59,6 +100,19 @@ namespace ChartMaker
             return Convert.ToDouble(value);
         }
 
+        private double ReadInnateWelfare(string[] lines)
+        {
+            foreach (var line in lines)
+            {
+                if (line.Contains("Innate"))
+                {
+                    return CsvReader.ReadDoubleValue(line, 1);
+                }
+            }
+
+            throw new ArgumentException("Argument is not available");
+        }
+
         private double ReadSocialWelfare(ExcelWorkbook wb)
         {
             var ws = wb.Worksheets[4];
@@ -66,11 +120,37 @@ namespace ChartMaker
             return Convert.ToDouble(value);
         }
 
+        private double ReadSocialWelfare(string[] lines)
+        {
+            foreach (var line in lines)
+            {
+                if (line.Contains("Social"))
+                {
+                    return CsvReader.ReadDoubleValue(line, 1);
+                }
+            }
+
+            throw new ArgumentException("Argument is not available");
+        }
+
         private double ReadTotalWelfare(ExcelWorkbook wb)
         {
             var ws = wb.Worksheets[4];
             var value = ws.Cells[1, 5].Value;
             return Convert.ToDouble(value);
+        }
+
+        private double ReadTotalWelfare(string[] lines)
+        {
+            foreach (var line in lines)
+            {
+                if (line.Contains("Total"))
+                {
+                    return CsvReader.ReadDoubleValue(line, 1);
+                }
+            }
+
+            throw new ArgumentException("Argument is not available");
         }
 
         private double ReadRegRatio(ExcelWorkbook wb)
@@ -82,6 +162,20 @@ namespace ChartMaker
             foreach (var cell in cells)
             {
                 avg += Convert.ToDouble(cell.Value);
+                count++;
+            }
+            avg = avg / count;
+            return avg;
+        }
+
+        private double ReadRegRatio(DirectoryInfo directory)
+        {
+            var lines = File.ReadAllLines(Path.Combine(directory.FullName, OutputFiles.RegretRatio));
+            var avg = 0d;
+            var count = 0;
+            foreach (var line in lines)
+            {
+                avg += CsvReader.ReadDoubleValue(line, 1);
                 count++;
             }
             avg = avg / count;
@@ -141,6 +235,30 @@ namespace ChartMaker
                 }
             }
             welfare.SocialNetworkModel = Convert.ToString(wsParameters.Cells[socialNetworkModelIndex, 2].Value);
+
+            return welfare;
+        }
+
+
+        private AlgorithmWelfare ReadConfig(DirectoryInfo directory)
+        {
+            var configLines = File.ReadAllLines(Path.Combine(directory.FullName, OutputFiles.Configs)).ToList();
+            var welfare = new AlgorithmWelfare();
+
+            welfare.Version = CsvReader.ReadStringValue(configLines.First(x=> x.Contains("Algorithm Name")), 1);
+            welfare.Alpha = CsvReader.ReadDoubleValue(configLines.First(x => x.Contains("Alpha")), 1);
+            welfare.UserCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Number Of Users")), 1);
+            welfare.EventCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Number Of Events")), 1);
+
+            if (!File.Exists(Path.Combine(directory.FullName, OutputFiles.Parameters)))
+            {
+                return welfare;
+            }
+            var parameterLines = File.ReadAllLines(Path.Combine(directory.FullName, OutputFiles.Parameters)).ToList();
+
+            welfare.NetworkDensity = CsvReader.ReadDoubleValue(parameterLines.First(x => x.Contains("SndensityValue")), 1);
+            welfare.MinCardinalityOption = CsvReader.ReadStringValue(parameterLines.First(x => x.Contains("MinCardinalityOption")), 1);
+            welfare.SocialNetworkModel = CsvReader.ReadStringValue(parameterLines.First(x => x.Contains("SocialNetworkModel")), 1);
 
             return welfare;
         }
