@@ -36,14 +36,17 @@ namespace Implementation.Algorithms
             }
 
             var list = _queue._sortedSet.OrderByDescending(x => x.Value.Utility).ToList();
-            var dir = Directory.CreateDirectory(output.DirectoryName + @"\" + Conf.AlgorithmName + "-" + _index);
-            var path = dir.FullName + @"\" + hitCount + ".csv";
-            var file = new StreamWriter(path);
-            foreach (var item in list)
+            if (output != null)
             {
-                file.WriteLine("{0}, {1}, {2}", item.Value.Utility, item.Value.User, item.Value.Event);
+                var dir = Directory.CreateDirectory(output.DirectoryName + @"\" + Conf.AlgorithmName + "-" + _index);
+                var path = dir.FullName + @"\" + hitCount + ".csv";
+                var file = new StreamWriter(path);
+                foreach (var item in list)
+                {
+                    file.WriteLine("{0}, {1}, {2}", item.Value.Utility, item.Value.User, item.Value.Event);
+                }
+                file.Close();
             }
-            file.Close();
         }
 
         public override void Run(FileInfo output)
@@ -106,6 +109,11 @@ namespace Implementation.Algorithms
                     }
 
                     Assignments[@event].Add(user);
+                    if (UserAssignments[user] == null)
+                    {
+                        UserAssignments[user] = @event;
+                    }
+
                     _numberOfUserAssignments[user]++;
                     assignmentMade = true;
 
@@ -223,6 +231,14 @@ namespace Implementation.Algorithms
             if (_conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Dynamic)
                 return;
 
+            for (int i = 0; i < UserAssignments.Count; i++)
+            {
+                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value))
+                {
+                    UserAssignments[i] = null;
+                }
+            }
+
             if (UserAssignments.Any(x => !x.HasValue))
             {
                 List<int> availableUsers;
@@ -293,7 +309,7 @@ namespace Implementation.Algorithms
             }
 
             PrintAssignments(assignmentMade);
-            CheckValidity();
+            //CheckValidity();
         }
 
         private void CheckValidity()
@@ -368,7 +384,14 @@ namespace Implementation.Algorithms
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
                 var newPriority = Util(@event, user2, _conf.CommunityAware, _conf.CommunityFix, _users);
-                if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
+                if (!_conf.LazyAdjustment)
+                {
+                    if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
+                    {
+                        _queue.AddOrUpdate(newPriority.Utility, new UserEvent { User = user2, Event = @event });
+                    }
+                }
+                else
                 {
                     _queue.AddOrUpdate(newPriority.Utility, new UserEvent { User = user2, Event = @event });
                 }

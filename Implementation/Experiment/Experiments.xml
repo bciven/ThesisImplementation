@@ -1,6 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-<Experiment count="10" output="1">
+  <Experiment count="10" output="1">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="1" />
+    <eventinterestperct value="5" />
+    <snmodel value="1" />
+    <exptypes>
+      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="1" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="1" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="2" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="2" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="3" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="3" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PCADG</type>
+
+      <type Reassignment="dynamic" CommunityFix="4" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="4" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PCADG</type>
+      
+      <type Reassignment="dynamic" CommunityFix="4" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">IR</type>
+      <type Reassignment="dynamic" CommunityFix="4" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">IR</type>
+      
+      <type Reassignment="dynamic" CommunityFix="2" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="2" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">IRC</type>
+
+    </exptypes>
+  </Experiment>
+
+  <!--<Experiment count="10" output="1">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -371,5 +410,5 @@
       <type TakeChanceLimit="5">RandomPlus</type>
       <type>RandomPlus</type>
     </exptypes>
-  </Experiment>
+  </Experiment>-->
 </Experiments>

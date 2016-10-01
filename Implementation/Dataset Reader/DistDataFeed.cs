@@ -121,33 +121,71 @@ namespace Implementation.Dataset_Reader
             return graph;
         }
 
+        //private Graph ErdosModel(int userCount)
+        //{
+        //    Graph graph = new Graph();
+        //    var rand = new Random();
+        //    for (int nodeA = 0; nodeA < userCount; nodeA++)
+        //    {
+        //        for (int nodeB = 0; nodeB < userCount; nodeB++)
+        //        {
+        //            if (nodeA != nodeB)
+        //            {
+        //                if (rand.NextDouble() <= _distDataParams.SocialNetworkDensity)
+        //                {
+        //                    if (!graph.Edges.ContainsKey(nodeA))
+        //                    {
+        //                        graph.Edges.Add(nodeA, new List<int>());
+        //                    }
+        //                    if (!graph.Edges.ContainsKey(nodeB))
+        //                    {
+        //                        graph.Edges.Add(nodeB, new List<int>());
+        //                    }
+        //                    graph.Edges[nodeA].Add(nodeB);
+        //                    graph.Edges[nodeB].Add(nodeA);
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return graph;
+        //}
+
         private Graph ErdosModel(int userCount)
         {
-            Graph graph = new Graph();
-            var rand = new Random();
-            for (int nodeA = 0; nodeA < userCount; nodeA++)
+            List<string> lines;
+            using (WebClient client = new WebClient())
             {
-                for (int nodeB = 0; nodeB < userCount; nodeB++)
-                {
-                    if (nodeA != nodeB)
-                    {
-                        if (rand.NextDouble() <= _distDataParams.SocialNetworkDensity)
-                        {
-                            if (!graph.Edges.ContainsKey(nodeA))
-                            {
-                                graph.Edges.Add(nodeA, new List<int>());
-                            }
-                            if (!graph.Edges.ContainsKey(nodeB))
-                            {
-                                graph.Edges.Add(nodeB, new List<int>());
-                            }
-                            graph.Edges[nodeA].Add(nodeB);
-                            graph.Edges[nodeB].Add(nodeA);
-                        }
-                    }
-                }
+                var ip = ConfigurationManager.AppSettings["IP"];
+                var csv = client.DownloadString(ip + $"/erdos/{userCount}" + "/" + _distDataParams.SocialNetworkDensity + "/false");
+                lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             }
 
+            //var lines = File.ReadAllLines("graph.csv");
+
+            Graph graph = new Graph();
+
+            foreach (var line in lines)
+            {
+                var edge = line.Split(new[] { ',' });
+                int nodeA = Convert.ToInt32(edge[0]) - 1;
+                int nodeB = Convert.ToInt32(edge[1]) - 1;
+                if (nodeA == nodeB)
+                {
+                    continue;
+                }
+
+                if (!graph.Edges.ContainsKey(nodeA))
+                {
+                    graph.Edges.Add(nodeA, new List<int>());
+                }
+                if (!graph.Edges.ContainsKey(nodeB))
+                {
+                    graph.Edges.Add(nodeB, new List<int>());
+                }
+                graph.Edges[nodeA].Add(nodeB);
+                graph.Edges[nodeB].Add(nodeA);
+            }
             return graph;
         }
 
@@ -287,7 +325,14 @@ namespace Implementation.Dataset_Reader
 
         private double GenerateInnateAffinity(double minimum)
         {
-            var normalDist = _innateNormalRandomGenerator.Sample();
+            //var normalDist = _innateNormalRandomGenerator.Sample();
+            //return normalDist < Math.Pow(10, -5) ? minimum : normalDist;
+
+            double u1 = _rand.NextDouble(); //these are uniform(0,1) random doubles
+            double u2 = _rand.NextDouble();
+            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+            var variance = Math.Sqrt(3);
+            double normalDist = 1.5 + variance * randStdNormal; //random normal(mean,stdDev^2)
             return normalDist < Math.Pow(10, -5) ? minimum : normalDist;
         }
 
@@ -313,7 +358,7 @@ namespace Implementation.Dataset_Reader
                 return notmalDistInt < minimum ? minimum : notmalDistInt;
             }
 
-            if(_distDataParams.MaxCardinalityOption == MaxCardinalityOptions.Max)
+            if (_distDataParams.MaxCardinalityOption == MaxCardinalityOptions.Max)
             {
                 return numberOfUsers;
             }

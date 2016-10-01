@@ -23,6 +23,7 @@ namespace Implementation.Data_Structures
         public AlgorithmEnum Algorithm { get; set; }
         public bool DeficitFix { get; set; }
         public bool DoublePriority { get; set; }
+        public bool LazyAdjustment { get; set; }
 
         public enum AlgorithmEnum
         {

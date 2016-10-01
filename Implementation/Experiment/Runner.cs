@@ -79,13 +79,20 @@ namespace Implementation.Experiment
                                            doublePriority = Convert.ToBoolean(x.Attribute("DoublePriority").Value);
                                        }
 
+                                       bool lazyAdjustment = true;
+                                       if (x.Attribute("LazyAdjustment") != null)
+                                       {
+                                           lazyAdjustment = Convert.ToBoolean(x.Attribute("LazyAdjustment").Value);
+                                       }
+
                                        var algspec = new AlgorithmSpec
                                        {
                                            CommunityFix = communityfix,
                                            Reassignment = reassignment,
                                            TakeChanceLimit = takechancelimit,
                                            DeficitFix = deficitFix,
-                                           DoublePriority = doublePriority
+                                           DoublePriority = doublePriority,
+                                           LazyAdjustment = lazyAdjustment
                                        };
 
                                        switch (x.Value.ToUpper())
@@ -223,6 +230,11 @@ namespace Implementation.Experiment
             {
                 var output = new FileInfo(Path.Combine(dir.Name, fileName));
                 return output;
+            }
+
+            if (configs[round].OutputType == OutputTypeEnum.None)
+            {
+                return null;
             }
 
             throw new InvalidEnumArgumentException("Output type is invalid");
@@ -375,7 +387,7 @@ namespace Implementation.Experiment
                         ImmediateReaction = IR || IRC,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
                         DeficitFix = parameters.ExpTypes[i].DeficitFix,
-                        LazyAdjustment = false,
+                        LazyAdjustment = parameters.ExpTypes[i].LazyAdjustment,
                         PrintOutEachStep = false,
                         FeedType = FeedTypeEnum.SerialExperiment,
                         CommunityAware = IRC || PCADG,

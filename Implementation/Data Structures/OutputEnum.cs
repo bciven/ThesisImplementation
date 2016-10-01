@@ -9,6 +9,7 @@ namespace Implementation.Data_Structures
     public enum OutputTypeEnum
     {
         Excel = 0,
-        Text = 1
+        Text = 1,
+        None = 2,
     }
 }

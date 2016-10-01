@@ -297,7 +297,7 @@ namespace Implementation.Algorithms
 
         public List<UserEvent> CreateOutput(FileInfo file)
         {
-            SetInputFile(file.FullName);
+            SetInputFile(file);
             var result = new List<UserEvent>();
             for (int i = 0; i < UserAssignments.Count; i++)
             {
@@ -323,12 +323,17 @@ namespace Implementation.Algorithms
                 case OutputTypeEnum.Text:
                     PrintToText(result, Welfare, file);
                     break;
+                case OutputTypeEnum.None:
+                    break;
             }
         }
 
-        protected void SetInputFile(string file)
+        protected void SetInputFile(FileInfo file)
         {
-            Conf.InputFilePath = file;
+            if (file != null)
+            {
+                Conf.InputFilePath = file.FullName;
+            }
         }
 
         public string GetInputFile()
@@ -518,15 +523,21 @@ namespace Implementation.Algorithms
                 }
                 else if (communityFix == CommunityFixEnum.Version2)
                 {
-                    var highInterestedUsers = users.OrderBy(x => SocAffinities[user, x]).Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
+                    var lowInterestedUsers = users.OrderBy(x => SocAffinities[user, x]).Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (highInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(highInterestedUsers.Count - 1, 1));
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
                 }
                 else if (communityFix == CommunityFixEnum.Version3)
                 {
-                    var highInterestedUsers = users.OrderBy(x => SocAffinities[user, x] + InAffinities[x][@event]).Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
+                    var lowInterestedUsers = users.OrderBy(x => SocAffinities[user, x] + InAffinities[x][@event]).Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (highInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(highInterestedUsers.Count - 1, 1));
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
+                }
+                else if (communityFix == CommunityFixEnum.Version4)
+                {
+                    var lowInterestedUsers = users.Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
+                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
                 }
 
                 g = s + g;
