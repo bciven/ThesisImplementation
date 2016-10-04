@@ -24,6 +24,7 @@ namespace Implementation.Data_Structures
         public bool DeficitFix { get; set; }
         public bool DoublePriority { get; set; }
         public bool LazyAdjustment { get; set; }
+        public bool Swap { get; set; }
 
         public enum AlgorithmEnum
         {

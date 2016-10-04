@@ -22,6 +22,7 @@ namespace Implementation.Data_Structures
         public bool CommunityAware { get; set; }
         public CommunityFixEnum CommunityFix { get; set; }
         public bool DoublePriority { get; set; }
+        public bool Swap { get; set; }
 
         public CadgConf()
         {
@@ -42,6 +43,7 @@ namespace Implementation.Data_Structures
             AlgorithmName = null;
             CommunityFix = CommunityFixEnum.None;
             DoublePriority = false;
+            Swap = false;
         }
 
         protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
@@ -122,6 +124,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Double Priority";
             ws.Cells[i, 2].Value = DoublePriority;
+            i++;
+
+            ws.Cells[i, 1].Value = "Swap";
+            ws.Cells[i, 2].Value = Swap;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
 
@@ -168,6 +174,8 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Community Fix", CommunityFix);
 
             configsFile.WriteLine("{0},{1}", "Double Priority", DoublePriority);
+
+            configsFile.WriteLine("{0},{1}", "Swap", Swap);
 
             PrintAdditionals(configsFile);
 

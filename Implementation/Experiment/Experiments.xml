@@ -12,29 +12,20 @@
     <eventinterestperct value="5" />
     <snmodel value="1" />
     <exptypes>
-      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PADG</type>
-      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
+      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="true" >PADG</type>
 
-      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="true">PCADG</type>
 
-      <type Reassignment="dynamic" CommunityFix="1" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="1" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="3" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="3" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="true">PCADG</type>
 
-      <type Reassignment="dynamic" CommunityFix="2" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="2" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PCADG</type>
+      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="true">IRC</type>
 
-      <type Reassignment="dynamic" CommunityFix="3" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="3" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PCADG</type>
-
-      <type Reassignment="dynamic" CommunityFix="4" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">PCADG</type>
-      <type Reassignment="dynamic" CommunityFix="4" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">PCADG</type>
-      
-      <type Reassignment="dynamic" CommunityFix="4" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">IR</type>
-      <type Reassignment="dynamic" CommunityFix="4" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">IR</type>
-      
-      <type Reassignment="dynamic" CommunityFix="2" DeficitFix="false" DoublePriority="false" LazyAdjustment="true">IRC</type>
-      <type Reassignment="dynamic" CommunityFix="2" DeficitFix="false" DoublePriority="false" LazyAdjustment="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="3" DeficitFix="false" DoublePriority="false" LazyAdjustment="true" Swap="false">IRC</type>
+      <type Reassignment="dynamic" CommunityFix="3" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="true">IRC</type>
 
     </exptypes>
   </Experiment>

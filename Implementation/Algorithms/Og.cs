@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
 
@@ -38,7 +39,7 @@ namespace Implementation.Algorithms
                 PrintQueue();
                 var userEvents = _queue.Dequeue();
                 var user = userEvents.User;
-                var eventInterest = userEvents.GetBestEvent();
+                var eventInterest = userEvents.GetBestEvent(_conf.ProbabilisticApproach);
                 if (eventInterest == null)
                 {
                     continue;
@@ -238,6 +239,10 @@ namespace Implementation.Algorithms
 
             var rnd = new System.Random();
             _users = _users.OrderBy(item => rnd.Next()).ToList();
+            var max = new UserEvent
+            {
+                Utility = double.MinValue
+            };
 
             foreach (var u in _users)
             {
@@ -258,8 +263,22 @@ namespace Implementation.Algorithms
                     }
                     //gain = Math.Round(gain, _conf.Percision);
                     ue.AddEvent(e, gain, priority);
+                    if (gain > max.Utility)
+                    {
+                        max.Utility = gain;
+                        max.User = u;
+                        max.Event = e;
+                    }
                 }
                 _queue.Enqueue(ue);
+            }
+
+            if (_conf.ProbabilisticApproach)
+            {
+                foreach (var userEvents in _queue)
+                {
+                    userEvents.DevideAll(max.Utility);
+                }
             }
         }
 
@@ -271,7 +290,7 @@ namespace Implementation.Algorithms
             }
 
             var userEvents = _queue.Peek();
-            var bestEvent = userEvents.GetBestEvent();
+            var bestEvent = userEvents.GetBestEvent(_conf.ProbabilisticApproach);
             Console.WriteLine("User {0}, Event {1}, Value {2}", (char)(userEvents.User + 97),
                 (char)(bestEvent.Event + 88), bestEvent.Utility);
         }

@@ -29,8 +29,12 @@ namespace Implementation.Data_Structures
             });
         }
 
-        public EventInterest GetBestEvent()
+        public EventInterest GetBestEvent(bool probabilisticApproach)
         {
+            if (probabilisticApproach)
+            {
+                
+            }
             double? maxVal1 = null; //nullable so this works even if you have all super-low negatives
             double? maxVal2 = null; //nullable so this works even if you have all super-low negatives
             int index = -1;
@@ -70,6 +74,14 @@ namespace Implementation.Data_Structures
             if (EventInterests.ContainsKey(@event))
             {
                 EventInterests[@event].Utility = newPriority;
+            }
+        }
+
+        public void DevideAll(double utility)
+        {
+            foreach (var keyValuePair in EventInterests)
+            {
+                keyValuePair.Value.Utility = keyValuePair.Value.Utility/utility;
             }
         }
     }

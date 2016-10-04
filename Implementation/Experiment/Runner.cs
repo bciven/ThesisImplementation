@@ -85,6 +85,12 @@ namespace Implementation.Experiment
                                            lazyAdjustment = Convert.ToBoolean(x.Attribute("LazyAdjustment").Value);
                                        }
 
+                                       bool swap = false;
+                                       if (x.Attribute("Swap") != null)
+                                       {
+                                           swap = Convert.ToBoolean(x.Attribute("Swap").Value);
+                                       }
+
                                        var algspec = new AlgorithmSpec
                                        {
                                            CommunityFix = communityfix,
@@ -92,7 +98,8 @@ namespace Implementation.Experiment
                                            TakeChanceLimit = takechancelimit,
                                            DeficitFix = deficitFix,
                                            DoublePriority = doublePriority,
-                                           LazyAdjustment = lazyAdjustment
+                                           LazyAdjustment = lazyAdjustment,
+                                           Swap = swap
                                        };
 
                                        switch (x.Value.ToUpper())
@@ -396,7 +403,8 @@ namespace Implementation.Experiment
                         Parameters = parameters,
                         CommunityFix = parameters.ExpTypes[i].CommunityFix,
                         DoublePriority = parameters.ExpTypes[i].DoublePriority,
-                        OutputType = parameters.OutputType
+                        OutputType = parameters.OutputType,
+                        Swap = parameters.ExpTypes[i].Swap
                     };
 
                     configs.Add(conf);

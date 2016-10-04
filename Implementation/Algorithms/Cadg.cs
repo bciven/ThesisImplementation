@@ -109,7 +109,7 @@ namespace Implementation.Algorithms
                     }
 
                     Assignments[@event].Add(user);
-                    if (UserAssignments[user] == null)
+                    if (_conf.LazyAdjustment && UserAssignments[user] == null)
                     {
                         UserAssignments[user] = @event;
                     }
@@ -187,7 +187,55 @@ namespace Implementation.Algorithms
 
             GreedyAssign();
 
+            _permanentAssignments = TradeOff(_permanentAssignments);
             Assignments = _permanentAssignments;
+        }
+
+        private List<List<int>> TradeOff(List<List<int>> assignments)
+        {
+            if (!_conf.Swap)
+            {
+                return assignments;
+            }
+
+            var prevFare = CalculateSocialWelfare(assignments);
+            foreach (var user1 in AllUsers)
+            {
+                foreach (var user2 in AllUsers)
+                {
+                    if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null)
+                    {
+                        var e1 = UserAssignments[user1].Value;
+                        var e2 = UserAssignments[user2].Value;
+                        assignments[e1].Remove(user1);
+                        assignments[e1].Add(user2);
+
+                        assignments[e2].Remove(user2);
+                        assignments[e2].Add(user1);
+                        UserAssignments[user1] = e2;
+                        UserAssignments[user2]= e1;
+
+                        var newFare = CalculateSocialWelfare(assignments);
+                        if (newFare.TotalWelfare <= prevFare.TotalWelfare)
+                        {
+                            //undo
+                            assignments[e1].Remove(user2);
+                            assignments[e1].Add(user1);
+
+                            assignments[e2].Remove(user1);
+                            assignments[e2].Add(user2);
+
+                            UserAssignments[user1] = e1;
+                            UserAssignments[user2] = e2;
+                        }
+                        else
+                        {
+                            prevFare = newFare;
+                        }
+                    }
+                }
+            }
+            return assignments;
         }
 
         private void GreedyAssign()

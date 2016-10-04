@@ -121,73 +121,73 @@ namespace Implementation.Dataset_Reader
             return graph;
         }
 
-        //private Graph ErdosModel(int userCount)
-        //{
-        //    Graph graph = new Graph();
-        //    var rand = new Random();
-        //    for (int nodeA = 0; nodeA < userCount; nodeA++)
-        //    {
-        //        for (int nodeB = 0; nodeB < userCount; nodeB++)
-        //        {
-        //            if (nodeA != nodeB)
-        //            {
-        //                if (rand.NextDouble() <= _distDataParams.SocialNetworkDensity)
-        //                {
-        //                    if (!graph.Edges.ContainsKey(nodeA))
-        //                    {
-        //                        graph.Edges.Add(nodeA, new List<int>());
-        //                    }
-        //                    if (!graph.Edges.ContainsKey(nodeB))
-        //                    {
-        //                        graph.Edges.Add(nodeB, new List<int>());
-        //                    }
-        //                    graph.Edges[nodeA].Add(nodeB);
-        //                    graph.Edges[nodeB].Add(nodeA);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return graph;
-        //}
-
         private Graph ErdosModel(int userCount)
         {
-            List<string> lines;
-            using (WebClient client = new WebClient())
-            {
-                var ip = ConfigurationManager.AppSettings["IP"];
-                var csv = client.DownloadString(ip + $"/erdos/{userCount}" + "/" + _distDataParams.SocialNetworkDensity + "/false");
-                lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            }
-
-            //var lines = File.ReadAllLines("graph.csv");
-
             Graph graph = new Graph();
-
-            foreach (var line in lines)
+            var rand = new Random();
+            for (int nodeA = 0; nodeA < userCount; nodeA++)
             {
-                var edge = line.Split(new[] { ',' });
-                int nodeA = Convert.ToInt32(edge[0]) - 1;
-                int nodeB = Convert.ToInt32(edge[1]) - 1;
-                if (nodeA == nodeB)
+                for (int nodeB = 0; nodeB < userCount; nodeB++)
                 {
-                    continue;
+                    if (nodeA != nodeB)
+                    {
+                        if (rand.NextDouble() <= _distDataParams.SocialNetworkDensity)
+                        {
+                            if (!graph.Edges.ContainsKey(nodeA))
+                            {
+                                graph.Edges.Add(nodeA, new List<int>());
+                            }
+                            if (!graph.Edges.ContainsKey(nodeB))
+                            {
+                                graph.Edges.Add(nodeB, new List<int>());
+                            }
+                            graph.Edges[nodeA].Add(nodeB);
+                            graph.Edges[nodeB].Add(nodeA);
+                        }
+                    }
                 }
-
-                if (!graph.Edges.ContainsKey(nodeA))
-                {
-                    graph.Edges.Add(nodeA, new List<int>());
-                }
-                if (!graph.Edges.ContainsKey(nodeB))
-                {
-                    graph.Edges.Add(nodeB, new List<int>());
-                }
-                graph.Edges[nodeA].Add(nodeB);
-                graph.Edges[nodeB].Add(nodeA);
             }
+
             return graph;
         }
+
+        //private Graph ErdosModel(int userCount)
+        //{
+        //    List<string> lines;
+        //    using (WebClient client = new WebClient())
+        //    {
+        //        var ip = ConfigurationManager.AppSettings["IP"];
+        //        var csv = client.DownloadString(ip + $"/erdos/{userCount}" + "/" + _distDataParams.SocialNetworkDensity + "/false");
+        //        lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        //    }
+
+        //    //var lines = File.ReadAllLines("graph.csv");
+
+        //    Graph graph = new Graph();
+
+        //    foreach (var line in lines)
+        //    {
+        //        var edge = line.Split(new[] { ',' });
+        //        int nodeA = Convert.ToInt32(edge[0]) - 1;
+        //        int nodeB = Convert.ToInt32(edge[1]) - 1;
+        //        if (nodeA == nodeB)
+        //        {
+        //            continue;
+        //        }
+
+        //        if (!graph.Edges.ContainsKey(nodeA))
+        //        {
+        //            graph.Edges.Add(nodeA, new List<int>());
+        //        }
+        //        if (!graph.Edges.ContainsKey(nodeB))
+        //        {
+        //            graph.Edges.Add(nodeB, new List<int>());
+        //        }
+        //        graph.Edges[nodeA].Add(nodeB);
+        //        graph.Edges[nodeB].Add(nodeA);
+        //    }
+        //    return graph;
+        //}
 
         private static Graph PowerLawModel(int userCount)
         {
