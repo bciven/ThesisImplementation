@@ -357,34 +357,39 @@ namespace Implementation.Algorithms
 
             for (int @event = 0; @event < assignments.Count; @event++)
             {
-                double s1 = 0;
-                double s2 = 0;
-                if (!EventIsReal(@event))
-                {
-                    continue;
-                }
-
-                var assignment = assignments[@event];
-
-                foreach (var user1 in assignment)
-                {
-                    s1 += InAffinities[user1][@event];
-                    foreach (var user2 in assignment)
-                    {
-                        if (user1 != user2)
-                        {
-                            s2 += SocAffinities[user1, user2];
-                        }
-                    }
-                }
-                s1 = (1 - Conf.Alpha) * s1;
-                s2 = Conf.Alpha * s2;
-                welfare.InnateWelfare += s1;
-                welfare.SocialWelfare += s2;
-                welfare.TotalWelfare += s1 + s2;
+                CalculateEventWelfare(assignments, @event, welfare);
             }
 
             return welfare;
+        }
+
+        protected void CalculateEventWelfare(List<List<int>> assignments, int @event, Welfare welfare)
+        {
+            double s1 = 0;
+            double s2 = 0;
+            if (!EventIsReal(@event))
+            {
+                return;
+            }
+
+            var assignment = assignments[@event];
+
+            foreach (var user1 in assignment)
+            {
+                s1 += InAffinities[user1][@event];
+                foreach (var user2 in assignment)
+                {
+                    if (user1 != user2)
+                    {
+                        s2 += SocAffinities[user1, user2];
+                    }
+                }
+            }
+            s1 = (1 - Conf.Alpha)*s1;
+            s2 = Conf.Alpha*s2;
+            welfare.InnateWelfare += s1;
+            welfare.SocialWelfare += s2;
+            welfare.TotalWelfare += s1 + s2;
         }
 
         public Welfare CalculateSocialWelfare(List<List<int>> assignments, int user)

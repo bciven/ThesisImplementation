@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="10" output="1">
+  <Experiment count="10" output="0">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
