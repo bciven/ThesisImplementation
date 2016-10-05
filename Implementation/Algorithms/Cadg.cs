@@ -208,48 +208,57 @@ namespace Implementation.Algorithms
                 }
             }
 
-            for (int i = 0; i < users.Count; i++)
+            var oldSocialWelfare = new Welfare();
+            var newSocialWelfare = new Welfare();
+            do
             {
-                var user1 = users[i];
-
-                for (int j = i + 1; j < users.Count; j++)
+                oldSocialWelfare = CalculateSocialWelfare(assignments);
+                for (int i = 0; i < users.Count; i++)
                 {
-                    var user2 = users[j];
-                    if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null)
+                    var user1 = users[i];
+
+                    for (int j = i + 1; j < users.Count; j++)
                     {
-                        var e1 = UserAssignments[user1].Value;
-                        var e2 = UserAssignments[user2].Value;
-                        var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                        CalculateEventWelfare(assignments, e1, oldWelfare);
-                        CalculateEventWelfare(assignments, e2, oldWelfare);
-
-                        assignments[e1].Remove(user1);
-                        assignments[e1].Add(user2);
-
-                        assignments[e2].Remove(user2);
-                        assignments[e2].Add(user1);
-                        UserAssignments[user1] = e2;
-                        UserAssignments[user2] = e1;
-
-                        var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                        CalculateEventWelfare(assignments, e1, newWelfare);
-                        CalculateEventWelfare(assignments, e2, newWelfare);
-
-                        if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
+                        var user2 = users[j];
+                        if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null)
                         {
-                            //undo
-                            assignments[e1].Remove(user2);
-                            assignments[e1].Add(user1);
+                            var e1 = UserAssignments[user1].Value;
+                            var e2 = UserAssignments[user2].Value;
+                            var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                            CalculateEventWelfare(assignments, e1, oldWelfare);
+                            CalculateEventWelfare(assignments, e2, oldWelfare);
 
-                            assignments[e2].Remove(user1);
-                            assignments[e2].Add(user2);
+                            assignments[e1].Remove(user1);
+                            assignments[e1].Add(user2);
 
-                            UserAssignments[user1] = e1;
-                            UserAssignments[user2] = e2;
+                            assignments[e2].Remove(user2);
+                            assignments[e2].Add(user1);
+                            UserAssignments[user1] = e2;
+                            UserAssignments[user2] = e1;
+
+                            var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                            CalculateEventWelfare(assignments, e1, newWelfare);
+                            CalculateEventWelfare(assignments, e2, newWelfare);
+
+                            if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
+                            {
+                                //undo
+                                assignments[e1].Remove(user2);
+                                assignments[e1].Add(user1);
+
+                                assignments[e2].Remove(user1);
+                                assignments[e2].Add(user2);
+
+                                UserAssignments[user1] = e1;
+                                UserAssignments[user2] = e2;
+                            }
                         }
                     }
                 }
-            }
+                newSocialWelfare = CalculateSocialWelfare(assignments);
+
+            } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > 0.001);
+
             return assignments;
         }
 
