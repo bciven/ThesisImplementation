@@ -181,7 +181,8 @@ namespace Implementation.Algorithms
 
                 if (_queue.IsEmpty())
                 {
-                    DynamicReassign();
+                    DefaultReassign();
+                    Reassign();
                 }
             }
 
@@ -298,9 +299,9 @@ namespace Implementation.Algorithms
             }
         }
 
-        private void DynamicReassign()
+        private void DefaultReassign()
         {
-            if (_conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Dynamic)
+            if (_conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Default)
                 return;
 
             for (int i = 0; i < UserAssignments.Count; i++)
@@ -324,6 +325,39 @@ namespace Implementation.Algorithms
                         var q = Util(@event, availableUser, _conf.CommunityAware, _conf.CommunityFix, _users);
                         _queue.AddOrUpdate(q.Utility, new UserEvent { User = availableUser, Event = @event });
                     }
+                }
+            }
+        }
+
+        private void Reassign()
+        {
+            if (_conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Reduction && _conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Addition)
+                return;
+
+            for (int i = 0; i < UserAssignments.Count; i++)
+            {
+                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value))
+                {
+                    UserAssignments[i] = null;
+                }
+            }
+
+            if (UserAssignments.All(x => x.HasValue))
+            {
+                return;
+            }
+
+            List<int> realOpenEvents;
+            List<int> availableUsers;
+            PrepareReassignment(out availableUsers, out realOpenEvents);
+            KeepPhantomEvents(availableUsers, realOpenEvents, _conf.Reassignment);
+
+            foreach (var @event in realOpenEvents)
+            {
+                foreach (var availableUser in availableUsers)
+                {
+                    var q = Util(@event, availableUser, _conf.CommunityAware, _conf.CommunityFix, _users);
+                    _queue.AddOrUpdate(q.Utility, new UserEvent { User = availableUser, Event = @event });
                 }
             }
         }

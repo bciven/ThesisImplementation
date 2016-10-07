@@ -83,8 +83,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\Og.cs" />
+    <Compile Include="Algorithms\PrintOutput.cs" />
     <Compile Include="Algorithms\RandomPlus.cs" />
     <Compile Include="Algorithms\Random.cs" />
+    <Compile Include="Algorithms\ReassignmentStrategy.cs" />
     <Compile Include="Data Structures\OutputFiles.cs" />
     <Compile Include="Data Structures\OutputEnum.cs" />
     <Compile Include="Data Structures\AlgorithmEnum.cs" />

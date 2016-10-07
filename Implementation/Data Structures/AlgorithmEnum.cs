@@ -12,9 +12,11 @@ namespace Implementation.Data_Structures
 
         public enum ReassignmentEnum
         {
-            None,
-            Dynamic,
-            Greedy
+            None = 0,
+            Default = 1,
+            Addition = 2,
+            Reduction = 3,
+            Greedy = 4
         }
 
         public int? TakeChanceLimit { get; set; }

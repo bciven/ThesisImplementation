@@ -80,11 +80,21 @@ namespace Implementation.Algorithms
 
         private void DynamicReassign()
         {
+            if (_conf.Reassignment == AlgorithmSpec.ReassignmentEnum.None)
+            {
+                return;
+            }
+
             if (UserAssignments.Any(x => !x.HasValue))
             {
                 List<int> availableUsers;
                 List<int> realOpenEvents;
                 PrepareReassignment(out availableUsers, out realOpenEvents);
+                if (_conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Addition)
+                {
+                    KeepPhantomEvents(availableUsers, realOpenEvents, _conf.Reassignment);
+                }
+
                 if (realOpenEvents.Count == 0)
                 {
                     return;

@@ -57,9 +57,7 @@ namespace Implementation.Experiment
                                        var reassignment = AlgorithmSpec.ReassignmentEnum.None;
                                        if (x.Attribute("Reassignment") != null)
                                        {
-                                           reassignment = x.Attribute("Reassignment").Value == "dynamic"
-                                               ? AlgorithmSpec.ReassignmentEnum.Dynamic
-                                               : AlgorithmSpec.ReassignmentEnum.Greedy;
+                                           reassignment = (AlgorithmSpec.ReassignmentEnum)Convert.ToInt32(x.Attribute("Reassignment").Value);
                                        }
                                        int? takechancelimit = null;
                                        if (x.Attribute("TakeChanceLimit") != null)
@@ -578,7 +576,7 @@ namespace Implementation.Experiment
                             PhantomAware = input.Contains("1"),
                             PostInitializationInsert = input.Contains("2"),
                             ImmediateReaction = input.Contains("3"),
-                            Reassignment = input.Contains("4") ? AlgorithmSpec.ReassignmentEnum.Dynamic : AlgorithmSpec.ReassignmentEnum.Greedy,
+                            Reassignment = input.Contains("4") ? AlgorithmSpec.ReassignmentEnum.Default : AlgorithmSpec.ReassignmentEnum.Greedy,
                             DeficitFix = input.Contains("5"),
                             LazyAdjustment = !input.Contains("6"),
                             CommunityAware = input.Contains("7"),
