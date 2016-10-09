@@ -8,7 +8,7 @@ using Implementation.Data_Structures;
 
 namespace Implementation.Algorithms
 {
-    public class Cadg : Algorithm<List<UserEvent>>
+    public class GlobalGreedy : Algorithm<List<UserEvent>>
     {
         private List<int> _events;
         private List<int> _users;
@@ -22,7 +22,7 @@ namespace Implementation.Algorithms
         private readonly IDataFeed _dataFeeder;
         private CadgConf _conf => (CadgConf)Conf;
 
-        public Cadg(CadgConf conf, IDataFeed dataFeed, int index) : base(index)
+        public GlobalGreedy(CadgConf conf, IDataFeed dataFeed, int index) : base(index)
         {
             _dataFeeder = dataFeed;
             Conf = conf;
@@ -502,18 +502,27 @@ namespace Implementation.Algorithms
                     _queue.AddOrUpdate(newPriority.Utility, new UserEvent { User = user2, Event = @event });
                 }
 
-                /*if (_conf.ImmediateReaction)
+            }
+        }
+
+        private void UpdateAll(int user1, int user2, int @event)
+        {
+            if (SocAffinities[user1, user2] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
+            {
+                //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
+                var newPriority = Util(@event, user2, _conf.CommunityAware, _conf.CommunityFix, _users);
+                if (!_conf.LazyAdjustment)
                 {
                     if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
                     {
-                        _queue.AddOrUpdate(newPriority, new UserEvent { User = user2, Event = @event });
+                        _queue.AddOrUpdate(newPriority.Utility, new UserEvent { User = user2, Event = @event });
                     }
                 }
                 else
                 {
-                    _queue.AddOrUpdate(newPriority, new UserEvent { User = user2, Event = @event });
-                    _queue.Update(newPriority, new UserEvent { User = user2, Event = @event });
-                }*/
+                    _queue.AddOrUpdate(newPriority.Utility, new UserEvent { User = user2, Event = @event });
+                }
+
             }
         }
 
@@ -595,26 +604,8 @@ namespace Implementation.Algorithms
                 foreach (var e in _events)
                 {
                     var ue = new UserEvent { Event = e, User = u, Utility = 0d };
-                    if (_conf.DoublePriority)
-                    {
-                        var friends = _users.Where(x => SocAffinities[u, x] > 0 || SocAffinities[x, u] > 0 || InAffinities[x][e] > 0);
-                        var bestFriends = friends.OrderByDescending(x => SocAffinities[u, x] + SocAffinities[x, u] + InAffinities[x][e]).Take(EventCapacity[e].Max - 1).ToList();
-                        var worstFriends = friends.OrderBy(x => SocAffinities[u, x] + SocAffinities[x, u] + InAffinities[x][e]).Take(EventCapacity[e].Max - 1).ToList();
-                        var bestGain = bestFriends.Sum(x => SocAffinities[u, x]);
-                        var worstGain = worstFriends.Sum(x => SocAffinities[u, x]);
-                        ue.Priority = (bestGain + worstGain) / 2;
-                    }
-
-                    if (InAffinities[u][e] != 0)
-                    {
-                        ue.Utility += (1 - _conf.Alpha) * InAffinities[u][e];
-                        //gain = Math.Round(gain, _conf.Percision);
-                    }
-
-                    if (_conf.CommunityAware)
-                    {
-                        ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x]) / (_users.Count - 1);
-                    }
+                    ue.Utility += (1 - _conf.Alpha) * InAffinities[u][e];
+                    //gain = Math.Round(gain, _conf.Percision);
                     _queue.AddOrUpdate(ue.Utility, ue);
                 }
             }

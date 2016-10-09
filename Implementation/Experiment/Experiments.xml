@@ -1,6 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="10" output="1">
+  <Experiment count="1" output="1">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <sndensity value="1" />
+    <eventinterestperct value="5" />
+    <snmodel value="1" />
+    <exptypes>
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">DG</type>
+      <type Reassignment="1" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">DG</type>
+
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="1" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="1" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="1" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="1" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">OG</type>
+      <type Reassignment="1" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">OG</type>
+
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">COG</type>
+      <type Reassignment="1" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">COG</type>
+
+    </exptypes>
+  </Experiment>
+  
+  <!--<Experiment count="10" output="1">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -625,5 +660,5 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="true">COG</type>
 
     </exptypes>
-  </Experiment>
+  </Experiment>-->
 </Experiments>
