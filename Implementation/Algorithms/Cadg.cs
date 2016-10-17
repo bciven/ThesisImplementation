@@ -611,7 +611,7 @@ namespace Implementation.Algorithms
                         //gain = Math.Round(gain, _conf.Percision);
                     }
 
-                    if (_conf.CommunityAware)
+                    if (_conf.CommunityAware && _conf.CommunityFix == CommunityFixEnum.InitializationFix)
                     {
                         ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x]) / (_users.Count - 1);
                     }
