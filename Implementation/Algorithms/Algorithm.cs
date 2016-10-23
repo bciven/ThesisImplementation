@@ -114,6 +114,77 @@ namespace Implementation.Algorithms
             }
         }
 
+        protected List<List<int>> Swap(List<List<int>> assignments)
+        {
+            if (!Conf.Swap)
+            {
+                return assignments;
+            }
+
+            var users = new List<int>();
+            for (int i = 0; i < UserAssignments.Count; i++)
+            {
+                var userAssignment = UserAssignments[i];
+                if (userAssignment.HasValue)
+                {
+                    users.Add(i);
+                }
+            }
+
+            var oldSocialWelfare = new Welfare();
+            var newSocialWelfare = new Welfare();
+            do
+            {
+                oldSocialWelfare = CalculateSocialWelfare(assignments);
+                for (int i = 0; i < users.Count; i++)
+                {
+                    var user1 = users[i];
+
+                    for (int j = i + 1; j < users.Count; j++)
+                    {
+                        var user2 = users[j];
+                        if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null)
+                        {
+                            var e1 = UserAssignments[user1].Value;
+                            var e2 = UserAssignments[user2].Value;
+                            var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                            CalculateEventWelfare(assignments, e1, oldWelfare);
+                            CalculateEventWelfare(assignments, e2, oldWelfare);
+
+                            assignments[e1].Remove(user1);
+                            assignments[e1].Add(user2);
+
+                            assignments[e2].Remove(user2);
+                            assignments[e2].Add(user1);
+                            UserAssignments[user1] = e2;
+                            UserAssignments[user2] = e1;
+
+                            var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                            CalculateEventWelfare(assignments, e1, newWelfare);
+                            CalculateEventWelfare(assignments, e2, newWelfare);
+
+                            if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
+                            {
+                                //undo
+                                assignments[e1].Remove(user2);
+                                assignments[e1].Add(user1);
+
+                                assignments[e2].Remove(user1);
+                                assignments[e2].Add(user2);
+
+                                UserAssignments[user1] = e1;
+                                UserAssignments[user2] = e2;
+                            }
+                        }
+                    }
+                }
+                newSocialWelfare = CalculateSocialWelfare(assignments);
+
+            } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > 0.001);
+
+            return assignments;
+        }
+
         protected void KeepPhantomEvents(List<int> availableUsers, List<int> realOpenEvents, AlgorithmSpec.ReassignmentEnum reassignment)
         {
             _reassignmentStrategy.KeepPhantomEvents(availableUsers, realOpenEvents, reassignment);
@@ -279,6 +350,11 @@ namespace Implementation.Algorithms
                     {
                         friendAffinities.Add(SocAffinities[user, i]);
                     }
+
+                    if (Conf.Asymmetric && SocAffinities[i, user] > 0)
+                    {
+                        friendAffinities.Add(SocAffinities[i, user]);
+                    }
                 }
                 friendAffinities = friendAffinities.OrderByDescending(x => x).ToList();
                 var k = Math.Min(EventCapacity[@event].Max - 1, friendAffinities.Count);
@@ -289,7 +365,7 @@ namespace Implementation.Algorithms
 
             var assignedEvent = UserAssignments[user].Value;
             var users = Assignments[assignedEvent];
-            var socialAffinity = users.Sum(x => SocAffinities[user, x]);
+            var socialAffinity = users.Sum(x => SocAffinities[user, x] + (Conf.Asymmetric ? SocAffinities[x, user] : 0d));
             var numerator = (1 - Conf.Alpha) * InAffinities[user][assignedEvent] + Conf.Alpha * socialAffinity;
 
             if (finalDenom == 0)
@@ -317,7 +393,7 @@ namespace Implementation.Algorithms
             };
             var g = (1 - Conf.Alpha) * InAffinities[user][@event];
 
-            var s = Conf.Alpha * Assignments[@event].Sum(u => SocAffinities[user, u]);
+            var s = Conf.Alpha * Assignments[@event].Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d));
 
             g = g + s;
 
@@ -329,13 +405,13 @@ namespace Implementation.Algorithms
                 if (communityFix == CommunityFixEnum.None)
                 {
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(users.Count - 1, 1);
+                        users.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(users.Count - 1, 1);
                 }
                 else if (communityFix == CommunityFixEnum.Version1)
                 {
                     var lowInterestedUsers = users.OrderBy(x => SocAffinities[user, x]).Take(EventCapacity[@event].Max).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
 
                     //s += Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
                     //(users.Sum(u => InAffinities[u][@event]) / (double)Math.Max(users.Count - 1, 1));
@@ -344,19 +420,19 @@ namespace Implementation.Algorithms
                 {
                     var lowInterestedUsers = users.OrderBy(x => SocAffinities[user, x]).Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
                 }
                 else if (communityFix == CommunityFixEnum.Version3)
                 {
                     var lowInterestedUsers = users.OrderBy(x => SocAffinities[user, x] + InAffinities[x][@event]).Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
                 }
                 else if (communityFix == CommunityFixEnum.Version4)
                 {
                     var lowInterestedUsers = users.Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(u => SocAffinities[user, u]) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
                 }
 
                 g = s + g;

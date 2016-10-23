@@ -10,6 +10,7 @@ namespace Implementation.Experiment
         public int ExpCount { get; set; }
         public int UserCount { get; set; }
         public int EventCount { get; set; }
+        public bool Asymmetric { get; set; }
         public double AlphaValue { get; set; }
         public double CapmeanValue { get; set; }
         public double CapVarValue { get; set; }

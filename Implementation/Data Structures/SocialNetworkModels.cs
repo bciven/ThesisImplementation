@@ -9,8 +9,9 @@ namespace Implementation.Data_Structures
     public enum SocialNetworkModel
     {
         PowerLawModel = 0,
-        ErdosModel = 1,
+        SymmetricErdosModel = 1,
         BarabasiAlbertModel = 2,
-        ClusteredRandom = 3
+        ClusteredRandom = 3,
+        AsymmetricErdosModel = 4
     }
 }

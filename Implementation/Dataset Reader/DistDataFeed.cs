@@ -59,8 +59,10 @@ namespace Implementation.Dataset_Reader
                     return PowerLawModel(userCount);
                 case SocialNetworkModel.BarabasiAlbertModel:
                     return BarabasiAlbertModel(userCount);
-                case SocialNetworkModel.ErdosModel:
-                    return ErdosModel(userCount);
+                case SocialNetworkModel.SymmetricErdosModel:
+                    return ErdosModel(userCount, true);
+                case SocialNetworkModel.AsymmetricErdosModel:
+                    return ErdosModel(userCount, false);
                 case SocialNetworkModel.ClusteredRandom:
                     return ClusteredRandomModel(userCount);
                 default:
@@ -121,7 +123,7 @@ namespace Implementation.Dataset_Reader
             return graph;
         }
 
-        private Graph ErdosModel(int userCount)
+        private Graph ErdosModel(int userCount, bool symmetric)
         {
             Graph graph = new Graph();
             var rand = new Random();
@@ -142,7 +144,10 @@ namespace Implementation.Dataset_Reader
                                 graph.Edges.Add(nodeB, new List<int>());
                             }
                             graph.Edges[nodeA].Add(nodeB);
-                            graph.Edges[nodeB].Add(nodeA);
+                            if (symmetric)
+                            {
+                                graph.Edges[nodeB].Add(nodeA);
+                            }
                         }
                     }
                 }
@@ -308,7 +313,8 @@ namespace Implementation.Dataset_Reader
                     var r = GenerateSocialAffinity(0);
                     //r = Math.Round(r, 2);
                     usersInterests[nodeA, nodeB] = r;
-                    if (_distDataParams.SocialNetworkModel != SocialNetworkModel.BarabasiAlbertModel)
+                    if (_distDataParams.SocialNetworkModel != SocialNetworkModel.BarabasiAlbertModel
+                        && _distDataParams.SocialNetworkModel != SocialNetworkModel.AsymmetricErdosModel)
                     {
                         usersInterests[nodeB, nodeA] = r;
                     }

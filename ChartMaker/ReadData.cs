@@ -227,7 +227,7 @@ namespace ChartMaker
             welfare.MinCardinalityOption = Convert.ToString(wsParameters.Cells[minCardinalityOptionIndex, 2].Value);
 
             var socialNetworkModelIndex = 1;
-            for (; ; minCardinalityOptionIndex++)
+            for (; ; socialNetworkModelIndex++)
             {
                 if (Convert.ToString(wsParameters.Cells[socialNetworkModelIndex, 1].Value) == "SocialNetworkModel")
                 {

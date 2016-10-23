@@ -22,7 +22,6 @@ namespace Implementation.Data_Structures
         public bool CommunityAware { get; set; }
         public CommunityFixEnum CommunityFix { get; set; }
         public bool DoublePriority { get; set; }
-        public bool Swap { get; set; }
 
         public CadgConf()
         {
@@ -43,7 +42,6 @@ namespace Implementation.Data_Structures
             AlgorithmName = null;
             CommunityFix = CommunityFixEnum.None;
             DoublePriority = false;
-            Swap = false;
         }
 
         protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)

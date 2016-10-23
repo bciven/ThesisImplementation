@@ -23,6 +23,8 @@ namespace Implementation.Data_Structures
         public string AlgorithmName { get; set; }
         public Parameters Parameters { get; set; }
         public OutputTypeEnum OutputType { get; set; }
+        public bool Asymmetric { get; set; }
+        public bool Swap { get; set; }
 
         public SgConf()
         {
@@ -36,6 +38,8 @@ namespace Implementation.Data_Structures
             AlgorithmName = null;
             Parameters = null;
             OutputType = OutputTypeEnum.Excel;
+            Asymmetric = false;
+            Swap = false;
         }
 
         public void PrintToExcel(ExcelPackage excel, Stopwatch stopwatch)
@@ -73,7 +77,6 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = InputFilePath;
             i++;
 
-
             ws.Cells[i, 1].Value = "Alpha";
             ws.Cells[i, 2].Value = Alpha;
             i++;
@@ -88,6 +91,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Execution Time";
             ws.Cells[i, 2].Value = stopwatch.ElapsedMilliseconds;
+            i++;
+
+            ws.Cells[i, 1].Value = "Asymmetric";
+            ws.Cells[i, 2].Value = Asymmetric;
             i++;
 
             PrintAdditionals(ws, i);
@@ -116,6 +123,8 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Algorithm Name", AlgorithmName);
 
             configsFile.WriteLine("{0},{1}", "Execution Time", stopwatch.ElapsedMilliseconds);
+
+            configsFile.WriteLine("{0},{1}", "Asymmetric", Asymmetric);
 
             PrintAdditionals(configsFile);
 

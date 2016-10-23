@@ -192,77 +192,6 @@ namespace Implementation.Algorithms
             Assignments = _permanentAssignments;
         }
 
-        private List<List<int>> Swap(List<List<int>> assignments)
-        {
-            if (!_conf.Swap)
-            {
-                return assignments;
-            }
-
-            var users = new List<int>();
-            for (int i = 0; i < UserAssignments.Count; i++)
-            {
-                var userAssignment = UserAssignments[i];
-                if (userAssignment.HasValue)
-                {
-                    users.Add(i);
-                }
-            }
-
-            var oldSocialWelfare = new Welfare();
-            var newSocialWelfare = new Welfare();
-            do
-            {
-                oldSocialWelfare = CalculateSocialWelfare(assignments);
-                for (int i = 0; i < users.Count; i++)
-                {
-                    var user1 = users[i];
-
-                    for (int j = i + 1; j < users.Count; j++)
-                    {
-                        var user2 = users[j];
-                        if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null)
-                        {
-                            var e1 = UserAssignments[user1].Value;
-                            var e2 = UserAssignments[user2].Value;
-                            var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                            CalculateEventWelfare(assignments, e1, oldWelfare);
-                            CalculateEventWelfare(assignments, e2, oldWelfare);
-
-                            assignments[e1].Remove(user1);
-                            assignments[e1].Add(user2);
-
-                            assignments[e2].Remove(user2);
-                            assignments[e2].Add(user1);
-                            UserAssignments[user1] = e2;
-                            UserAssignments[user2] = e1;
-
-                            var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                            CalculateEventWelfare(assignments, e1, newWelfare);
-                            CalculateEventWelfare(assignments, e2, newWelfare);
-
-                            if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
-                            {
-                                //undo
-                                assignments[e1].Remove(user2);
-                                assignments[e1].Add(user1);
-
-                                assignments[e2].Remove(user1);
-                                assignments[e2].Add(user2);
-
-                                UserAssignments[user1] = e1;
-                                UserAssignments[user2] = e2;
-                            }
-                        }
-                    }
-                }
-                newSocialWelfare = CalculateSocialWelfare(assignments);
-
-            } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > 0.001);
-
-            return assignments;
-        }
-
         private void GreedyAssign()
         {
             if (_conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Greedy)
@@ -613,7 +542,7 @@ namespace Implementation.Algorithms
 
                     if (_conf.CommunityAware && _conf.CommunityFix == CommunityFixEnum.InitializationFix)
                     {
-                        ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x]) / (_users.Count - 1);
+                        ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (_users.Count - 1);
                     }
                     _queue.AddOrUpdate(ue.Utility, ue);
                 }

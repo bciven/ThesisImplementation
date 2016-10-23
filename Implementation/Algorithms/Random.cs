@@ -94,6 +94,7 @@ namespace Implementation.Algorithms
                     Assignments[userAssignment.Value].Add(user);
                 }
             }
+            Assignments = Swap(Assignments);
         }
 
         private double Util(int @event, int user)
