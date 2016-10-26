@@ -27,7 +27,6 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = DoublePriority;
             i++;
 
-
             ws.Cells[i, 1].Value = "Reassignment";
             ws.Cells[i, 2].Value = Reassignment;
             i++;

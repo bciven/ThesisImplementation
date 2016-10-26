@@ -180,7 +180,7 @@ namespace Implementation.Algorithms
                 }
                 newSocialWelfare = CalculateSocialWelfare(assignments);
 
-            } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > 0.001);
+            } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > Conf.SwapThreshold);
 
             return assignments;
         }

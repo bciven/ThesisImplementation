@@ -50,6 +50,7 @@ namespace Implementation.Experiment
                                    MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
                                    MaxCardinalityOption = maxcard != null ? (MaxCardinalityOptions)Convert.ToInt32(maxcard.Attribute("value").Value) : MaxCardinalityOptions.Random,
                                    SocialNetworkModel = (SocialNetworkModel)Convert.ToInt32(snmodel.Attribute("value").Value),
+                                   Asymmetric = Convert.ToBoolean(snmodel.Attribute("asymmetric").Value),
                                    OutputType = (OutputTypeEnum)Convert.ToInt32(exp.Attribute("output").Value),
                                    ExpTypes = exptypes.Descendants("type").Select(x =>
                                    {
@@ -84,9 +85,14 @@ namespace Implementation.Experiment
                                        }
 
                                        bool swap = false;
+                                       double swapThreshold = 0d;
                                        if (x.Attribute("Swap") != null)
                                        {
                                            swap = Convert.ToBoolean(x.Attribute("Swap").Value);
+                                           if (swap && x.Attribute("SwapThreshold") != null)
+                                           {
+                                               swapThreshold = Convert.ToDouble(x.Attribute("SwapThreshold").Value);
+                                           }
                                        }
 
                                        var algspec = new AlgorithmSpec
@@ -97,7 +103,8 @@ namespace Implementation.Experiment
                                            DeficitFix = deficitFix,
                                            DoublePriority = doublePriority,
                                            LazyAdjustment = lazyAdjustment,
-                                           Swap = swap
+                                           Swap = swap,
+                                           SwapThreshold = swapThreshold
                                        };
 
                                        switch (x.Value.ToUpper())
@@ -327,7 +334,10 @@ namespace Implementation.Experiment
                         Parameters = parameters,
                         CommunityAware = algorithmEnum == AlgorithmSpec.AlgorithmEnum.COG,
                         DoublePriority = parameters.ExpTypes[i].DoublePriority,
-                        OutputType = parameters.OutputType
+                        OutputType = parameters.OutputType,
+                        Swap = parameters.ExpTypes[i].Swap,
+                        SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        Asymmetric = parameters.Asymmetric
                     };
 
                     configs.Add(conf);
@@ -349,7 +359,10 @@ namespace Implementation.Experiment
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
                         TakeChanceLimit = tcl,
-                        OutputType = parameters.OutputType
+                        OutputType = parameters.OutputType,
+                        Swap = parameters.ExpTypes[i].Swap,
+                        SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        Asymmetric = parameters.Asymmetric
                     };
 
                     configs.Add(conf);
@@ -368,7 +381,10 @@ namespace Implementation.Experiment
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
-                        OutputType = parameters.OutputType
+                        OutputType = parameters.OutputType,
+                        Swap = parameters.ExpTypes[i].Swap,
+                        SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        Asymmetric = parameters.Asymmetric
                     };
 
                     configs.Add(conf);
@@ -402,7 +418,9 @@ namespace Implementation.Experiment
                         CommunityFix = parameters.ExpTypes[i].CommunityFix,
                         DoublePriority = parameters.ExpTypes[i].DoublePriority,
                         OutputType = parameters.OutputType,
-                        Swap = parameters.ExpTypes[i].Swap
+                        Swap = parameters.ExpTypes[i].Swap,
+                        SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        Asymmetric = parameters.Asymmetric
                     };
 
                     configs.Add(conf);

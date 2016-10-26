@@ -87,7 +87,6 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = PostInitializationInsert;
             i++;
 
-
             ws.Cells[i, 1].Value = "Alpha";
             ws.Cells[i, 2].Value = Alpha;
             i++;
@@ -126,9 +125,12 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Swap";
             ws.Cells[i, 2].Value = Swap;
+            i++;
+
+            ws.Cells[i, 1].Value = "Swap Threshold";
+            ws.Cells[i, 2].Value = SwapThreshold;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
-
         }
 
         protected override void PrintConfigs(DirectoryInfo directoryInfo, Stopwatch stopwatch)
@@ -174,6 +176,8 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Double Priority", DoublePriority);
 
             configsFile.WriteLine("{0},{1}", "Swap", Swap);
+
+            configsFile.WriteLine("{0},{1}", "Swap Threshold", SwapThreshold);
 
             PrintAdditionals(configsFile);
 

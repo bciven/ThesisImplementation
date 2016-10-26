@@ -1,6 +1,68 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="1" output="1">
+  <Experiment count="5" output="1">
+    <users count="500" />
+    <events count="10" />
+    <alpha value="0.3" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="5" output="1">
+    <users count="500" />
+    <events count="25" />
+    <alpha value="0.3" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="5" output="1">
+    <users count="500" />
+    <events count="35" />
+    <alpha value="0.3" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+    </exptypes>
+  </Experiment>
+  
+  
+  <Experiment count="5" output="1">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -12,14 +74,15 @@
     <eventinterestperct value="5" />
     <snmodel value="0" asymmetric="false"/>
     <exptypes>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">RANDOM</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
     </exptypes>
   </Experiment>
-
-  <Experiment count="1" output="1">
+  <Experiment count="5" output="1">
     <users count="500" />
     <events count="25" />
     <alpha value="0.5" />
@@ -31,14 +94,15 @@
     <eventinterestperct value="5" />
     <snmodel value="0" asymmetric="false"/>
     <exptypes>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">RANDOM</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
     </exptypes>
   </Experiment>
-  
-  <Experiment count="1" output="1">
+  <Experiment count="5" output="1">
     <users count="500" />
     <events count="35" />
     <alpha value="0.5" />
@@ -50,14 +114,138 @@
     <eventinterestperct value="5" />
     <snmodel value="0" asymmetric="false"/>
     <exptypes>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">RANDOM</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
     </exptypes>
   </Experiment>
-
-  <Experiment count="1" output="1">
+  
+   <Experiment count="5" output="1">
+    <users count="500" />
+    <events count="10" />
+    <alpha value="0.7" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="5" output="1">
+    <users count="500" />
+    <events count="25" />
+    <alpha value="0.7" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="5" output="1">
+    <users count="500" />
+    <events count="35" />
+    <alpha value="0.7" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+    </exptypes>
+  </Experiment>
+  
+  <Experiment count="5" output="1">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.3" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="2" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="5" output="1">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.3" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="4" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+    </exptypes>
+  </Experiment>
+  <Experiment count="5" output="1">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.3" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="8" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+    </exptypes>
+  </Experiment>
+  
+  <Experiment count="5" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -69,14 +257,15 @@
     <eventinterestperct value="5" />
     <snmodel value="0" asymmetric="false"/>
     <exptypes>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">RANDOM</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
     </exptypes>
   </Experiment>
-  
-  <Experiment count="1" output="1">
+  <Experiment count="5" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -88,14 +277,15 @@
     <eventinterestperct value="5" />
     <snmodel value="0" asymmetric="false"/>
     <exptypes>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">RANDOM</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
     </exptypes>
   </Experiment>
-  
-  <Experiment count="1" output="1">
+  <Experiment count="5" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -107,85 +297,74 @@
     <eventinterestperct value="5" />
     <snmodel value="0" asymmetric="false"/>
     <exptypes>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">RANDOM</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
-    </exptypes>
-  </Experiment>
-
-  <Experiment count="1" output="1">
-    <users count="500" />
-    <events count="50" />
-    <alpha value="0.5" />
-    <capmean value="20" />
-    <capvar value="10" />
-    <mincard value="0" />
-    <maxcard value="0" />
-    <sndensity value="0.001" />
-    <eventinterestperct value="5" />
-    <snmodel value="0" asymmetric="false"/>
-    <exptypes>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
     </exptypes>
   </Experiment>
   
-  <Experiment count="1" output="1">
+  <Experiment count="5" output="1">
     <users count="500" />
     <events count="50" />
-    <alpha value="0.5" />
+    <alpha value="0.7" />
     <capmean value="20" />
     <capvar value="10" />
-    <mincard value="0" />
+    <mincard value="2" />
     <maxcard value="0" />
-    <sndensity value="0.01" />
-    <eventinterestperct value="5" />
-    <snmodel value="0" asymmetric="true"/>
-    <exptypes>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
-    </exptypes>
-  </Experiment>
-
-  <Experiment count="1" output="1">
-    <users count="500" />
-    <events count="50" />
-    <alpha value="0.5" />
-    <capmean value="20" />
-    <capvar value="10" />
-    <mincard value="0" />
-    <maxcard value="0" />
-    <sndensity value="0.1" />
+    <sndensity value="0" />
     <eventinterestperct value="5" />
     <snmodel value="0" asymmetric="false"/>
     <exptypes>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">RANDOM</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
     </exptypes>
   </Experiment>
-
-  <Experiment count="1" output="1">
+  <Experiment count="5" output="1">
     <users count="500" />
     <events count="50" />
-    <alpha value="0.5" />
+    <alpha value="0.7" />
     <capmean value="20" />
     <capvar value="10" />
-    <mincard value="0" />
-    <sndensity value="1" />
+    <mincard value="4" />
+    <maxcard value="0" />
+    <sndensity value="0" />
     <eventinterestperct value="5" />
     <snmodel value="0" asymmetric="false"/>
     <exptypes>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">RANDOM</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
     </exptypes>
   </Experiment>
+  <Experiment count="5" output="1">
+    <users count="500" />
+    <events count="50" />
+    <alpha value="0.7" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="8" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">PCADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IR</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+      <type Reassignment="3" CommunityFix="5" DeficitFix="false" DoublePriority="false" LazyAdjustment="true"  Swap="false">IRC</type>
+    </exptypes>
+  </Experiment>
+  
 </Experiments>

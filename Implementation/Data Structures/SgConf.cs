@@ -25,6 +25,7 @@ namespace Implementation.Data_Structures
         public OutputTypeEnum OutputType { get; set; }
         public bool Asymmetric { get; set; }
         public bool Swap { get; set; }
+        public double SwapThreshold { get; set; }
 
         public SgConf()
         {
@@ -40,6 +41,7 @@ namespace Implementation.Data_Structures
             OutputType = OutputTypeEnum.Excel;
             Asymmetric = false;
             Swap = false;
+            SwapThreshold = 0.001;
         }
 
         public void PrintToExcel(ExcelPackage excel, Stopwatch stopwatch)
@@ -97,6 +99,14 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = Asymmetric;
             i++;
 
+            ws.Cells[i, 1].Value = "Swap";
+            ws.Cells[i, 2].Value = Swap;
+            i++;
+
+            ws.Cells[i, 1].Value = "Swap Threshold";
+            ws.Cells[i, 2].Value = SwapThreshold;
+            i++;
+
             PrintAdditionals(ws, i);
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
@@ -125,6 +135,10 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Execution Time", stopwatch.ElapsedMilliseconds);
 
             configsFile.WriteLine("{0},{1}", "Asymmetric", Asymmetric);
+
+            configsFile.WriteLine("{0},{1}", "Swap", Swap);
+
+            configsFile.WriteLine("{0},{1}", "Swap Threshold", SwapThreshold);
 
             PrintAdditionals(configsFile);
 

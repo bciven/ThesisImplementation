@@ -27,6 +27,7 @@ namespace Implementation.Data_Structures
         public bool DoublePriority { get; set; }
         public bool LazyAdjustment { get; set; }
         public bool Swap { get; set; }
+        public double SwapThreshold { get; set; }
 
         public enum AlgorithmEnum
         {
