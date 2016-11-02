@@ -56,10 +56,16 @@ namespace Implementation.Experiment
                                    {
                                        var communityfix = x.Attribute("CommunityFix") != null ? (CommunityFixEnum)Convert.ToInt32(x.Attribute("CommunityFix").Value) : CommunityFixEnum.None;
                                        var reassignment = AlgorithmSpec.ReassignmentEnum.None;
+                                       double preservePercentage = 50d;
                                        if (x.Attribute("Reassignment") != null)
                                        {
                                            reassignment = (AlgorithmSpec.ReassignmentEnum)Convert.ToInt32(x.Attribute("Reassignment").Value);
+                                           if (reassignment == AlgorithmSpec.ReassignmentEnum.Reduction && x.Attribute("PreservePercentage") != null)
+                                           {
+                                               preservePercentage = Convert.ToDouble(x.Attribute("PreservePercentage").Value);
+                                           }
                                        }
+
                                        int? takechancelimit = null;
                                        if (x.Attribute("TakeChanceLimit") != null)
                                        {
@@ -104,7 +110,8 @@ namespace Implementation.Experiment
                                            DoublePriority = doublePriority,
                                            LazyAdjustment = lazyAdjustment,
                                            Swap = swap,
-                                           SwapThreshold = swapThreshold
+                                           SwapThreshold = swapThreshold,
+                                           PreservePercentage = preservePercentage
                                        };
 
                                        switch (x.Value.ToUpper())
@@ -337,6 +344,7 @@ namespace Implementation.Experiment
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric
                     };
 
@@ -362,6 +370,7 @@ namespace Implementation.Experiment
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric
                     };
 
@@ -384,6 +393,7 @@ namespace Implementation.Experiment
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric
                     };
 
@@ -420,6 +430,7 @@ namespace Implementation.Experiment
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric
                     };
 

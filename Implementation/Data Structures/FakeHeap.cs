@@ -8,6 +8,12 @@ namespace Implementation.Data_Structures
     {
         private readonly bool _doublePriority;
         public readonly Dictionary<string, UserEvent> _sortedSet;
+        //private string _maxKey;
+
+        public FakeHeap()
+        {
+            //_maxKey = null;
+        }
         
         // O(1)
         public UserEvent Max
@@ -52,6 +58,18 @@ namespace Implementation.Data_Structures
             value.Utility = key;
             var stringKey = CreateKey(value.User, value.Event);
 
+            //if (_maxKey == null)
+            //{
+            //    _maxKey = stringKey;
+            //}
+            //else
+            //{
+            //    if (_sortedSet[_maxKey].Utility < value.Utility)
+            //    {
+            //        _maxKey = stringKey;
+            //    }
+            //}
+
             UserEvent newValue;
             if (_sortedSet.TryGetValue(stringKey, out newValue))
             {
@@ -69,6 +87,19 @@ namespace Implementation.Data_Structures
             value.Utility = key;
             var stringKey = CreateKey(value.User, value.Event);
             UserEvent newValue;
+
+            //if (_maxKey == null)
+            //{
+            //    _maxKey = stringKey;
+            //}
+            //else
+            //{
+            //    if (_sortedSet[_maxKey].Utility < value.Utility)
+            //    {
+            //        _maxKey = stringKey;
+            //    }
+            //}
+
             if (_sortedSet.TryGetValue(stringKey, out newValue))
             {
                 _sortedSet[stringKey].Utility = key;
@@ -80,7 +111,8 @@ namespace Implementation.Data_Structures
         public UserEvent RemoveMax()
         {
             var max = Max;
-            _sortedSet.Remove(CreateKey(max.User, max.Event));
+            var key = CreateKey(max.User, max.Event);
+            _sortedSet.Remove(key);
             return max;
         }
 

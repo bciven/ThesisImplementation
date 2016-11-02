@@ -540,9 +540,14 @@ namespace Implementation.Algorithms
                         //gain = Math.Round(gain, _conf.Percision);
                     }
 
-                    if (_conf.CommunityAware && _conf.CommunityFix == CommunityFixEnum.InitializationFix)
+                    if (_conf.CommunityAware && _conf.CommunityFix.HasFlag(CommunityFixEnum.InitializationFix))
                     {
-                        ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (_users.Count - 1);
+                        var denomDeduction = 1;
+                        if (_conf.CommunityFix.HasFlag(CommunityFixEnum.DenomFix))
+                        {
+                            denomDeduction = 0;
+                        }
+                        ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (_users.Count - denomDeduction);
                     }
                     _queue.AddOrUpdate(ue.Utility, ue);
                 }

@@ -26,6 +26,7 @@ namespace Implementation.Data_Structures
         public bool Asymmetric { get; set; }
         public bool Swap { get; set; }
         public double SwapThreshold { get; set; }
+        public double PreservePercentage { get; set; }
 
         public SgConf()
         {
@@ -42,6 +43,7 @@ namespace Implementation.Data_Structures
             Asymmetric = false;
             Swap = false;
             SwapThreshold = 0.001;
+            PreservePercentage = 50;
         }
 
         public void PrintToExcel(ExcelPackage excel, Stopwatch stopwatch)
@@ -107,6 +109,10 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = SwapThreshold;
             i++;
 
+            ws.Cells[i, 1].Value = "Preserve Percentage";
+            ws.Cells[i, 2].Value = PreservePercentage;
+            i++;
+
             PrintAdditionals(ws, i);
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
@@ -139,6 +145,8 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Swap", Swap);
 
             configsFile.WriteLine("{0},{1}", "Swap Threshold", SwapThreshold);
+
+            configsFile.WriteLine("{0},{1}", "Preserve Percentage", PreservePercentage);
 
             PrintAdditionals(configsFile);
 

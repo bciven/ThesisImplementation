@@ -187,7 +187,7 @@ namespace Implementation.Algorithms
 
         protected void KeepPhantomEvents(List<int> availableUsers, List<int> realOpenEvents, AlgorithmSpec.ReassignmentEnum reassignment)
         {
-            _reassignmentStrategy.KeepPhantomEvents(availableUsers, realOpenEvents, reassignment);
+            _reassignmentStrategy.KeepPhantomEvents(availableUsers, realOpenEvents, reassignment, Conf.PreservePercentage);
         }
 
         protected void KeepPotentialPhantomEvents(List<int> availableUsers, List<int> realOpenEvents)
@@ -402,37 +402,43 @@ namespace Implementation.Algorithms
                 //var assignedUsers = Assignments.SelectMany(x => x).ToList();
                 //var users = AllUsers.Where(x => !UserAssignments[x].HasValue && !assignedUsers.Contains(x)).ToList();
 
-                if (communityFix == CommunityFixEnum.None)
+                var denumDeduction = 1;
+                if (communityFix.HasFlag(CommunityFixEnum.DenomFix))
+                {
+                    denumDeduction = 0;
+                }
+
+                if (communityFix.HasFlag(CommunityFixEnum.None))
                 {
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        users.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(users.Count - 1, 1);
+                        users.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(users.Count - denumDeduction, 1);
                 }
-                else if (communityFix == CommunityFixEnum.Version1)
+                else if (communityFix.HasFlag(CommunityFixEnum.Version1))
                 {
                     var lowInterestedUsers = users.OrderBy(x => SocAffinities[user, x]).Take(EventCapacity[@event].Max).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1));
 
                     //s += Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
                     //(users.Sum(u => InAffinities[u][@event]) / (double)Math.Max(users.Count - 1, 1));
                 }
-                else if (communityFix == CommunityFixEnum.Version2)
+                else if (communityFix.HasFlag(CommunityFixEnum.Version2))
                 {
                     var lowInterestedUsers = users.OrderBy(x => SocAffinities[user, x]).Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1));
                 }
-                else if (communityFix == CommunityFixEnum.Version3)
+                else if (communityFix.HasFlag(CommunityFixEnum.Version3))
                 {
                     var lowInterestedUsers = users.OrderBy(x => SocAffinities[user, x] + InAffinities[x][@event]).Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1));
                 }
-                else if (communityFix == CommunityFixEnum.Version4)
+                else if (communityFix.HasFlag(CommunityFixEnum.Version4))
                 {
                     var lowInterestedUsers = users.Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
                     s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - 1, 1));
+                        (lowInterestedUsers.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1));
                 }
 
                 g = s + g;

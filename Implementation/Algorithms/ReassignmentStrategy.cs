@@ -17,7 +17,7 @@ namespace Implementation.Algorithms
             _previousPhantomNumberCount = 0;
         }
 
-        public void KeepPhantomEvents(List<int> availableUsers, List<int> realOpenEvents, AlgorithmSpec.ReassignmentEnum reassignment)
+        public void KeepPhantomEvents(List<int> availableUsers, List<int> realOpenEvents, AlgorithmSpec.ReassignmentEnum reassignment, double preservePerc)
         {
             _phantomEvents = _phantomEvents?.Where(x => !_algorithm.EventIsReal(x)).ToList() ?? _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x)).ToList();
             var events = _phantomEvents.Select(x => new UserEvent { Event = x, Utility = 0d }).ToList();
@@ -27,11 +27,11 @@ namespace Implementation.Algorithms
             }
             else if (reassignment == AlgorithmSpec.ReassignmentEnum.Reduction)
             {
-                ReductionStrategy(availableUsers, realOpenEvents, events);
+                ReductionStrategy(availableUsers, realOpenEvents, events, preservePerc);
             }
         }
 
-        private void ReductionStrategy(List<int> availableUsers, List<int> realOpenEvents, List<UserEvent> phantomEvents)
+        private void ReductionStrategy(List<int> availableUsers, List<int> realOpenEvents, List<UserEvent> phantomEvents, double preservePerc)
         {
             foreach (var @event in phantomEvents)
             {
@@ -39,7 +39,7 @@ namespace Implementation.Algorithms
             }
             phantomEvents = phantomEvents.OrderByDescending(x => x.Utility).ToList();
 
-            int eventsToKeep = (int)Math.Round((double)(90 * phantomEvents.Count) / 100);
+            int eventsToKeep = (int)Math.Round((double)(preservePerc * phantomEvents.Count) / 100);
 
             if (_previousPhantomNumberCount == 0 || _previousPhantomNumberCount != phantomEvents.Count)
             {
@@ -47,7 +47,7 @@ namespace Implementation.Algorithms
             }
             else if (_previousPhantomNumberCount == phantomEvents.Count)
             {
-                eventsToKeep = (int)Math.Floor((double)(90 * eventsToKeep) / 100);
+                eventsToKeep = (int)Math.Floor((double)(preservePerc * eventsToKeep) / 100);
             }
             
             phantomEvents = phantomEvents.Take(eventsToKeep).ToList();

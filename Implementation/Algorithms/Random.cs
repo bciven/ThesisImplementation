@@ -93,7 +93,7 @@ namespace Implementation.Algorithms
                 {
                     Assignments[userAssignment.Value].Add(user);
                 }
-            }
+            } 
             Assignments = Swap(Assignments);
         }
 

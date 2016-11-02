@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace Implementation.Data_Structures
 {
+    [Flags]
     public enum CommunityFixEnum
     {
         None = 0,
         Version1 = 1,
         Version2 = 2,
-        Version3 = 3,
-        Version4 = 4,
-        InitializationFix = 5
+        Version3 = 4,
+        Version4 = 8,
+        InitializationFix = 16,
+        DenomFix = 32
     }
 }
