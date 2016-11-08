@@ -90,7 +90,9 @@ namespace Implementation.Algorithms
                 List<int> availableUsers;
                 List<int> realOpenEvents;
                 PrepareReassignment(out availableUsers, out realOpenEvents);
-                if (_conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Addition)
+                if (_conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Addition 
+                    || _conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Power2Reduction
+                    || _conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Reduction)
                 {
                     KeepPhantomEvents(availableUsers, realOpenEvents, _conf.Reassignment);
                 }

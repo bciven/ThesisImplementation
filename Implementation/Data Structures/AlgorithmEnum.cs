@@ -16,7 +16,8 @@ namespace Implementation.Data_Structures
             Default = 1,
             Addition = 2,
             Reduction = 3,
-            Greedy = 4
+            Greedy = 4,
+            Power2Reduction = 5
         }
 
         public int? TakeChanceLimit { get; set; }

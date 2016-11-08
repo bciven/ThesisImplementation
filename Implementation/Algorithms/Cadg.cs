@@ -260,7 +260,9 @@ namespace Implementation.Algorithms
 
         private void Reassign()
         {
-            if (_conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Reduction && _conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Addition)
+            if (_conf.Reassignment == AlgorithmSpec.ReassignmentEnum.None 
+                || _conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Default
+                || _conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Greedy)
                 return;
 
             for (int i = 0; i < UserAssignments.Count; i++)

@@ -10,24 +10,34 @@ namespace Implementation.Algorithms
         private readonly Algorithm<T> _algorithm;
         private int _previousPhantomNumberCount;
         private List<int> _phantomEvents;
+        private int _power2;
 
         public ReassignmentStrategy(Algorithm<T> algorithm)
         {
             _algorithm = algorithm;
             _previousPhantomNumberCount = 0;
+            _power2 = 0;
         }
 
         public void KeepPhantomEvents(List<int> availableUsers, List<int> realOpenEvents, AlgorithmSpec.ReassignmentEnum reassignment, double preservePerc)
         {
-            _phantomEvents = _phantomEvents?.Where(x => !_algorithm.EventIsReal(x)).ToList() ?? _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x)).ToList();
-            var events = _phantomEvents.Select(x => new UserEvent { Event = x, Utility = 0d }).ToList();
             if (reassignment == AlgorithmSpec.ReassignmentEnum.Addition)
             {
+                _phantomEvents = _phantomEvents?.Where(x => !_algorithm.EventIsReal(x)).ToList() ?? _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x)).ToList();
+                var events = _phantomEvents.Select(x => new UserEvent { Event = x, Utility = 0d }).ToList();
                 AdditionStrategy(availableUsers, realOpenEvents, events);
             }
             else if (reassignment == AlgorithmSpec.ReassignmentEnum.Reduction)
             {
+                _phantomEvents = _phantomEvents?.Where(x => !_algorithm.EventIsReal(x)).ToList() ?? _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x)).ToList();
+                var events = _phantomEvents.Select(x => new UserEvent { Event = x, Utility = 0d }).ToList();
                 ReductionStrategy(availableUsers, realOpenEvents, events, preservePerc);
+            }
+            else if (reassignment == AlgorithmSpec.ReassignmentEnum.Power2Reduction)
+            {
+                _phantomEvents = _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x)).ToList();
+                var events = _phantomEvents.Select(x => new UserEvent { Event = x, Utility = 0d }).ToList();
+                Power2ReductionStrategy(availableUsers, realOpenEvents, events);
             }
         }
 
@@ -49,7 +59,24 @@ namespace Implementation.Algorithms
             {
                 eventsToKeep = (int)Math.Floor((double)(preservePerc * eventsToKeep) / 100);
             }
-            
+
+            phantomEvents = phantomEvents.Take(eventsToKeep).ToList();
+            _phantomEvents = phantomEvents.Select(x => x.Event).ToList();
+            realOpenEvents.AddRange(phantomEvents.Select(phantomEvent => phantomEvent.Event));
+        }
+
+        private void Power2ReductionStrategy(List<int> availableUsers, List<int> realOpenEvents, List<UserEvent> phantomEvents)
+        {
+            foreach (var @event in phantomEvents)
+            {
+                @event.Utility = availableUsers.Sum(user => _algorithm.InAffinities[user][@event.Event]);
+            }
+            phantomEvents = phantomEvents.OrderByDescending(x => x.Utility).ToList();
+            var preservePerc = 100 - Math.Pow(2, _power2);
+            _power2++;
+
+            int eventsToKeep = (int)Math.Round((double)(preservePerc * phantomEvents.Count) / 100);
+
             phantomEvents = phantomEvents.Take(eventsToKeep).ToList();
             _phantomEvents = phantomEvents.Select(x => x.Event).ToList();
             realOpenEvents.AddRange(phantomEvents.Select(phantomEvent => phantomEvent.Event));
