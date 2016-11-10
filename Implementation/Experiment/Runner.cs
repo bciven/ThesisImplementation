@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Implementation.Algorithms;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
-using Random = Implementation.Algorithms.Random;
 
 namespace Implementation.Experiment
 {
@@ -132,11 +131,14 @@ namespace Implementation.Experiment
                                                algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.PCADG;
                                                break;
 
-                                           case "RANDOM":
-                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.Random;
+                                           case "LA":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.LA;
                                                break;
-                                           case "RANDOMPLUS":
-                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.RandomPlus;
+                                           case "LAPLUS":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.LAPlus;
+                                               break;
+                                           case "PLA":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.PLA;
                                                break;
                                            case "OG":
                                                algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.OG;
@@ -234,7 +236,7 @@ namespace Implementation.Experiment
             Exit();
         }
 
-        private static FileInfo CreateOutputFileInfo(List<SgConf> configs, int numOfExp, int i, int round, DirectoryInfo dir)
+        private static FileInfo CreateOutputFileInfo(List<SGConf> configs, int numOfExp, int i, int round, DirectoryInfo dir)
         {
             var algDigits = Convert.ToInt32(Math.Floor(Math.Log10(configs.Count) + 1));
             var expDigits = Convert.ToInt32(Math.Floor(Math.Log10(numOfExp) + 1));
@@ -259,7 +261,7 @@ namespace Implementation.Experiment
             throw new InvalidEnumArgumentException("Output type is invalid");
         }
 
-        private static void SetInputFile(bool serial, int round, List<SgConf> configs)
+        private static void SetInputFile(bool serial, int round, List<SGConf> configs)
         {
             if (serial)
             {
@@ -274,33 +276,33 @@ namespace Implementation.Experiment
             }
         }
 
-        private Algorithm<List<UserEvent>> CreateAlgorithm(List<SgConf> configs, int j, Parameters parameters, int index)
+        private Algorithm<List<UserEvent>> CreateAlgorithm(List<SGConf> configs, int j, Parameters parameters, int index)
         {
-            if (configs[j] is CadgConf)
+            if (configs[j] is CADGConf)
             {
-                var cadgConf = (CadgConf)configs[j];
+                var cadgConf = (CADGConf)configs[j];
                 var feed = CreateFeed(cadgConf.FeedType, cadgConf.InputFilePath, parameters);
-                return new Cadg(cadgConf, feed, index);
+                return new CADG(cadgConf, feed, index);
             }
 
-            if (configs[j] is RandomConf)
+            if (configs[j] is LAConf)
             {
-                var ogConf = (RandomConf)configs[j];
+                var ogConf = (LAConf)configs[j];
                 var feed = CreateFeed(ogConf.FeedType, ogConf.InputFilePath, parameters);
-                return new Random(ogConf, feed, index);
+                return new LA(ogConf, feed, index);
             }
 
-            if (configs[j] is OgConf)
+            if (configs[j] is OGConf)
             {
-                var ogConf = (OgConf)configs[j];
+                var ogConf = (OGConf)configs[j];
                 var feed = CreateFeed(ogConf.FeedType, ogConf.InputFilePath, parameters);
-                return new Og(ogConf, feed, index);
+                return new OG(ogConf, feed, index);
             }
 
             {
-                var sgConf = (SgConf)configs[j];
+                var sgConf = (SGConf)configs[j];
                 var feed = CreateFeed(sgConf.FeedType, sgConf.InputFilePath, parameters);
-                return new Sg(sgConf, feed, index);
+                return new SG(sgConf, feed, index);
             }
         }
 
@@ -320,16 +322,16 @@ namespace Implementation.Experiment
             return line == "y";
         }
 
-        private List<SgConf> ToConfigs(Parameters parameters)
+        private List<SGConf> ToConfigs(Parameters parameters)
         {
-            var configs = new List<SgConf>();
+            var configs = new List<SGConf>();
             for (int i = 0; i < parameters.ExpTypes.Count; i++)
             {
                 var algorithmEnum = parameters.ExpTypes[i].Algorithm;
                 var alg = (int)algorithmEnum;
                 if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.OG || algorithmEnum == AlgorithmSpec.AlgorithmEnum.COG)
                 {
-                    var conf = new OgConf
+                    var conf = new OGConf
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
@@ -350,12 +352,12 @@ namespace Implementation.Experiment
 
                     configs.Add(conf);
                 }
-                else if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.RandomPlus)
+                else if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.LAPlus)
                 {
-                    var conf = new RandomPlusConf();
+                    var conf = new LAPlusConf();
                     var tcl = parameters.ExpTypes[i].TakeChanceLimit ?? parameters.EventCount;
 
-                    conf = new RandomPlusConf
+                    conf = new LAPlusConf
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
@@ -371,15 +373,16 @@ namespace Implementation.Experiment
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
-                        Asymmetric = parameters.Asymmetric
+                        Asymmetric = parameters.Asymmetric,
+                        InitStrategyEnum = InitStrategyEnum.RandomSort
                     };
 
                     configs.Add(conf);
                 }
-                else if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.Random)
+                else if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.LA || algorithmEnum == AlgorithmSpec.AlgorithmEnum.PLA)
                 {
-                    var conf = new RandomConf();
-                    conf = new RandomConf
+                    var conf = new LAConf();
+                    conf = new LAConf
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
@@ -397,18 +400,27 @@ namespace Implementation.Experiment
                         Asymmetric = parameters.Asymmetric
                     };
 
+                    if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.LA)
+                    {
+                        conf.InitStrategyEnum = InitStrategyEnum.RandomSort;
+                    }
+                    else if(algorithmEnum == AlgorithmSpec.AlgorithmEnum.PLA)
+                    {
+                        conf.InitStrategyEnum = InitStrategyEnum.PredictiveSort;
+                    }
+
                     configs.Add(conf);
                 }
                 else
                 {
-                    var conf = new CadgConf();
+                    var conf = new CADGConf();
                     var DG = alg == (int)AlgorithmSpec.AlgorithmEnum.DG;
                     var PCADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PCADG;
                     var PADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PADG;
                     var IR = alg == (int)AlgorithmSpec.AlgorithmEnum.IR;
                     var IRC = alg == (int)AlgorithmSpec.AlgorithmEnum.IRC;
 
-                    conf = new CadgConf
+                    conf = new CADGConf
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
@@ -458,7 +470,7 @@ namespace Implementation.Experiment
             return dir;
         }
 
-        private List<SgConf> ShowMenu(Parameters parameters)
+        private List<SGConf> ShowMenu(Parameters parameters)
         {
             Console.ForegroundColor = ConsoleColor.White;
             int algInt = 0;
@@ -466,7 +478,7 @@ namespace Implementation.Experiment
             FeedTypeEnum feedType = FeedTypeEnum.Random;
             string inputFilePath = null;
             int numberOfExperimentTypes = 1;
-            var configs = new List<SgConf>();
+            var configs = new List<SGConf>();
             while (true)
             {
                 Console.WriteLine(" ---------Choose Input--------- ");
@@ -540,7 +552,7 @@ namespace Implementation.Experiment
             {
                 for (int i = 0; i < numberOfExperimentTypes; i++)
                 {
-                    var conf = new RandomConf()
+                    var conf = new LAConf()
                     {
                         NumberOfUsers = 500,
                         NumberOfEvents = 50,
@@ -562,7 +574,7 @@ namespace Implementation.Experiment
             {
                 for (int i = 0; i < numberOfExperimentTypes; i++)
                 {
-                    var conf = new SgConf
+                    var conf = new SGConf
                     {
                         NumberOfUsers = 500,
                         NumberOfEvents = 50,
@@ -578,7 +590,7 @@ namespace Implementation.Experiment
             {
                 for (int i = 0; i < numberOfExperimentTypes;)
                 {
-                    CadgConf conf = new CadgConf();
+                    CADGConf conf = new CADGConf();
                     Console.WriteLine(" ---Choose Algorithm Options--- ");
                     Console.WriteLine("|1.Phantom Awareness           |");
                     Console.WriteLine("|2.Post Initialization Insert  |");
@@ -597,7 +609,7 @@ namespace Implementation.Experiment
                     var input = Console.ReadLine();
                     if (input != null && int.TryParse(input, out options) && options >= 1 && options <= 87654321)
                     {
-                        conf = new CadgConf
+                        conf = new CADGConf
                         {
                             NumberOfUsers = parameters.UserCount,
                             NumberOfEvents = parameters.EventCount,

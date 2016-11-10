@@ -10,7 +10,7 @@ using OfficeOpenXml;
 
 namespace Implementation.Data_Structures
 {
-    public class CadgConf : SgConf
+    public class CADGConf : SGConf
     {
         public bool ImmediateReaction { get; set; }
         public AlgorithmSpec.ReassignmentEnum Reassignment { get; set; }
@@ -23,7 +23,7 @@ namespace Implementation.Data_Structures
         public CommunityFixEnum CommunityFix { get; set; }
         public bool DoublePriority { get; set; }
 
-        public CadgConf()
+        public CADGConf()
         {
             NumberOfUsers = 10;
             NumberOfEvents = 4;

@@ -8,7 +8,7 @@ using Implementation.Data_Structures;
 
 namespace Implementation.Algorithms
 {
-    public class Cadg : Algorithm<List<UserEvent>>
+    public class CADG : Algorithm<List<UserEvent>>
     {
         private List<int> _events;
         private List<int> _users;
@@ -20,9 +20,9 @@ namespace Implementation.Algorithms
         private List<int> _phantomEvents;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
-        private CadgConf _conf => (CadgConf)Conf;
+        private CADGConf _conf => (CADGConf)Conf;
 
-        public Cadg(CadgConf conf, IDataFeed dataFeed, int index) : base(index)
+        public CADG(CADGConf conf, IDataFeed dataFeed, int index) : base(index)
         {
             _dataFeeder = dataFeed;
             Conf = conf;

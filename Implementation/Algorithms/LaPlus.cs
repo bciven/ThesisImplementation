@@ -7,18 +7,19 @@ using Implementation.Data_Structures;
 
 namespace Implementation.Algorithms
 {
-    public class Random : Algorithm<List<UserEvent>>
+    public class LAPlus : Algorithm<List<UserEvent>>
     {
         private List<int> _events;
         private List<int> _users;
         private List<int> _numberOfUserAssignments;
         private List<int> _eventDeficitContribution;
+        private List<Tuple<int, double>> _maxGain;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
-        private RandomConf _conf => (RandomConf)Conf;
+        private LAPlusConf _conf => (LAPlusConf)Conf;
         private Queue<UserEvent> _randomQueue;
 
-        public Random(RandomConf conf, IDataFeed dataFeed, int index) : base(index)
+        public LAPlus(LAPlusConf conf, IDataFeed dataFeed, int index) : base(index)
         {
             _dataFeeder = dataFeed;
             Conf = conf;
@@ -39,14 +40,22 @@ namespace Implementation.Algorithms
                 var @event = element.Event;
                 var minCapacity = EventCapacity[@event].Min;
                 var maxCapacity = EventCapacity[@event].Max;
-                bool assignmentMade = false;
-                List<int> affectedEvents = new List<int>();
 
-                if (UserAssignments[user] == null && Assignments[@event].Count < maxCapacity)
+                if (UserAssignments[user] == null && Assignments[@event].Count < maxCapacity && _maxGain[user].Item1 < _conf.TakeChanceLimit)
                 {
                     Assignments[@event].Add(user);
+                    var gain = Util(@event, user);
+                    if (_maxGain[user].Item2 < gain)
+                    {
+                        _maxGain[user] = new Tuple<int, double>(_maxGain[user].Item1 + 1, gain);
+                    }
+                    else
+                    {
+                        Assignments[@event].Remove(user);
+                        continue;
+                    }
                     _numberOfUserAssignments[user]++;
-                    assignmentMade = true;
+
                     if (_users.Contains(user))
                     {
                         _users.Remove(user);
@@ -93,7 +102,7 @@ namespace Implementation.Algorithms
                 {
                     Assignments[userAssignment.Value].Add(user);
                 }
-            } 
+            }
             Assignments = Swap(Assignments);
         }
 
@@ -194,6 +203,7 @@ namespace Implementation.Algorithms
             Welfare = new Welfare();
             var randomQueue = new List<UserEvent>();
             _randomQueue = new Queue<UserEvent>();
+            _maxGain = new List<Tuple<int, double>>();
             //_deficit = 0;
             _init = true;
             //_affectedUserEvents = new List<UserEvent>();
@@ -210,6 +220,7 @@ namespace Implementation.Algorithms
                 _events.Add(i);
                 _eventDeficitContribution.Add(0);
                 Assignments.Add(new List<int>());
+                _maxGain.Add(new Tuple<int, double>(0, double.MinValue));
             }
 
             EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
@@ -250,6 +261,7 @@ namespace Implementation.Algorithms
             EventCapacity = null;
             _randomQueue = null;
             _init = false;
+            _maxGain = null;
         }
 
     }

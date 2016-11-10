@@ -83,21 +83,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\GlobalGreedy.cs" />
-    <Compile Include="Algorithms\Og.cs" />
+    <Compile Include="Algorithms\OG.cs" />
     <Compile Include="Algorithms\PrintOutput.cs" />
-    <Compile Include="Algorithms\RandomPlus.cs" />
-    <Compile Include="Algorithms\Random.cs" />
+    <Compile Include="Algorithms\LAPlus.cs" />
+    <Compile Include="Algorithms\LA.cs" />
     <Compile Include="Algorithms\ReassignmentStrategy.cs" />
+    <Compile Include="Data Structures\InitStrategyEnum.cs" />
     <Compile Include="Data Structures\OutputFiles.cs" />
     <Compile Include="Data Structures\OutputEnum.cs" />
     <Compile Include="Data Structures\AlgorithmEnum.cs" />
     <Compile Include="Data Structures\CommunityFixEnum.cs" />
     <Compile Include="Data Structures\LinkedListHeap.cs" />
-    <Compile Include="Data Structures\OgConf.cs" />
-    <Compile Include="Data Structures\RandomPlusConf.cs" />
-    <Compile Include="Data Structures\RandomConf.cs" />
+    <Compile Include="Data Structures\OGConf.cs" />
+    <Compile Include="Data Structures\LAPlusConf.cs" />
+    <Compile Include="Data Structures\LAConf.cs" />
     <Compile Include="Data Structures\Graph.cs" />
-    <Compile Include="Data Structures\SgConf.cs" />
+    <Compile Include="Data Structures\SGConf.cs" />
     <Compile Include="Data Structures\SocialNetworkModels.cs" />
     <Compile Include="Data Structures\EventInterest.cs" />
     <Compile Include="Data Structures\Welfare.cs" />
@@ -110,7 +111,7 @@
     <Compile Include="Dataset Reader\MinCardinalityOptions.cs" />
     <Compile Include="Experiment\Parameters.cs" />
     <Compile Include="Experiment\Runner.cs" />
-    <Compile Include="Algorithms\Sg.cs" />
+    <Compile Include="Algorithms\SG.cs" />
     <Compile Include="Data Structures\CADGConf.cs" />
     <Compile Include="Dataset Reader\ExcelFileFeed.cs" />
     <Compile Include="Data Structures\FeedTypeEnum.cs" />
@@ -130,7 +131,7 @@
     <Compile Include="Dataset Reader\IReader.cs" />
     <Compile Include="Dataset Reader\MeetupReader.cs" />
     <Compile Include="Algorithms\Algorithm.cs" />
-    <Compile Include="Algorithms\Cadg.cs" />
+    <Compile Include="Algorithms\CADG.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -147,7 +148,12 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\LouvainCommunityPL\LouvainCommunityPL.csproj">
+      <Project>{462156c1-ff14-4a0f-99b9-1f167435356d}</Project>
+      <Name>LouvainCommunityPL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

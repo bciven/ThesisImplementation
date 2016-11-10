@@ -9,7 +9,7 @@ using Implementation.Data_Structures;
 
 namespace Implementation.Algorithms
 {
-    public class Og : Algorithm<List<UserEvent>>
+    public class OG : Algorithm<List<UserEvent>>
     {
         private List<int> _events;
         private List<int> _users;
@@ -19,9 +19,9 @@ namespace Implementation.Algorithms
         private Queue<UserEvents> _queue;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
-        private OgConf _conf => (OgConf)Conf;
+        private OGConf _conf => (OGConf)Conf;
 
-        public Og(SgConf conf, IDataFeed dataFeed, int index) : base(index)
+        public OG(SGConf conf, IDataFeed dataFeed, int index) : base(index)
         {
             _dataFeeder = dataFeed;
             Conf = conf;

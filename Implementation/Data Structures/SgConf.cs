@@ -10,7 +10,7 @@ using OfficeOpenXml;
 
 namespace Implementation.Data_Structures
 {
-    public class SgConf
+    public class SGConf
     {
         public FeedTypeEnum FeedType { get; set; }
         public int NumberOfUsers { get; set; }
@@ -28,7 +28,7 @@ namespace Implementation.Data_Structures
         public double SwapThreshold { get; set; }
         public double PreservePercentage { get; set; }
 
-        public SgConf()
+        public SGConf()
         {
             NumberOfUsers = 10;
             NumberOfEvents = 4;

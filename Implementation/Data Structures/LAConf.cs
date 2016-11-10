@@ -10,11 +10,13 @@ using OfficeOpenXml;
 
 namespace Implementation.Data_Structures
 {
-    public class RandomConf : SgConf
+    public class LAConf : SGConf
     {
         public bool Reassign { get; set; }
 
-        public RandomConf()
+        public InitStrategyEnum InitStrategyEnum { get; set; }
+        
+        public LAConf()
         {
             NumberOfUsers = 10;
             NumberOfEvents = 4;
@@ -24,6 +26,7 @@ namespace Implementation.Data_Structures
             Alpha = 0.5;
             Percision = 7;
             AlgorithmName = null;
+            InitStrategyEnum = InitStrategyEnum.RandomSort;
         }
 
         protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)

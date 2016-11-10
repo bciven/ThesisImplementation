@@ -8,6 +8,32 @@ namespace Implementation.Data_Structures
 {
     public class UserEvent
     {
+        public UserEvent(int user, int @event, double utility, double priority)
+        {
+            User = user;
+            Event = @event;
+            Utility = utility;
+            Priority = priority;
+        }
+
+        public UserEvent(int user, int @event)
+        {
+            User = user;
+            Event = @event;
+        }
+
+        public UserEvent(int user, int @event, double utility)
+        {
+            User = user;
+            Event = @event;
+            Utility = utility;
+        }
+
+        public UserEvent()
+        {
+            
+        }
+
         public int User { get; set; }
         public int Event { get; set; }
         public double Utility { get; set; }

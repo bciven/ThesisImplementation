@@ -2,14 +2,14 @@
 
 namespace Implementation.Data_Structures
 {
-    public class OgConf : SgConf
+    public class OGConf : SGConf
     {
         public bool CommunityAware { get; set; }
         public bool DoublePriority { get; set; }
         public bool ProbabilisticApproach { get; set; }
         public AlgorithmSpec.ReassignmentEnum Reassignment { get; set; }
 
-        public OgConf()
+        public OGConf()
         {
             CommunityAware = false;
             DoublePriority = false;

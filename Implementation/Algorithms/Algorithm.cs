@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Implementation.Data_Structures;
+using LouvainCommunityPL;
 using OfficeOpenXml;
 
 namespace Implementation.Algorithms
@@ -12,11 +13,7 @@ namespace Implementation.Algorithms
     {
         public abstract void Run(FileInfo output);
         public abstract void Initialize();
-        //public abstract T CreateOutput(FileInfo file);
-        //public abstract string GetInputFile();
-        //public abstract FeedTypeEnum GetFeedType();
         public Welfare Welfare { get; set; }
-
         public List<int> AllEvents;
         public List<int> AllUsers;
         public List<Cardinality> EventCapacity;
@@ -24,7 +21,7 @@ namespace Implementation.Algorithms
         public List<int?> UserAssignments;
         public List<List<double>> InAffinities;
         public double[,] SocAffinities;
-        public SgConf Conf;
+        public SGConf Conf;
         public Stopwatch _watch;
         protected readonly int _index;
         private readonly ReassignmentStrategy<T> _reassignmentStrategy;
@@ -382,6 +379,38 @@ namespace Implementation.Algorithms
             var min = EventCapacity[@event].Min;
             var max = EventCapacity[@event].Max;
             return usersCount >= min && usersCount <= max;
+        }
+
+        protected Dictionary<int, List<int>> DetectCommunities()
+        {
+            var graph = new Graph();
+            int edgecounter = 0;
+            for (int i = 0; i < SocAffinities.GetLength(0); i++)
+            {
+                for (int j = 0; j < SocAffinities.GetLength(1); j++)
+                {
+                    if (SocAffinities[i, j] != 0)
+                    {
+                        graph.AddEdge(i, j, SocAffinities[i, j]);
+                        edgecounter++;
+                    }
+                }
+            }
+            Console.WriteLine("{0} edges added", edgecounter);
+
+            Dictionary<int, int> partition = Community.BestPartition(graph);
+            var communities = new Dictionary<int, List<int>>();
+            foreach (var kvp in partition)
+            {
+                List<int> nodeset;
+                if (!communities.TryGetValue(kvp.Value, out nodeset))
+                {
+                    nodeset = communities[kvp.Value] = new List<int>();
+                }
+                nodeset.Add(kvp.Key);
+            }
+            Console.WriteLine("{0} communities found", communities.Count);
+            return communities;
         }
 
         protected UserEvent Util(int @event, int user, bool communityAware, CommunityFixEnum communityFix, List<int> users)

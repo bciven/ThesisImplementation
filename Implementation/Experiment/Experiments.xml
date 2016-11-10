@@ -14,18 +14,15 @@
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">RANDOM</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="5" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IR</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
     </exptypes>
   </Experiment>
@@ -44,18 +41,15 @@
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">RANDOM</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="5" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IR</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
     </exptypes>
   </Experiment>
@@ -74,18 +68,15 @@
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">RANDOM</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="5" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IR</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
     </exptypes>
   </Experiment>
@@ -104,18 +95,15 @@
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">RANDOM</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="5" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IR</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
     </exptypes>
   </Experiment>
@@ -134,18 +122,15 @@
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">RANDOM</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="5" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IR</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
     </exptypes>
   </Experiment>
@@ -164,18 +149,15 @@
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">RANDOM</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="5" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IR</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
     </exptypes>
   </Experiment>
@@ -194,18 +176,15 @@
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">RANDOM</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="5" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IR</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
     </exptypes>
   </Experiment>
@@ -224,18 +203,15 @@
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">RANDOM</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="5" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IR</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
     </exptypes>
   </Experiment>
@@ -254,18 +230,15 @@
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">RANDOM</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="5" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IR</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
     </exptypes>
   </Experiment>
@@ -283,18 +256,15 @@
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">RANDOM</type>
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">RANDOM</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="5" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false" Swap="false">PADG</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">PCADG</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IR</type>
-      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="5" CommunityFix="16" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="true">IRC</type>
     </exptypes>
   </Experiment>

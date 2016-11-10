@@ -4,22 +4,23 @@ using System.IO;
 using System.Linq;
 using Implementation.Dataset_Reader;
 using Implementation.Data_Structures;
+using LouvainCommunityPL;
+using Graph = LouvainCommunityPL.Graph;
 
 namespace Implementation.Algorithms
 {
-    public class RandomPlus : Algorithm<List<UserEvent>>
+    public class LA : Algorithm<List<UserEvent>>
     {
         private List<int> _events;
         private List<int> _users;
         private List<int> _numberOfUserAssignments;
         private List<int> _eventDeficitContribution;
-        private List<Tuple<int, double>> _maxGain;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
-        private RandomPlusConf _conf => (RandomPlusConf)Conf;
-        private Queue<UserEvent> _randomQueue;
+        private LAConf _conf => (LAConf)Conf;
+        private Queue<UserEvent> _queue;
 
-        public RandomPlus(RandomPlusConf conf, IDataFeed dataFeed, int index) : base(index)
+        public LA(LAConf conf, IDataFeed dataFeed, int index) : base(index)
         {
             _dataFeeder = dataFeed;
             Conf = conf;
@@ -31,31 +32,23 @@ namespace Implementation.Algorithms
                 throw new Exception("Not Initialized");
             int hitcount = 0;
 
-            while (_randomQueue.Count > 0)
+            while (_queue.Count > 0)
             {
                 hitcount++;
                 PrintQueue();
-                var element = _randomQueue.Dequeue();
+                var element = _queue.Dequeue();
                 var user = element.User;
                 var @event = element.Event;
                 var minCapacity = EventCapacity[@event].Min;
                 var maxCapacity = EventCapacity[@event].Max;
+                bool assignmentMade = false;
+                List<int> affectedEvents = new List<int>();
 
-                if (UserAssignments[user] == null && Assignments[@event].Count < maxCapacity && _maxGain[user].Item1 < _conf.TakeChanceLimit)
+                if (UserAssignments[user] == null && Assignments[@event].Count < maxCapacity)
                 {
                     Assignments[@event].Add(user);
-                    var gain = Util(@event, user);
-                    if (_maxGain[user].Item2 < gain)
-                    {
-                        _maxGain[user] = new Tuple<int, double>(_maxGain[user].Item1 + 1, gain);
-                    }
-                    else
-                    {
-                        Assignments[@event].Remove(user);
-                        continue;
-                    }
                     _numberOfUserAssignments[user]++;
-
+                    assignmentMade = true;
                     if (_users.Contains(user))
                     {
                         _users.Remove(user);
@@ -150,7 +143,7 @@ namespace Implementation.Algorithms
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
                 var newPriority = Util(@event, user2);
-                _randomQueue.Enqueue(new UserEvent { User = user2, Event = @event, Utility = newPriority });
+                _queue.Enqueue(new UserEvent { User = user2, Event = @event, Utility = newPriority });
                 //_randomQueue.Update(newPriority, new UserEvent { User = user2, Event = @event });
             }
         }
@@ -162,7 +155,7 @@ namespace Implementation.Algorithms
                 return;
             }
 
-            var element = _randomQueue.Peek();
+            var element = _queue.Peek();
             Console.WriteLine("User {0}, Event {1}, Value {2}", (char)(element.User + 97),
                 (char)(element.Event + 88), element.Utility);
         }
@@ -201,9 +194,7 @@ namespace Implementation.Algorithms
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
             Welfare = new Welfare();
-            var randomQueue = new List<UserEvent>();
-            _randomQueue = new Queue<UserEvent>();
-            _maxGain = new List<Tuple<int, double>>();
+            _queue = new Queue<UserEvent>();
             //_deficit = 0;
             _init = true;
             //_affectedUserEvents = new List<UserEvent>();
@@ -220,13 +211,31 @@ namespace Implementation.Algorithms
                 _events.Add(i);
                 _eventDeficitContribution.Add(0);
                 Assignments.Add(new List<int>());
-                _maxGain.Add(new Tuple<int, double>(0, double.MinValue));
             }
 
             EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
             InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
             SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
 
+            InitializationStrategy();
+        }
+
+        private void InitializationStrategy()
+        {
+            switch (_conf.InitStrategyEnum)
+            {
+                case InitStrategyEnum.RandomSort:
+                    RandomInitialization();
+                    break;
+                case InitStrategyEnum.PredictiveSort:
+                    PredictiveInitialization();
+                    break;
+            }
+        }
+
+        private void RandomInitialization()
+        {
+            var randomQueue = new List<UserEvent>();
             var rnd = new System.Random();
             _users = _users.OrderBy(item => rnd.Next()).ToList();
             _events = _events.OrderBy(item => rnd.Next()).ToList();
@@ -242,7 +251,58 @@ namespace Implementation.Algorithms
 
             foreach (var userEvent in randomQueue.OrderBy(item => rnd.Next()))
             {
-                _randomQueue.Enqueue(userEvent);
+                _queue.Enqueue(userEvent);
+            }
+        }
+
+        private void PredictiveInitialization()
+        {
+            var communities = DetectCommunities();
+            var dictionary = new Dictionary<string, int>(AllUsers.Count * AllEvents.Count);
+            foreach (var community in communities)
+            {
+                var userPreferedEvent = new List<UserEvent>();
+                foreach (var user in community.Value)
+                {
+                    var maxIndex = -1;
+                    var max = double.MinValue;
+                    foreach (var @event in _events)
+                    {
+                        if (InAffinities[user][@event] > max)
+                        {
+                            max = InAffinities[user][@event];
+                            maxIndex = @event;
+                        }
+                    }
+                    userPreferedEvent.Add(new UserEvent(user, maxIndex));
+                }
+                var votes = userPreferedEvent.GroupBy(x => x.Event);
+                votes = votes.OrderByDescending(x => x.Count()).ToList();
+                foreach (var vote in votes)
+                {
+                    foreach (var userEvent in vote)
+                    {
+                        var key = userEvent.User + "-" + userEvent.Event;
+                        if (!dictionary.ContainsKey(key))
+                        {
+                            _queue.Enqueue(new UserEvent(userEvent.User, userEvent.Event));
+                            dictionary.Add(key, 1);
+                        }
+                    }
+                }
+            }
+
+            foreach (var u in _users)
+            {
+                foreach (var e in _events)
+                {
+                    var key = u + "-" + e;
+                    if (!dictionary.ContainsKey(key))
+                    {
+                        _queue.Enqueue(new UserEvent(u, e));
+                        dictionary.Add(key, 1);
+                    }
+                }
             }
         }
 
@@ -259,9 +319,8 @@ namespace Implementation.Algorithms
             Assignments = null;
             UserAssignments = null;
             EventCapacity = null;
-            _randomQueue = null;
+            _queue = null;
             _init = false;
-            _maxGain = null;
         }
 
     }

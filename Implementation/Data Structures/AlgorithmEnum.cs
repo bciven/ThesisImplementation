@@ -38,8 +38,9 @@ namespace Implementation.Data_Structures
             PCADG,
             IRC,
             IR,
-            Random,
-            RandomPlus,
+            LA,
+            PLA,
+            LAPlus,
             OG,
             COG
         }

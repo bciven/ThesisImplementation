@@ -33,9 +33,9 @@ namespace Implementation.Dataset_Reader
             _socialNormalRandomGenerator = Normal.WithMeanVariance(1.5, 3, _rand);
         }
 
-        private Graph GenerateEventGraph(int userNumber, int eventNumber)
+        private UndirectedGraph GenerateEventGraph(int userNumber, int eventNumber)
         {
-            var graph = new Graph(userNumber);
+            var graph = new UndirectedGraph(userNumber);
             var rand = new Random();
             for (int i = 0; i < userNumber; i++)
             {
@@ -51,7 +51,7 @@ namespace Implementation.Dataset_Reader
             return graph;
         }
 
-        private Graph GenerateSocialGraph(int userCount)
+        private UndirectedGraph GenerateSocialGraph(int userCount)
         {
             switch (_distDataParams.SocialNetworkModel)
             {
@@ -70,7 +70,7 @@ namespace Implementation.Dataset_Reader
             }
         }
 
-        private Graph BarabasiAlbertModel(int userCount)
+        private UndirectedGraph BarabasiAlbertModel(int userCount)
         {
             List<string> lines;
             using (WebClient client = new WebClient())
@@ -84,7 +84,7 @@ namespace Implementation.Dataset_Reader
             return graph;
         }
 
-        private Graph ClusteredRandomModel(int userCount)
+        private UndirectedGraph ClusteredRandomModel(int userCount)
         {
             List<string> lines;
             using (WebClient client = new WebClient())
@@ -100,9 +100,9 @@ namespace Implementation.Dataset_Reader
             return graph;
         }
 
-        private static Graph CreateGraph(List<string> lines)
+        private static UndirectedGraph CreateGraph(List<string> lines)
         {
-            Graph graph = new Graph();
+            UndirectedGraph undirectedGraph = new UndirectedGraph();
 
             foreach (var line in lines)
             {
@@ -114,18 +114,18 @@ namespace Implementation.Dataset_Reader
                     continue;
                 }
 
-                if (!graph.Edges.ContainsKey(nodeA))
+                if (!undirectedGraph.Edges.ContainsKey(nodeA))
                 {
-                    graph.Edges.Add(nodeA, new List<int>());
+                    undirectedGraph.Edges.Add(nodeA, new List<int>());
                 }
-                graph.Edges[nodeA].Add(nodeB);
+                undirectedGraph.Edges[nodeA].Add(nodeB);
             }
-            return graph;
+            return undirectedGraph;
         }
 
-        private Graph ErdosModel(int userCount, bool symmetric)
+        private UndirectedGraph ErdosModel(int userCount, bool symmetric)
         {
-            Graph graph = new Graph();
+            UndirectedGraph undirectedGraph = new UndirectedGraph();
             var rand = new Random();
             for (int nodeA = 0; nodeA < userCount; nodeA++)
             {
@@ -135,25 +135,25 @@ namespace Implementation.Dataset_Reader
                     {
                         if (rand.NextDouble() <= _distDataParams.SocialNetworkDensity)
                         {
-                            if (!graph.Edges.ContainsKey(nodeA))
+                            if (!undirectedGraph.Edges.ContainsKey(nodeA))
                             {
-                                graph.Edges.Add(nodeA, new List<int>());
+                                undirectedGraph.Edges.Add(nodeA, new List<int>());
                             }
-                            if (!graph.Edges.ContainsKey(nodeB))
+                            if (!undirectedGraph.Edges.ContainsKey(nodeB))
                             {
-                                graph.Edges.Add(nodeB, new List<int>());
+                                undirectedGraph.Edges.Add(nodeB, new List<int>());
                             }
-                            graph.Edges[nodeA].Add(nodeB);
+                            undirectedGraph.Edges[nodeA].Add(nodeB);
                             if (symmetric)
                             {
-                                graph.Edges[nodeB].Add(nodeA);
+                                undirectedGraph.Edges[nodeB].Add(nodeA);
                             }
                         }
                     }
                 }
             }
 
-            return graph;
+            return undirectedGraph;
         }
 
         //private Graph ErdosModel(int userCount)
@@ -194,7 +194,7 @@ namespace Implementation.Dataset_Reader
         //    return graph;
         //}
 
-        private static Graph PowerLawModel(int userCount)
+        private static UndirectedGraph PowerLawModel(int userCount)
         {
             List<string> lines;
             using (WebClient client = new WebClient())
@@ -206,7 +206,7 @@ namespace Implementation.Dataset_Reader
 
             //var lines = File.ReadAllLines("graph.csv");
 
-            Graph graph = new Graph();
+            UndirectedGraph undirectedGraph = new UndirectedGraph();
 
             foreach (var line in lines)
             {
@@ -218,18 +218,18 @@ namespace Implementation.Dataset_Reader
                     continue;
                 }
 
-                if (!graph.Edges.ContainsKey(nodeA))
+                if (!undirectedGraph.Edges.ContainsKey(nodeA))
                 {
-                    graph.Edges.Add(nodeA, new List<int>());
+                    undirectedGraph.Edges.Add(nodeA, new List<int>());
                 }
-                if (!graph.Edges.ContainsKey(nodeB))
+                if (!undirectedGraph.Edges.ContainsKey(nodeB))
                 {
-                    graph.Edges.Add(nodeB, new List<int>());
+                    undirectedGraph.Edges.Add(nodeB, new List<int>());
                 }
-                graph.Edges[nodeA].Add(nodeB);
-                graph.Edges[nodeB].Add(nodeA);
+                undirectedGraph.Edges[nodeA].Add(nodeB);
+                undirectedGraph.Edges[nodeB].Add(nodeA);
             }
-            return graph;
+            return undirectedGraph;
         }
 
         public List<Cardinality> GenerateCapacity(List<int> users, List<int> events)

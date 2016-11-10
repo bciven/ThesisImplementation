@@ -20,9 +20,9 @@ namespace Implementation.Algorithms
         private List<int> _phantomEvents;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
-        private CadgConf _conf => (CadgConf)Conf;
+        private CADGConf _conf => (CADGConf)Conf;
 
-        public GlobalGreedy(CadgConf conf, IDataFeed dataFeed, int index) : base(index)
+        public GlobalGreedy(CADGConf conf, IDataFeed dataFeed, int index) : base(index)
         {
             _dataFeeder = dataFeed;
             Conf = conf;

@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Implementation.Data_Structures
 {
-    public class Graph
+    public class UndirectedGraph
     {
         public Dictionary<int, List<int>> Edges;
 
-        public Graph(int numberOfEdges)
+        public UndirectedGraph(int numberOfEdges)
         {
             Edges = new Dictionary<int, List<int>>(numberOfEdges);
         }
 
-        public Graph()
+        public UndirectedGraph()
         {
             Edges = new Dictionary<int, List<int>>();
         }

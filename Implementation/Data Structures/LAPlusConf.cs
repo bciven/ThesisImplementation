@@ -10,7 +10,7 @@ using OfficeOpenXml;
 
 namespace Implementation.Data_Structures
 {
-    public class RandomPlusConf : RandomConf
+    public class LAPlusConf : LAConf
     {
         public int TakeChanceLimit { get; set; }
 
