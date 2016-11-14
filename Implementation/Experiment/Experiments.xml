@@ -8,9 +8,9 @@
     <capvar value="10" />
     <mincard value="0" />
     <maxcard value="0" />
-    <sndensity value="0" />
+    <sndensity value="0.5" />
     <eventinterestperct value="5" />
-    <snmodel value="0" asymmetric="false"/>
+    <snmodel value="4" asymmetric="true"/>
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
@@ -35,9 +35,9 @@
     <capvar value="10" />
     <mincard value="0" />
     <maxcard value="0" />
-    <sndensity value="0" />
+    <sndensity value="0.5" />
     <eventinterestperct value="5" />
-    <snmodel value="0" asymmetric="false"/>
+    <snmodel value="4" asymmetric="true"/>
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
@@ -62,9 +62,9 @@
     <capvar value="10" />
     <mincard value="0" />
     <maxcard value="0" />
-    <sndensity value="0" />
+    <sndensity value="0.5" />
     <eventinterestperct value="5" />
-    <snmodel value="0" asymmetric="false"/>
+    <snmodel value="4" asymmetric="true"/>
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
@@ -89,9 +89,9 @@
     <capvar value="10" />
     <mincard value="2" />
     <maxcard value="0" />
-    <sndensity value="0" />
+    <sndensity value="0.5" />
     <eventinterestperct value="5" />
-    <snmodel value="0" asymmetric="false"/>
+    <snmodel value="4" asymmetric="true"/>
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
@@ -116,9 +116,9 @@
     <capvar value="10" />
     <mincard value="4" />
     <maxcard value="0" />
-    <sndensity value="0" />
+    <sndensity value="0.5" />
     <eventinterestperct value="5" />
-    <snmodel value="0" asymmetric="false"/>
+    <snmodel value="4" asymmetric="true"/>
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
@@ -143,9 +143,9 @@
     <capvar value="10" />
     <mincard value="8" />
     <maxcard value="0" />
-    <sndensity value="0" />
+    <sndensity value="0.5" />
     <eventinterestperct value="5" />
-    <snmodel value="0" asymmetric="false"/>
+    <snmodel value="4" asymmetric="true"/>
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
@@ -172,7 +172,7 @@
     <maxcard value="0" />
     <sndensity value="0.001" />
     <eventinterestperct value="5" />
-    <snmodel value="1" asymmetric="false"/>
+    <snmodel value="4" asymmetric="true"/>
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
@@ -199,7 +199,7 @@
     <maxcard value="0" />
     <sndensity value="0.01" />
     <eventinterestperct value="5" />
-    <snmodel value="1" asymmetric="false"/>
+    <snmodel value="4" asymmetric="true"/>
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
@@ -226,7 +226,7 @@
     <maxcard value="0" />
     <sndensity value="0.1" />
     <eventinterestperct value="5" />
-    <snmodel value="1" asymmetric="false"/>
+    <snmodel value="4" asymmetric="true"/>
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>
@@ -252,7 +252,7 @@
     <mincard value="0" />
     <sndensity value="1" />
     <eventinterestperct value="5" />
-    <snmodel value="1" asymmetric="false"/>
+    <snmodel value="4" asymmetric="true"/>
     <exptypes>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" DoublePriority="false" LazyAdjustment="false"  Swap="false">PCADG</type>

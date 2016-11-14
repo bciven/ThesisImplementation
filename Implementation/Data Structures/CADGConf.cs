@@ -13,7 +13,6 @@ namespace Implementation.Data_Structures
     public class CADGConf : SGConf
     {
         public bool ImmediateReaction { get; set; }
-        public AlgorithmSpec.ReassignmentEnum Reassignment { get; set; }
         public bool PhantomAware { get; set; }
         public bool DeficitFix { get; set; }
         public bool PostInitializationInsert { get; set; }
@@ -28,7 +27,6 @@ namespace Implementation.Data_Structures
             NumberOfUsers = 10;
             NumberOfEvents = 4;
             ImmediateReaction = false;
-            Reassignment = AlgorithmSpec.ReassignmentEnum.None;
             PrintOutEachStep = false;
             InputFilePath = null;
             PhantomAware = false;

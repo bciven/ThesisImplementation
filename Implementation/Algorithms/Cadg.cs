@@ -228,61 +228,8 @@ namespace Implementation.Algorithms
             }
         }
 
-        private void DefaultReassign()
+        protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
         {
-            if (_conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Default)
-                return;
-
-            for (int i = 0; i < UserAssignments.Count; i++)
-            {
-                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value))
-                {
-                    UserAssignments[i] = null;
-                }
-            }
-
-            if (UserAssignments.Any(x => !x.HasValue))
-            {
-                List<int> availableUsers;
-                List<int> realOpenEvents;
-                PrepareReassignment(out availableUsers, out realOpenEvents);
-
-                foreach (var @event in realOpenEvents)
-                {
-                    foreach (var availableUser in availableUsers)
-                    {
-                        var q = Util(@event, availableUser, _conf.CommunityAware, _conf.CommunityFix, _users);
-                        _queue.AddOrUpdate(q.Utility, new UserEvent { User = availableUser, Event = @event });
-                    }
-                }
-            }
-        }
-
-        private void Reassign()
-        {
-            if (_conf.Reassignment == AlgorithmSpec.ReassignmentEnum.None 
-                || _conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Default
-                || _conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Greedy)
-                return;
-
-            for (int i = 0; i < UserAssignments.Count; i++)
-            {
-                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value))
-                {
-                    UserAssignments[i] = null;
-                }
-            }
-
-            if (UserAssignments.All(x => x.HasValue))
-            {
-                return;
-            }
-
-            List<int> realOpenEvents;
-            List<int> availableUsers;
-            PrepareReassignment(out availableUsers, out realOpenEvents);
-            KeepPhantomEvents(availableUsers, realOpenEvents, _conf.Reassignment);
-
             foreach (var @event in realOpenEvents)
             {
                 foreach (var availableUser in availableUsers)
@@ -293,40 +240,20 @@ namespace Implementation.Algorithms
             }
         }
 
-        private void PrepareReassignment(out List<int> availableUsers, out List<int> realOpenEvents)
+        protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
         {
-            var phantomEvents = AllEvents.Where(x => Assignments[x].Count < EventCapacity[x].Min).ToList();
-            realOpenEvents =
-                AllEvents.Where(
-                    x => EventCapacity[x].Min <= Assignments[x].Count && Assignments[x].Count < EventCapacity[x].Max)
-                    .ToList();
-            availableUsers = new List<int>();
-            for (int i = 0; i < UserAssignments.Count; i++)
-            {
-                if (UserAssignments[i] == null)
-                {
-                    availableUsers.Add(i);
-                }
-            }
-
-            foreach (var phantomEvent in phantomEvents)
-            {
-                if (Assignments[phantomEvent].Count > 0)
-                {
-                    availableUsers.AddRange(Assignments[phantomEvent]);
-                    Assignments[phantomEvent].RemoveAll(x => true);
-                    if (_conf.PhantomAware)
-                    {
-                        _eventDeficitContribution[phantomEvent] = 0;
-                    }
-                }
-            }
-            availableUsers = availableUsers.Distinct().OrderBy(x => x).ToList();
             _users.AddRange(availableUsers);
             availableUsers.ForEach(x => _numberOfUserAssignments[x] = 0);
             if (_conf.PhantomAware)
             {
                 _deficit = 0;
+                phantomEvents.ForEach(x =>
+                {
+                    if (Assignments[x].Count > 0)
+                    {
+                        _eventDeficitContribution[x] = 0;
+                    }
+                });
             }
         }
 

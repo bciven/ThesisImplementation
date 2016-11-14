@@ -99,6 +99,16 @@ namespace Implementation.Algorithms
                 (char)(max.Event + 88), max.Utility);
         }
 
+        protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
+        {
+            throw new NotImplementedException();
+        }
+
         private void PrintAssignments(bool assignmentMade)
         {
             if (!_conf.PrintOutEachStep)

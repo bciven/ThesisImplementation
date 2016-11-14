@@ -27,6 +27,7 @@ namespace Implementation.Data_Structures
         public bool Swap { get; set; }
         public double SwapThreshold { get; set; }
         public double PreservePercentage { get; set; }
+        public AlgorithmSpec.ReassignmentEnum Reassignment { get; set; }
 
         public SGConf()
         {
@@ -44,6 +45,7 @@ namespace Implementation.Data_Structures
             Swap = false;
             SwapThreshold = 0.001;
             PreservePercentage = 50;
+            Reassignment = AlgorithmSpec.ReassignmentEnum.None;
         }
 
         public void PrintToExcel(ExcelPackage excel, Stopwatch stopwatch)

@@ -192,6 +192,11 @@ namespace Implementation.Algorithms
             Assignments = _permanentAssignments;
         }
 
+        protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
+        {
+            throw new NotImplementedException();
+        }
+
         private List<List<int>> Swap(List<List<int>> assignments)
         {
             if (!_conf.Swap)
@@ -360,6 +365,11 @@ namespace Implementation.Algorithms
                     _queue.AddOrUpdate(q.Utility, new UserEvent { User = availableUser, Event = @event });
                 }
             }
+        }
+
+        protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
+        {
+            throw new NotImplementedException();
         }
 
         private void PrepareReassignment(out List<int> availableUsers, out List<int> realOpenEvents)

@@ -125,6 +125,11 @@ namespace Implementation.Algorithms
             return CommunityFixEnum.None;
         }
 
+        protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
+        {
+            throw new NotImplementedException();
+        }
+
         private void PrepareReassignment(out List<int> availableUsers, out List<int> realOpenEvents)
         {
             var phantomEvents = AllEvents.Where(x => Assignments[x].Count < EventCapacity[x].Min).ToList();
@@ -148,6 +153,11 @@ namespace Implementation.Algorithms
             }
             availableUsers = availableUsers.Distinct().OrderBy(x => x).ToList();
             availableUsers.ForEach(x => _numberOfUserAssignments[x] = 0);
+        }
+
+        protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
+        {
+            throw new NotImplementedException();
         }
 
         private void AdjustList(int user, int @event, bool assignmentMade)

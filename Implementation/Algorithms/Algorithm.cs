@@ -111,6 +111,88 @@ namespace Implementation.Algorithms
             }
         }
 
+        protected void DefaultReassign()
+        {
+            if (Conf.Reassignment != AlgorithmSpec.ReassignmentEnum.Default)
+                return;
+
+            for (int i = 0; i < UserAssignments.Count; i++)
+            {
+                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value))
+                {
+                    UserAssignments[i] = null;
+                }
+            }
+
+            if (UserAssignments.Any(x => !x.HasValue))
+            {
+                List<int> availableUsers;
+                List<int> realOpenEvents;
+                PrepareReassignment(out availableUsers, out realOpenEvents);
+                RefillQueue(realOpenEvents, availableUsers);
+            }
+        }
+
+        protected void Reassign()
+        {
+            if (Conf.Reassignment == AlgorithmSpec.ReassignmentEnum.None
+                || Conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Default
+                || Conf.Reassignment == AlgorithmSpec.ReassignmentEnum.Greedy)
+                return;
+
+            for (int i = 0; i < UserAssignments.Count; i++)
+            {
+                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value))
+                {
+                    UserAssignments[i] = null;
+                }
+            }
+
+            if (UserAssignments.All(x => x.HasValue))
+            {
+                return;
+            }
+
+            List<int> realOpenEvents;
+            List<int> availableUsers;
+            PrepareReassignment(out availableUsers, out realOpenEvents);
+            KeepPhantomEvents(availableUsers, realOpenEvents, Conf.Reassignment);
+            RefillQueue(realOpenEvents, availableUsers);
+        }
+
+        protected abstract void RefillQueue(List<int> realOpenEvents, List<int> availableUsers);
+
+
+        protected void PrepareReassignment(out List<int> availableUsers, out List<int> realOpenEvents)
+        {
+            var phantomEvents = AllEvents.Where(x => Assignments[x].Count < EventCapacity[x].Min).ToList();
+            realOpenEvents =
+                AllEvents.Where(
+                    x => EventCapacity[x].Min <= Assignments[x].Count && Assignments[x].Count < EventCapacity[x].Max)
+                    .ToList();
+            availableUsers = new List<int>();
+            for (int i = 0; i < UserAssignments.Count; i++)
+            {
+                if (UserAssignments[i] == null)
+                {
+                    availableUsers.Add(i);
+                }
+            }
+
+            foreach (var phantomEvent in phantomEvents)
+            {
+                if (Assignments[phantomEvent].Count > 0)
+                {
+                    availableUsers.AddRange(Assignments[phantomEvent]);
+                    Assignments[phantomEvent].RemoveAll(x => true);
+                }
+            }
+            availableUsers = availableUsers.Distinct().OrderBy(x => x).ToList();
+            PhantomAware(availableUsers, phantomEvents);
+        }
+
+        protected abstract void PhantomAware(List<int> availableUsers, List<int> phantomEvents);
+
         protected List<List<int>> Swap(List<List<int>> assignments)
         {
             if (!Conf.Swap)
@@ -267,8 +349,8 @@ namespace Implementation.Algorithms
                     }
                 }
             }
-            s1 = (1 - Conf.Alpha)*s1;
-            s2 = Conf.Alpha*s2;
+            s1 = (1 - Conf.Alpha) * s1;
+            s2 = Conf.Alpha * s2;
             welfare.InnateWelfare += s1;
             welfare.SocialWelfare += s2;
             welfare.TotalWelfare += s1 + s2;

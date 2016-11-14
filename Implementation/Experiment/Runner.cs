@@ -347,6 +347,7 @@ namespace Implementation.Experiment
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
+                        Reassignment = parameters.ExpTypes[i].Reassignment,
                         Asymmetric = parameters.Asymmetric
                     };
 
@@ -374,6 +375,7 @@ namespace Implementation.Experiment
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
+                        Reassignment = parameters.ExpTypes[i].Reassignment,
                         InitStrategyEnum = InitStrategyEnum.RandomSort
                     };
 
@@ -397,7 +399,8 @@ namespace Implementation.Experiment
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
-                        Asymmetric = parameters.Asymmetric
+                        Asymmetric = parameters.Asymmetric,
+                        Reassignment = parameters.ExpTypes[i].Reassignment,
                     };
 
                     if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.LA)

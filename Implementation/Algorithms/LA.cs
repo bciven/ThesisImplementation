@@ -14,7 +14,6 @@ namespace Implementation.Algorithms
         private List<int> _events;
         private List<int> _users;
         private List<int> _numberOfUserAssignments;
-        private List<int> _eventDeficitContribution;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
         private LAConf _conf => (LAConf)Conf;
@@ -85,6 +84,12 @@ namespace Implementation.Algorithms
 
                     //AdjustList(affectedEvents, user, @event, assignmentMade);
                 }
+
+                if (_queue.Count == 0)
+                {
+                    DefaultReassign();
+                    Reassign();
+                }
             }
 
             Assignments = AllEvents.Select(x => new List<int>()).ToList();
@@ -97,6 +102,23 @@ namespace Implementation.Algorithms
                 }
             }
             Assignments = Swap(Assignments);
+        }
+
+        protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
+        {
+            foreach (var @event in realOpenEvents)
+            {
+                foreach (var availableUser in availableUsers)
+                {
+                    _queue.Enqueue(new UserEvent { User = availableUser, Event = @event });
+                }
+            }
+        }
+
+        protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
+        {
+            _users.AddRange(availableUsers);
+            availableUsers.ForEach(x => _numberOfUserAssignments[x] = 0);
         }
 
         private double Util(int @event, int user)
@@ -192,7 +214,6 @@ namespace Implementation.Algorithms
             Assignments = new List<List<int>>();
             UserAssignments = new List<int?>();
             _numberOfUserAssignments = new List<int>();
-            _eventDeficitContribution = new List<int>();
             Welfare = new Welfare();
             _queue = new Queue<UserEvent>();
             //_deficit = 0;
@@ -209,7 +230,6 @@ namespace Implementation.Algorithms
             for (var i = 0; i < _conf.NumberOfEvents; i++)
             {
                 _events.Add(i);
-                _eventDeficitContribution.Add(0);
                 Assignments.Add(new List<int>());
             }
 
@@ -315,7 +335,6 @@ namespace Implementation.Algorithms
             AllEvents = null;
             AllUsers = null;
             _numberOfUserAssignments = null;
-            _eventDeficitContribution = null;
             Assignments = null;
             UserAssignments = null;
             EventCapacity = null;

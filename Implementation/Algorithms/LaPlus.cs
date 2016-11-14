@@ -167,6 +167,16 @@ namespace Implementation.Algorithms
                 (char)(element.Event + 88), element.Utility);
         }
 
+        protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Initialize()
         {
             SetNullMembers();
