@@ -123,26 +123,25 @@ namespace Implementation.Algorithms
                         _users.Remove(user);
                     }
 
-                    if (Assignments[@event].Count > minCapacity)
+                    if (Assignments[@event].Count == minCapacity)
                     {
-                        UserAssignments[user] = @event;
-                        _permanentAssignments[@event].Add(user);
-
-                        var excludedEvents = _events.Where(x => x != @event && Assignments[x].Contains(user)).ToList();
-                        foreach (var e in excludedEvents)
-                        {
-                            Assignments[e].Remove(user);
-                            _numberOfUserAssignments[user]--;
-                            if (_conf.ImmediateReaction)
-                            {
-                                affectedEvents.Add(e);
-                            }
-                        }
+                        _phantomEvents.Remove(@event);
+                        //UserAssignments[user] = @event;
+                        //_permanentAssignments[@event].Add(user);
+                        //var excludedEvents = _events.Where(x => x != @event && Assignments[x].Contains(user)).ToList();
+                        //foreach (var e in excludedEvents)
+                        //{
+                        //    Assignments[e].Remove(user);
+                        //    _numberOfUserAssignments[user]--;
+                        //    if (_conf.ImmediateReaction)
+                        //    {
+                        //        affectedEvents.Add(e);
+                        //    }
+                        //}
                     }
 
                     if (Assignments[@event].Count == maxCapacity)
                     {
-                        _phantomEvents.Remove(@event);
                         foreach (var u in Assignments[@event])
                         {
                             //permanently assign all users to real events
