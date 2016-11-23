@@ -8,6 +8,8 @@ namespace Implementation.Data_Structures
 {
     public class UserEvent
     {
+        public string Key => User + "-" + Event;
+
         public UserEvent(int user, int @event, double utility, double priority)
         {
             User = user;

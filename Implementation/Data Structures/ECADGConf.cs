@@ -10,36 +10,28 @@ using OfficeOpenXml;
 
 namespace Implementation.Data_Structures
 {
-    public class CADGConf : SGConf
+    public class ECADGConf : SGConf
     {
         public bool ImmediateReaction { get; set; }
         public bool PhantomAware { get; set; }
-        public bool DeficitFix { get; set; }
-        public bool PostInitializationInsert { get; set; }
-        public bool LazyAdjustment { get; set; }
         public int NumberOfPhantomEvents { get; set; }
         public bool CommunityAware { get; set; }
         public CommunityFixEnum CommunityFix { get; set; }
-        public bool DoublePriority { get; set; }
 
-        public CADGConf()
+        public ECADGConf()
         {
             NumberOfUsers = 10;
             NumberOfEvents = 4;
-            ImmediateReaction = false;
             PrintOutEachStep = false;
             InputFilePath = null;
             PhantomAware = false;
-            DeficitFix = false;
-            PostInitializationInsert = false;
             Alpha = 0.5;
             Percision = 7;
             NumberOfPhantomEvents = 0;
-            LazyAdjustment = false;
             CommunityAware = false;
             AlgorithmName = null;
             CommunityFix = CommunityFixEnum.None;
-            DoublePriority = false;
+            ImmediateReaction = false;
         }
 
         protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
@@ -57,8 +49,6 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = NumberOfEvents;
             i++;
 
-            ws.Cells[i, 1].Value = "Immediate Reaction";
-            ws.Cells[i, 2].Value = ImmediateReaction;
             i++;
 
             ws.Cells[i, 1].Value = "Reassignment Type";
@@ -77,24 +67,12 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = PhantomAware;
             i++;
 
-            ws.Cells[i, 1].Value = "Deficit Fix";
-            ws.Cells[i, 2].Value = DeficitFix;
-            i++;
-
-            ws.Cells[i, 1].Value = "Post Initialization Insert";
-            ws.Cells[i, 2].Value = PostInitializationInsert;
-            i++;
-
             ws.Cells[i, 1].Value = "Alpha";
             ws.Cells[i, 2].Value = Alpha;
             i++;
 
             ws.Cells[i, 1].Value = "Percision";
             ws.Cells[i, 2].Value = Percision;
-            i++;
-
-            ws.Cells[i, 1].Value = "Lazy Adjustment";
-            ws.Cells[i, 2].Value = LazyAdjustment;
             i++;
 
             ws.Cells[i, 1].Value = "Community Aware";
@@ -115,10 +93,6 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Community Fix";
             ws.Cells[i, 2].Value = CommunityFix;
-            i++;
-
-            ws.Cells[i, 1].Value = "Double Priority";
-            ws.Cells[i, 2].Value = DoublePriority;
             i++;
 
             ws.Cells[i, 1].Value = "Swap";
@@ -152,15 +126,9 @@ namespace Implementation.Data_Structures
 
             configsFile.WriteLine("{0},{1}", "Phantom Aware", PhantomAware);
 
-            configsFile.WriteLine("{0},{1}", "Deficit Fix", DeficitFix);
-
-            configsFile.WriteLine("{0},{1}", "Post Initialization Insert", PostInitializationInsert);
-
             configsFile.WriteLine("{0},{1}", "Alpha", Alpha);
 
             configsFile.WriteLine("{0},{1}", "Percision", Percision);
-
-            configsFile.WriteLine("{0},{1}", "Lazy Adjustment", LazyAdjustment);
 
             configsFile.WriteLine("{0},{1}", "Community Aware", CommunityAware);
 
@@ -171,8 +139,6 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Execution Time", stopwatch.ElapsedMilliseconds);
 
             configsFile.WriteLine("{0},{1}", "Community Fix", CommunityFix);
-
-            configsFile.WriteLine("{0},{1}", "Double Priority", DoublePriority);
 
             configsFile.WriteLine("{0},{1}", "Swap", Swap);
 

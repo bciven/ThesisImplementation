@@ -24,6 +24,7 @@ namespace Implementation.Data_Structures
         public Parameters Parameters { get; set; }
         public OutputTypeEnum OutputType { get; set; }
         public bool Asymmetric { get; set; }
+        public bool ReuseDisposedPairs { get; set; }
         public bool Swap { get; set; }
         public double SwapThreshold { get; set; }
         public double PreservePercentage { get; set; }
@@ -46,6 +47,7 @@ namespace Implementation.Data_Structures
             SwapThreshold = 0.001;
             PreservePercentage = 50;
             Reassignment = AlgorithmSpec.ReassignmentEnum.None;
+            ReuseDisposedPairs = false;
         }
 
         public void PrintToExcel(ExcelPackage excel, Stopwatch stopwatch)
@@ -115,6 +117,10 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = PreservePercentage;
             i++;
 
+            ws.Cells[i, 1].Value = "Reuse Disposed Pairs";
+            ws.Cells[i, 2].Value = ReuseDisposedPairs;
+            i++;
+
             PrintAdditionals(ws, i);
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
@@ -149,6 +155,8 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Swap Threshold", SwapThreshold);
 
             configsFile.WriteLine("{0},{1}", "Preserve Percentage", PreservePercentage);
+
+            configsFile.WriteLine("{0},{1}", "Reuse Disposed Pairs", ReuseDisposedPairs);
 
             PrintAdditionals(configsFile);
 

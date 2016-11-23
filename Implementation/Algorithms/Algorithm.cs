@@ -26,6 +26,7 @@ namespace Implementation.Algorithms
         protected readonly int _index;
         private readonly ReassignmentStrategy<T> _reassignmentStrategy;
         private readonly PrintOutput<T> _printOutput;
+        protected Dictionary<string, UserEvent> DisposeUserEvents;
 
         protected Algorithm(int index)
         {
@@ -160,6 +161,23 @@ namespace Implementation.Algorithms
             RefillQueue(realOpenEvents, availableUsers);
         }
 
+        protected Welfare GetUserWelfare(UserEvent userEvent, List<int> assignment)
+        {
+            var welfare = new Welfare();
+            welfare.InnateWelfare += InAffinities[userEvent.User][userEvent.Event];
+            foreach (var user2 in assignment)
+            {
+                if (userEvent.User != user2)
+                {
+                    welfare.SocialWelfare += SocAffinities[userEvent.User, user2];
+                }
+            }
+            welfare.InnateWelfare = (1 - Conf.Alpha) * welfare.InnateWelfare;
+            welfare.SocialWelfare = Conf.Alpha * welfare.SocialWelfare;
+            welfare.TotalWelfare += welfare.InnateWelfare + welfare.SocialWelfare;
+            return welfare;
+        }
+
         protected abstract void RefillQueue(List<int> realOpenEvents, List<int> availableUsers);
 
 
@@ -264,6 +282,56 @@ namespace Implementation.Algorithms
             return assignments;
         }
 
+        protected List<List<int>> ReuseDisposedPairs(List<List<int>> assignments)
+        {
+            if (!Conf.ReuseDisposedPairs)
+            {
+                return assignments;
+            }
+
+            foreach (var disposeUserEvent in DisposeUserEvents)
+            {
+                var @event = disposeUserEvent.Value.Event;
+                var leftoutUser = disposeUserEvent.Value.User;
+                var assignment = assignments[@event];
+                if (UserAssignments[leftoutUser] != null)
+                {
+                    continue;
+                }
+                List<UserEvent> gains = new List<UserEvent>();
+                var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                CalculateEventWelfare(assignments, @event, oldWelfare);
+
+                for (int i = 0; i < assignment.Count; i++)
+                {
+                    var user = assignment[i];
+                    ReplaceUser(assignments, @event, leftoutUser, user);
+                    var newWelfare = new Welfare {InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0};
+                    CalculateEventWelfare(assignments, @event, newWelfare);
+                    gains.Add(new UserEvent(user, @event, newWelfare.TotalWelfare));
+                    //undo
+                    ReplaceUser(assignments, @event, user, leftoutUser);
+                }
+                var bestChoice = gains.Aggregate((current, next) => next.Utility > current.Utility ? next : current);
+                if (bestChoice.Utility > oldWelfare.TotalWelfare)
+                {
+                    ReplaceUser(assignments, @event, leftoutUser, bestChoice.User);
+                }
+            }
+            DisposeUserEvents.Clear();
+
+            return Swap(assignments);
+        }
+
+        private void ReplaceUser(List<List<int>> assignments, int @event, int newUser, int oldUser)
+        {
+            assignments[@event].Remove(oldUser);
+            assignments[@event].Add(newUser);
+
+            UserAssignments[newUser] = @event;
+            UserAssignments[oldUser] = null;
+        }
+
         protected void KeepPhantomEvents(List<int> availableUsers, List<int> realOpenEvents, AlgorithmSpec.ReassignmentEnum reassignment)
         {
             _reassignmentStrategy.KeepPhantomEvents(availableUsers, realOpenEvents, reassignment, Conf.PreservePercentage);
@@ -329,34 +397,46 @@ namespace Implementation.Algorithms
 
         protected void CalculateEventWelfare(List<List<int>> assignments, int @event, Welfare welfare)
         {
-            double s1 = 0;
-            double s2 = 0;
             if (!EventIsReal(@event))
             {
                 return;
             }
 
+            var w = CalculateEventWelfare(assignments, @event);
+            welfare.InnateWelfare += w.InnateWelfare;
+            welfare.SocialWelfare += w.SocialWelfare;
+            welfare.TotalWelfare += w.InnateWelfare + w.SocialWelfare;
+        }
+
+        protected Welfare CalculateEventWelfare(List<List<int>> assignments, int @event)
+        {
+            var result = new Welfare
+            {
+                InnateWelfare = 0d,
+                SocialWelfare = 0d,
+                TotalWelfare = 0d
+            };
+
             var assignment = assignments[@event];
 
             foreach (var user1 in assignment)
             {
-                s1 += InAffinities[user1][@event];
+                result.InnateWelfare += InAffinities[user1][@event];
                 foreach (var user2 in assignment)
                 {
                     if (user1 != user2)
                     {
-                        s2 += SocAffinities[user1, user2];
+                        result.SocialWelfare += SocAffinities[user1, user2];
                     }
                 }
             }
-            s1 = (1 - Conf.Alpha) * s1;
-            s2 = Conf.Alpha * s2;
-            welfare.InnateWelfare += s1;
-            welfare.SocialWelfare += s2;
-            welfare.TotalWelfare += s1 + s2;
+            result.InnateWelfare = (1 - Conf.Alpha) * result.InnateWelfare;
+            result.SocialWelfare = Conf.Alpha * result.SocialWelfare;
+            result.TotalWelfare += result.InnateWelfare + result.SocialWelfare;
+            return result;
         }
 
-        public Welfare CalculateSocialWelfare(List<List<int>> assignments, int user)
+        public Welfare CalculateSocialWelfare(List<List<int>> assignments, int user, bool onlyRealEvents = true)
         {
             var welfare = new Welfare
             {
@@ -377,7 +457,7 @@ namespace Implementation.Algorithms
             }
             var assignment = userAssignments.First();
             var @event = assignments.IndexOf(assignment);
-            if (!EventIsReal(@event))
+            if (onlyRealEvents && !EventIsReal(@event))
             {
                 return welfare;
             }

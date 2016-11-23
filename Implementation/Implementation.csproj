@@ -82,12 +82,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\ECADG.cs" />
     <Compile Include="Algorithms\GlobalGreedy.cs" />
     <Compile Include="Algorithms\OG.cs" />
     <Compile Include="Algorithms\PrintOutput.cs" />
     <Compile Include="Algorithms\LAPlus.cs" />
     <Compile Include="Algorithms\LA.cs" />
     <Compile Include="Algorithms\ReassignmentStrategy.cs" />
+    <Compile Include="Data Structures\ECADGConf.cs" />
     <Compile Include="Data Structures\InitStrategyEnum.cs" />
     <Compile Include="Data Structures\OutputFiles.cs" />
     <Compile Include="Data Structures\OutputEnum.cs" />

@@ -83,6 +83,12 @@ namespace Implementation.Experiment
                                            doublePriority = Convert.ToBoolean(x.Attribute("DoublePriority").Value);
                                        }
 
+                                       bool reuseDisposedPairs = false;
+                                       if (x.Attribute("ReuseDisposedPairs") != null)
+                                       {
+                                           reuseDisposedPairs = Convert.ToBoolean(x.Attribute("ReuseDisposedPairs").Value);
+                                       }
+
                                        bool lazyAdjustment = true;
                                        if (x.Attribute("LazyAdjustment") != null)
                                        {
@@ -107,6 +113,7 @@ namespace Implementation.Experiment
                                            TakeChanceLimit = takechancelimit,
                                            DeficitFix = deficitFix,
                                            DoublePriority = doublePriority,
+                                           ReuseDisposedPairs = reuseDisposedPairs,
                                            LazyAdjustment = lazyAdjustment,
                                            Swap = swap,
                                            SwapThreshold = swapThreshold,
@@ -129,6 +136,9 @@ namespace Implementation.Experiment
                                                break;
                                            case "PCADG":
                                                algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.PCADG;
+                                               break;
+                                           case "ECADG":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.ECADG;
                                                break;
 
                                            case "LA":
@@ -285,6 +295,13 @@ namespace Implementation.Experiment
                 return new CADG(cadgConf, feed, index);
             }
 
+            if (configs[j] is ECADGConf)
+            {
+                var conf = (ECADGConf)configs[j];
+                var feed = CreateFeed(conf.FeedType, conf.InputFilePath, parameters);
+                return new ECADG(conf, feed, index);
+            }
+
             if (configs[j] is LAConf)
             {
                 var ogConf = (LAConf)configs[j];
@@ -414,6 +431,39 @@ namespace Implementation.Experiment
 
                     configs.Add(conf);
                 }
+                else if(algorithmEnum == AlgorithmSpec.AlgorithmEnum.ECADG)
+                {
+                    var conf = new ECADGConf();
+                    var DG = alg == (int)AlgorithmSpec.AlgorithmEnum.DG;
+                    var PCADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PCADG;
+                    var PADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PADG;
+                    var IR = alg == (int)AlgorithmSpec.AlgorithmEnum.IR;
+                    var IRC = alg == (int)AlgorithmSpec.AlgorithmEnum.IRC;
+
+                    conf = new ECADGConf
+                    {
+                        NumberOfUsers = parameters.UserCount,
+                        NumberOfEvents = parameters.EventCount,
+                        InputFilePath = null,
+                        PhantomAware = !DG,
+                        ImmediateReaction = IR || IRC,
+                        Reassignment = parameters.ExpTypes[i].Reassignment,
+                        PrintOutEachStep = false,
+                        FeedType = FeedTypeEnum.SerialExperiment,
+                        CommunityAware = IRC || PCADG,
+                        Alpha = parameters.AlphaValue,
+                        AlgorithmName = ConvertToString(algorithmEnum),
+                        Parameters = parameters,
+                        CommunityFix = parameters.ExpTypes[i].CommunityFix,
+                        OutputType = parameters.OutputType,
+                        Swap = parameters.ExpTypes[i].Swap,
+                        SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
+                        Asymmetric = parameters.Asymmetric
+                    };
+
+                    configs.Add(conf);
+                }
                 else
                 {
                     var conf = new CADGConf();
@@ -446,7 +496,8 @@ namespace Implementation.Experiment
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
-                        Asymmetric = parameters.Asymmetric
+                        Asymmetric = parameters.Asymmetric,
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs
                     };
 
                     configs.Add(conf);

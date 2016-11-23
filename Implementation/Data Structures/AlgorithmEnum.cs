@@ -26,6 +26,7 @@ namespace Implementation.Data_Structures
         public AlgorithmEnum Algorithm { get; set; }
         public bool DeficitFix { get; set; }
         public bool DoublePriority { get; set; }
+        public bool ReuseDisposedPairs { get; set; }
         public bool LazyAdjustment { get; set; }
         public bool Swap { get; set; }
         public double SwapThreshold { get; set; }
@@ -42,7 +43,8 @@ namespace Implementation.Data_Structures
             PLA,
             LAPlus,
             OG,
-            COG
+            COG,
+            ECADG
         }
     }
 }

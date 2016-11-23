@@ -60,13 +60,18 @@ namespace Implementation.Algorithms
                 hitcount++;
                 //WriteQueue(hitcount, output);
                 PrintQueue();
-                var min = _queue.RemoveMax();
-                var user = min.User;
-                var @event = min.Event;
+                var userEvent = _queue.RemoveMax();
+                var user = userEvent.User;
+                var @event = userEvent.Event;
                 var minCapacity = EventCapacity[@event].Min;
                 var maxCapacity = EventCapacity[@event].Max;
                 bool assignmentMade = false;
                 List<int> affectedEvents = new List<int>();
+
+                //if (IgnorePair(min))
+                //{
+                //    continue;
+                //}
 
                 if (UserAssignments[user] == null && Assignments[@event].Count < maxCapacity && !Assignments[@event].Contains(user))
                 {
@@ -89,6 +94,11 @@ namespace Implementation.Algorithms
                             else
                             {
                                 PrintAssignments(assignmentMade);
+                                if (_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
+                                {
+                                    DisposeUserEvents.Add(userEvent.Key, userEvent);
+                                }
+
                                 continue;
                             }
                         }
@@ -173,6 +183,14 @@ namespace Implementation.Algorithms
                         AdjustList(affectedEvents, user, @event, assignmentMade);
                     }
                 }
+                else if(_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
+                {
+                    DisposeUserEvents.Add(userEvent.Key, userEvent);
+                }
+                //else if(exhaustive && UserAssignments[user] == null && Assignments[@event].Count < maxCapacity && !Assignments[@event].Contains(user))
+                //{
+
+                //}
 
                 if (!_conf.LazyAdjustment)
                 {
@@ -189,8 +207,55 @@ namespace Implementation.Algorithms
             GreedyAssign();
 
             _permanentAssignments = Swap(_permanentAssignments);
+            _permanentAssignments = ReuseDisposedPairs(_permanentAssignments);
             Assignments = _permanentAssignments;
         }
+
+        private List<UserEvent> userEvents1 = new List<UserEvent>();
+        private List<UserEvent> userEvents2 = new List<UserEvent>();
+        /*private bool IgnorePair(UserEvent userEvent)
+        {
+            //assignment is not permanent
+            if (_conf.Exhaustive == 0 || Assignments.Count + 1 < EventCapacity[userEvent.Event].Min || _queue.IsEmpty())
+            {
+                return false;
+            }
+
+            if (userEvents2.Exists(x => x.Event == userEvent.Event && x.User == userEvent.User))
+            {
+                return false;
+            }
+
+            var eventWelfares = new Dictionary<int, Welfare>();
+            for (int i = 0; i < Assignments.Count; i++)
+            {
+                if (Assignments[i].Contains(userEvent.User))
+                {
+                    var welfare = GetUserWelfare(userEvent, Assignments[i]);
+                    eventWelfares.Add(i, welfare);
+                }
+            }
+            //if it is not among the best choices out there, just ignore this pair!
+            var numberOfImportantEvents = Convert.ToInt32(Math.Ceiling(_conf.Exhaustive * eventWelfares.Count));
+            var welfares = eventWelfares.OrderByDescending(x => x.Value.TotalWelfare).Take(numberOfImportantEvents).ToList();
+            if (eventWelfares.Count > 0 && !welfares.Exists(x => x.Key == userEvent.Event))
+            {
+                userEvents1.Add(userEvent);
+                return true;
+            }
+            else
+            {
+                var ue = userEvents1.FirstOrDefault();
+                if (ue != null)
+                {
+                    AddToQueue(ue.Event, ue.User);
+                    userEvents2.Add(ue);
+                    userEvents1.RemoveAt(0);
+                }
+            }
+
+            return false;
+        }*/
 
         private void GreedyAssign()
         {
@@ -234,10 +299,15 @@ namespace Implementation.Algorithms
             {
                 foreach (var availableUser in availableUsers)
                 {
-                    var q = Util(@event, availableUser, _conf.CommunityAware, _conf.CommunityFix, _users);
-                    _queue.AddOrUpdate(q.Utility, new UserEvent { User = availableUser, Event = @event });
+                    AddToQueue(@event, availableUser);
                 }
             }
+        }
+
+        private void AddToQueue(int @event, int user)
+        {
+            var q = Util(@event, user, _conf.CommunityAware, _conf.CommunityFix, _users);
+            _queue.AddOrUpdate(q.Utility, new UserEvent { User = user, Event = @event });
         }
 
         protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
@@ -395,6 +465,7 @@ namespace Implementation.Algorithms
             AllEvents = new List<int>();
             _init = false;
             _conf.NumberOfPhantomEvents = 0;
+            DisposeUserEvents = new Dictionary<string, UserEvent>();
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {
