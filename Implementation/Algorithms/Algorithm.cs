@@ -294,7 +294,7 @@ namespace Implementation.Algorithms
                 var @event = disposeUserEvent.Value.Event;
                 var leftoutUser = disposeUserEvent.Value.User;
                 var assignment = assignments[@event];
-                if (UserAssignments[leftoutUser] != null)
+                if (UserAssignments[leftoutUser] != null || !EventIsReal(@event))
                 {
                     continue;
                 }

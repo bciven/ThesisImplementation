@@ -28,10 +28,12 @@
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">ECADG</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">ECADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
     </exptypes>
   </Experiment>
 
-<Experiment count="5" output="1">
+  <Experiment count="5" output="1">
     <users count="500" />
     <events count="25" />
     <alpha value="0.5" />
@@ -59,6 +61,8 @@
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">ECADG</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">ECADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
     </exptypes>
   </Experiment>
 
@@ -90,6 +94,8 @@
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">ECADG</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">ECADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
     </exptypes>
   </Experiment>
 
@@ -121,6 +127,8 @@
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">ECADG</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">ECADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
     </exptypes>
   </Experiment>
 
@@ -152,6 +160,8 @@
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">ECADG</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">ECADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
     </exptypes>
   </Experiment>
 
@@ -183,10 +193,12 @@
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">ECADG</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">ECADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
     </exptypes>
   </Experiment>
-  
- <Experiment count="5" output="1">
+
+  <Experiment count="5" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -214,6 +226,8 @@
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">ECADG</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">ECADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
     </exptypes>
   </Experiment>
 
@@ -245,6 +259,8 @@
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">ECADG</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">ECADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
     </exptypes>
   </Experiment>
 
@@ -276,6 +292,8 @@
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">ECADG</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">ECADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
     </exptypes>
   </Experiment>
 
@@ -306,6 +324,8 @@
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">ECADG</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">ECADG</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
     </exptypes>
   </Experiment>
 

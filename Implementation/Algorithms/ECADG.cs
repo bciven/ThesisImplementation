@@ -58,9 +58,9 @@ namespace Implementation.Algorithms
                 hitcount++;
                 //WriteQueue(hitcount, output);
                 PrintQueue();
-                var min = _queue.RemoveMax();
-                var user = min.User;
-                var @event = min.Event;
+                var userEvent = _queue.RemoveMax();
+                var user = userEvent.User;
+                var @event = userEvent.Event;
                 var minCapacity = EventCapacity[@event].Min;
                 var maxCapacity = EventCapacity[@event].Max;
                 bool assignmentMade = false;
@@ -80,6 +80,10 @@ namespace Implementation.Algorithms
                             else
                             {
                                 PrintAssignments(assignmentMade);
+                                if (_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
+                                {
+                                    DisposeUserEvents.Add(userEvent.Key, userEvent);
+                                }
                                 continue;
                             }
                         }
@@ -150,6 +154,10 @@ namespace Implementation.Algorithms
 
                     AdjustList(affectedEvents, user, @event, assignmentMade);
                 }
+                else if (_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
+                {
+                    DisposeUserEvents.Add(userEvent.Key, userEvent);
+                }
                 //else if(exhaustive && UserAssignments[user] == null && Assignments[@event].Count < maxCapacity && !Assignments[@event].Contains(user))
                 //{
 
@@ -166,6 +174,7 @@ namespace Implementation.Algorithms
             GreedyAssign();
 
             Assignments = Swap(Assignments);
+            Assignments = ReuseDisposedPairs(Assignments);
         }
 
         private List<List<int>> RegulateAssignments(List<List<int>> assignments)

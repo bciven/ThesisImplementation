@@ -35,9 +35,9 @@ namespace Implementation.Algorithms
             {
                 hitcount++;
                 PrintQueue();
-                var element = _queue.Dequeue();
-                var user = element.User;
-                var @event = element.Event;
+                var userEvent = _queue.Dequeue();
+                var user = userEvent.User;
+                var @event = userEvent.Event;
                 var minCapacity = EventCapacity[@event].Min;
                 var maxCapacity = EventCapacity[@event].Max;
                 bool assignmentMade = false;
@@ -84,6 +84,10 @@ namespace Implementation.Algorithms
 
                     //AdjustList(affectedEvents, user, @event, assignmentMade);
                 }
+                else if (_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
+                {
+                    DisposeUserEvents.Add(userEvent.Key, userEvent);
+                }
 
                 if (_queue.Count == 0)
                 {
@@ -102,6 +106,7 @@ namespace Implementation.Algorithms
                 }
             }
             Assignments = Swap(Assignments);
+            Assignments = ReuseDisposedPairs(Assignments);
         }
 
         protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
