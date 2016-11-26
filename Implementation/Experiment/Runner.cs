@@ -365,7 +365,8 @@ namespace Implementation.Experiment
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
-                        Asymmetric = parameters.Asymmetric
+                        Asymmetric = parameters.Asymmetric,
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs
                     };
 
                     configs.Add(conf);
@@ -418,6 +419,7 @@ namespace Implementation.Experiment
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs
                     };
 
                     if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.LA)
@@ -459,7 +461,8 @@ namespace Implementation.Experiment
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
-                        Asymmetric = parameters.Asymmetric
+                        Asymmetric = parameters.Asymmetric,
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs
                     };
 
                     configs.Add(conf);

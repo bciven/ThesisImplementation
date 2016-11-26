@@ -414,6 +414,7 @@ namespace Implementation.Algorithms
 
             AllUsers = new List<int>();
             AllEvents = new List<int>();
+            DisposeUserEvents = new Dictionary<string, UserEvent>();
             _init = false;
             _conf.NumberOfPhantomEvents = 0;
 

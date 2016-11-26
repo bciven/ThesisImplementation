@@ -193,6 +193,7 @@ namespace Implementation.Algorithms
 
             AllUsers = new List<int>();
             AllEvents = new List<int>();
+            DisposeUserEvents = new Dictionary<string, UserEvent>();
             _init = false;
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
