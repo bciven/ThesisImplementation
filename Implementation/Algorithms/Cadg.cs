@@ -549,7 +549,11 @@ namespace Implementation.Algorithms
                         }
                         ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (_users.Count - denomDeduction);
                     }
-                    _queue.AddOrUpdate(ue.Utility, ue);
+
+                    if (ue.Utility != 0)
+                    {
+                        _queue.AddOrUpdate(ue.Utility, ue);
+                    }
                 }
             }
         }

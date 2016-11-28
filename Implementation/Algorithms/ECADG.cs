@@ -68,7 +68,7 @@ namespace Implementation.Algorithms
 
                 if (UserAssignments[user] == null && Assignments[@event].Count < maxCapacity && !Assignments[@event].Contains(user))
                 {
-                    if (_conf.PhantomAware)
+                    /*if (_conf.PhantomAware)
                     {
                         if (Assignments[@event].Count == 0)
                         {
@@ -94,17 +94,10 @@ namespace Implementation.Algorithms
                                 _eventDeficitContribution[@event]--;
                             }
                         }
-                    }
+                    }*/
 
                     Assignments[@event].Add(user);
-
                     _numberOfUserAssignments[user]++;
-                    assignmentMade = true;
-
-                    if (_users.Contains(user))
-                    {
-                        _users.Remove(user);
-                    }
 
                     /*if (Assignments[@event].Count > minCapacity)
                     {
@@ -152,7 +145,7 @@ namespace Implementation.Algorithms
                         }
                     }*/
 
-                    AdjustList(affectedEvents, user, @event, assignmentMade);
+                    AdjustList(affectedEvents, user, @event);
                 }
                 else if (_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
                 {
@@ -201,16 +194,23 @@ namespace Implementation.Algorithms
                         eventAssignments.Add(i, assignments[i]);
                     }
                 }
-                
+
                 if (eventAssignments.Count == 0)
                 {
                     continue;
                 }
 
                 var pairs = eventAssignments.Select(x => new UserEvent(user, x.Key, GetUserWelfare(new UserEvent(user, x.Key), x.Value).TotalWelfare)).ToList();
-                var bestEvent = pairs.Aggregate((workingSentence, next) => workingSentence.Utility > next.Utility ? workingSentence : next);
-                newAssignments[bestEvent.Event].Add(user);
-                UserAssignments[user] = bestEvent.Event;
+                pairs = pairs.OrderByDescending(x => x.Utility).ToList();
+                foreach (var userEvent in pairs)
+                {
+                    if (newAssignments[userEvent.Event].Count < EventCapacity[userEvent.Event].Max)
+                    {
+                        newAssignments[userEvent.Event].Add(user);
+                        UserAssignments[user] = userEvent.Event;
+                        break;
+                    }
+                }
             }
             return newAssignments;
         }
@@ -284,89 +284,20 @@ namespace Implementation.Algorithms
 
         private void AddToQueue(int @event, int user)
         {
-            var q = Util(@event, user, _conf.CommunityAware, _conf.CommunityFix, _users);
+            var q = Util(@event, user, false, CommunityFixEnum.None, _users);
             _queue.AddOrUpdate(q.Utility, new UserEvent { User = user, Event = @event });
         }
 
         protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
         {
-            _users.AddRange(availableUsers);
-            availableUsers.ForEach(x => _numberOfUserAssignments[x] = 0);
-            if (_conf.PhantomAware)
-            {
-                phantomEvents.ForEach(x =>
-                {
-                    if (Assignments[x].Count > 0)
-                    {
-                        _eventDeficitContribution[x] = 0;
-                    }
-                });
-            }
+
         }
 
-        private void AdjustList(List<int> affectedEvents, int user, int @event, bool assignmentMade)
+        private void AdjustList(List<int> affectedEvents, int user, int @event)
         {
-            //if (_conf.ImmediateReaction)
-            //{
-            //    foreach (var e in affectedEvents)
-            //    {
-            //        ImmediateReaction(e);
-            //    }
-            //}
-
             foreach (var u in AllUsers)
             {
                 Update(user, u, @event);
-            }
-
-            PrintAssignments(assignmentMade);
-            //CheckValidity();
-        }
-
-        private void ImmediateReaction(int @event)
-        {
-            var userEvents = new List<UserEvent>();
-            var numberOfUsers = Assignments[@event].Count;
-            for (int i = 0; i < numberOfUsers; i++)
-            {
-                var userOfOtherEvent = Assignments[@event][i];
-                _numberOfUserAssignments[userOfOtherEvent]--;
-                if (_numberOfUserAssignments[userOfOtherEvent] == 0)
-                {
-                    _users.Add(userOfOtherEvent);
-                }
-                if (UserAssignments[userOfOtherEvent] != null)
-                {
-                    Console.WriteLine("User is already assigned?!");
-                }
-                if (!_phantomEvents.Contains(@event))
-                {
-                    Console.WriteLine("Event is not a phantom!!");
-                }
-                var ue = new UserEvent { Event = @event, User = userOfOtherEvent };
-                userEvents.Add(ue);
-            }
-            Assignments[@event].Clear();
-
-            foreach (var ue in userEvents)
-            {
-                var newPriority = Util(ue.Event, ue.User, _conf.CommunityAware, _conf.CommunityFix, _users);
-                _queue.AddOrUpdate(newPriority.Utility, ue);
-                foreach (var user in AllUsers)
-                {
-                    Update(ue.User, user, ue.Event);
-                }
-            }
-
-            //_affectedEvents.Add(@event);
-            if (_conf.PhantomAware)
-            {
-                if (_phantomEvents.Contains(@event))
-                {
-                    _phantomEvents.Remove(@event);
-                }
-
-                _eventDeficitContribution[@event] = 0;
             }
         }
 
@@ -374,12 +305,11 @@ namespace Implementation.Algorithms
         {
             if (SocAffinities[user1, user2] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
             {
-                //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
-                var newPriority = Util(@event, user2, _conf.CommunityAware, _conf.CommunityFix, _users);
-                    if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
-                    {
-                        _queue.AddOrUpdate(newPriority.Utility, new UserEvent { User = user2, Event = @event });
-                    }
+                var newPriority = Util(@event, user2, false, CommunityFixEnum.None, _users);
+                if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
+                {
+                    _queue.AddOrUpdate(newPriority.Utility, new UserEvent { User = user2, Event = @event });
+                }
 
                 /*if (_conf.ImmediateReaction)
                 {
@@ -472,24 +402,13 @@ namespace Implementation.Algorithms
             {
                 foreach (var e in _events)
                 {
-                    var ue = new UserEvent { Event = e, User = u, Utility = 0d };
-
                     if (InAffinities[u][e] != 0)
                     {
+                        var ue = new UserEvent { Event = e, User = u, Utility = 0d };
                         ue.Utility += (1 - _conf.Alpha) * InAffinities[u][e];
-                        //gain = Math.Round(gain, _conf.Percision);
+                        ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (_users.Count - 1);
+                        _queue.AddOrUpdate(ue.Utility, ue);
                     }
-
-                    if (_conf.CommunityAware && _conf.CommunityFix.HasFlag(CommunityFixEnum.InitializationFix))
-                    {
-                        var denomDeduction = 1;
-                        if (_conf.CommunityFix.HasFlag(CommunityFixEnum.DenomFix))
-                        {
-                            denomDeduction = 0;
-                        }
-                        ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (_users.Count - denomDeduction);
-                    }
-                    _queue.AddOrUpdate(ue.Utility, ue);
                 }
             }
         }
