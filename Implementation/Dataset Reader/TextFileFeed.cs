@@ -31,6 +31,7 @@ namespace Implementation.Dataset_Reader
                     continue;
                 }
                 var card = new Cardinality();
+                card.Event = CsvReader.ReadIntValue(line, 0) - 1;
                 card.Min = CsvReader.ReadIntValue(line, 1);
                 card.Max = CsvReader.ReadIntValue(line, 2);
                 result.Add(card);

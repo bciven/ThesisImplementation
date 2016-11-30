@@ -241,7 +241,8 @@ namespace Implementation.Dataset_Reader
                 var c = new Cardinality
                 {
                     Min = start,
-                    Max = end
+                    Max = end,
+                    Event = x
                 };
                 return c;
             }).ToList();

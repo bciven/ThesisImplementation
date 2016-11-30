@@ -34,6 +34,7 @@ namespace Implementation.Dataset_Reader
                 var card = new Cardinality();
                 card.Min = Convert.ToInt32(ws.Cells[i, 2].Value);
                 card.Max = Convert.ToInt32(ws.Cells[i, 3].Value);
+                card.Event = i - 2;
 
                 result.Add(card);
             }

@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\NCADG.cs" />
     <Compile Include="Algorithms\ECADG.cs" />
     <Compile Include="Algorithms\GlobalGreedy.cs" />
     <Compile Include="Algorithms\OG.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Data Structures\SGConf.cs" />
     <Compile Include="Data Structures\SocialNetworkModels.cs" />
     <Compile Include="Data Structures\EventInterest.cs" />
+    <Compile Include="Data Structures\UserFriends.cs" />
     <Compile Include="Data Structures\Welfare.cs" />
     <Compile Include="Data Structures\UserEvents.cs" />
     <Compile Include="Data Structures\UserPairEvent.cs" />

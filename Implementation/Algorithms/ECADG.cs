@@ -14,11 +14,13 @@ namespace Implementation.Algorithms
         private List<int> _users;
         private List<int> _numberOfUserAssignments;
         private List<int> _eventDeficitContribution;
-        private FakeHeap _queue;
         private List<int> _phantomEvents;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
         private ECADGConf _conf => (ECADGConf)Conf;
+        private int _maxCapacityEvent;
+        private Cardinality _largestCapacity;
+        private Queue<UserEvent> _queue;
 
         public ECADG(ECADGConf conf, IDataFeed dataFeed, int index) : base(index)
         {
@@ -26,197 +28,129 @@ namespace Implementation.Algorithms
             Conf = conf;
         }
 
-        protected void WriteQueue(int hitCount, FileInfo output)
-        {
-            if (hitCount % 10 != 0)
-            {
-                return;
-            }
-
-            var list = _queue._sortedSet.OrderByDescending(x => x.Value.Utility).ToList();
-            if (output != null)
-            {
-                var dir = Directory.CreateDirectory(output.DirectoryName + @"\" + Conf.AlgorithmName + "-" + _index);
-                var path = dir.FullName + @"\" + hitCount + ".csv";
-                var file = new StreamWriter(path);
-                foreach (var item in list)
-                {
-                    file.WriteLine("{0}, {1}, {2}", item.Value.Utility, item.Value.User, item.Value.Event);
-                }
-                file.Close();
-            }
-        }
-
         public override void Run(FileInfo output)
         {
             if (!_init)
                 throw new Exception("Not Initialized");
-            int hitcount = 0;
 
-            while (!_queue.IsEmpty())
+            _maxCapacityEvent = MaxCapacity();
+            _largestCapacity = EventCapacity[_maxCapacityEvent];
+            FillQueue(_users, _events);
+
+            while (_queue.Count > 0)
             {
-                hitcount++;
-                //WriteQueue(hitcount, output);
-                PrintQueue();
-                var userEvent = _queue.RemoveMax();
+                var userEvent = _queue.Dequeue();
                 var user = userEvent.User;
                 var @event = userEvent.Event;
                 var minCapacity = EventCapacity[@event].Min;
                 var maxCapacity = EventCapacity[@event].Max;
-                bool assignmentMade = false;
-                List<int> affectedEvents = new List<int>();
 
-                if (UserAssignments[user] == null && Assignments[@event].Count < maxCapacity && !Assignments[@event].Contains(user))
+                if (UserAssignments[user] == null && Assignments[@event].Count < maxCapacity &&
+                    !Assignments[@event].Contains(user))
                 {
-                    /*if (_conf.PhantomAware)
-                    {
-                        if (Assignments[@event].Count == 0)
-                        {
-                            if (_eventDeficitContribution.Sum(x => x) + minCapacity <= _users.Count)
-                            {
-                                _eventDeficitContribution[@event] = minCapacity - 1;
-                                _phantomEvents.Add(@event);
-                            }
-                            else
-                            {
-                                PrintAssignments(assignmentMade);
-                                if (_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
-                                {
-                                    DisposeUserEvents.Add(userEvent.Key, userEvent);
-                                }
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            if (_phantomEvents.Contains(@event))
-                            {
-                                _eventDeficitContribution[@event]--;
-                            }
-                        }
-                    }*/
-
                     Assignments[@event].Add(user);
+                    UserAssignments[user] = @event;
                     _numberOfUserAssignments[user]++;
-
-                    /*if (Assignments[@event].Count > minCapacity)
-                    {
-                        UserAssignments[user] = @event;
-                        _permanentAssignments[@event].Add(user);
-
-                        var excludedEvents = _events.Where(x => x != @event && Assignments[x].Contains(user)).ToList();
-                        foreach (var e in excludedEvents)
-                        {
-                            Assignments[e].Remove(user);
-                            _numberOfUserAssignments[user]--;
-                            if (_conf.ImmediateReaction)
-                            {
-                                affectedEvents.Add(e);
-                            }
-                        }
-                    }*/
-
-                    /*if (Assignments[@event].Count == minCapacity)
-                    {
-                        _phantomEvents.Remove(@event);
-                        foreach (var u in Assignments[@event])
-                        {
-                            //permanently assign all users to real events
-                            //UserAssignments[u] = @event;
-                            //_permanentAssignments[@event].Add(u);
-
-                            //unassign these users from all other events
-                            //var excludedEvents = _events.Where(x => x != @event && Assignments[x].Contains(u));
-                            //foreach (var e in excludedEvents)
-                            //{
-                            //    if (_conf.PhantomAware && !_phantomEvents.Contains(e))
-                            //    {
-                            //        Console.WriteLine("This event should be phantom!");
-                            //    }
-                            //    Assignments[e].Remove(u);
-                            //    _numberOfUserAssignments[u]--;
-
-                            //    //affected_evts.append(e)  # this line is not in ref paper
-                            //    if (_conf.ImmediateReaction)
-                            //    {
-                            //        affectedEvents.Add(e);
-                            //    }
-                            //}
-                        }
-                    }*/
-
-                    AdjustList(affectedEvents, user, @event);
                 }
-                else if (_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
-                {
-                    DisposeUserEvents.Add(userEvent.Key, userEvent);
-                }
-                //else if(exhaustive && UserAssignments[user] == null && Assignments[@event].Count < maxCapacity && !Assignments[@event].Contains(user))
-                //{
 
-                //}
-
-                if (_queue.IsEmpty())
+                if (_queue.Count == 0)
                 {
-                    Assignments = RegulateAssignments(Assignments);
                     DefaultReassign();
                     Reassign();
                 }
             }
 
             GreedyAssign();
-
             Assignments = Swap(Assignments);
             Assignments = ReuseDisposedPairs(Assignments);
         }
 
-        private List<List<int>> RegulateAssignments(List<List<int>> assignments)
+        private void FillQueue(List<int> users, List<int> events)
         {
-            var newAssignments = new List<List<int>>();
-            for (var i = 0; i < _conf.NumberOfEvents; i++)
-            {
-                newAssignments.Add(new List<int>());
-            }
+            var userBestFriends = new Dictionary<int, UserFriends>();
 
-            foreach (var user in AllUsers)
+            foreach (var user1 in users)
             {
-                if (UserAssignments[user].HasValue)
+                var userSortedFriends = new SortedDictionary<double, int>();
+                foreach (var user2 in users)
                 {
-                    newAssignments[UserAssignments[user].Value].Add(user);
-                    continue;
-                }
-
-                var eventAssignments = new Dictionary<int, List<int>>();
-                for (int i = 0; i < assignments.Count; i++)
-                {
-                    if (assignments[i].Contains(user))
+                    if (user1 != user2 && SocAffinities[user1, user2] > 0)
                     {
-                        eventAssignments.Add(i, assignments[i]);
+                        userSortedFriends.Add(SocAffinities[user1, user2], user2);
                     }
                 }
 
-                if (eventAssignments.Count == 0)
+                var numberOfFriends = userSortedFriends.Count;
+                var userEvents = new UserFriends();
+                for (int i = 0; i < Math.Min(_largestCapacity.Max - 1, numberOfFriends); i++)
                 {
-                    continue;
+                    var friendKey = userSortedFriends.Keys.Max();
+                    var friend = userSortedFriends[friendKey];
+                    userEvents.Add(new UserEvent(friend, -1));
+                    userEvents.Gain += friendKey;
+                    userSortedFriends.Remove(friendKey);
                 }
+                userEvents.Gain /= userEvents.Count;
+                userBestFriends.Add(user1, userEvents);
+            }
 
-                var pairs = eventAssignments.Select(x => new UserEvent(user, x.Key, GetUserWelfare(new UserEvent(user, x.Key), x.Value).TotalWelfare)).ToList();
-                pairs = pairs.OrderByDescending(x => x.Utility).ToList();
-                foreach (var userEvent in pairs)
+            //people who are more into their friends has to be put first so that there is a higher chance to end up with their friends
+            var innateAffinitySummation = GetInnateAffinitySummation();
+            var socialAffinitySummation = GetSocialAffinitySummation();
+            IOrderedEnumerable<KeyValuePair<int, UserFriends>> orderedUserFriends;
+            if (socialAffinitySummation >= innateAffinitySummation)
+            {
+                orderedUserFriends = userBestFriends.OrderByDescending(x => x.Value.Gain);
+            }
+            else
+            {
+                orderedUserFriends = userBestFriends.OrderBy(x => x.Value.Gain);
+            }
+            foreach (var orderedUserFriend in orderedUserFriends)
+            {
+                foreach (var @event in events)
                 {
-                    if (newAssignments[userEvent.Event].Count < EventCapacity[userEvent.Event].Max)
+                    var mainUser = orderedUserFriend.Key;
+                    _queue.Enqueue(new UserEvent(orderedUserFriend.Key, @event, Util(@event, mainUser)));
+                    foreach (var userFriend in orderedUserFriend.Value)
                     {
-                        newAssignments[userEvent.Event].Add(user);
-                        UserAssignments[user] = userEvent.Event;
-                        break;
+                        var friend = userFriend.User;
+                        _queue.Enqueue(new UserEvent(orderedUserFriend.Key, @event, Util(@event, mainUser, friend)));
                     }
                 }
             }
-            return newAssignments;
         }
 
-        private List<UserEvent> userEvents1 = new List<UserEvent>();
-        private List<UserEvent> userEvents2 = new List<UserEvent>();
+        private double GetInnateAffinitySummation()
+        {
+            return InAffinities.Sum(y => y.Sum(x => x));
+        }
+
+        private double GetSocialAffinitySummation()
+        {
+            return SocAffinities.Cast<double>().Sum();
+        }
+
+        private int MaxCapacity()
+        {
+            var max = double.MinValue;
+            var maxIndex = 0;
+
+            for (int i = 0; i < EventCapacity.Count; i++)
+            {
+                if (max < EventCapacity[i].Max)
+                {
+                    max = EventCapacity[i].Max;
+                    maxIndex = i;
+                }
+            }
+            return maxIndex;
+        }
+
+        protected override void PrintQueue()
+        {
+            throw new NotImplementedException();
+        }
 
         protected Welfare GetUserWelfare(UserEvent userEvent, List<int> assignment)
         {
@@ -233,6 +167,11 @@ namespace Implementation.Algorithms
             welfare.SocialWelfare = Conf.Alpha * welfare.SocialWelfare;
             welfare.TotalWelfare += welfare.InnateWelfare + welfare.SocialWelfare;
             return welfare;
+        }
+
+        protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
+        {
+            FillQueue(availableUsers, realOpenEvents);
         }
 
         private void GreedyAssign()
@@ -271,71 +210,9 @@ namespace Implementation.Algorithms
             }
         }
 
-        protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
-        {
-            foreach (var @event in realOpenEvents)
-            {
-                foreach (var availableUser in availableUsers)
-                {
-                    AddToQueue(@event, availableUser);
-                }
-            }
-        }
-
-        private void AddToQueue(int @event, int user)
-        {
-            var q = Util(@event, user, false, CommunityFixEnum.None, _users);
-            _queue.AddOrUpdate(q.Utility, new UserEvent { User = user, Event = @event });
-        }
-
         protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
         {
 
-        }
-
-        private void AdjustList(List<int> affectedEvents, int user, int @event)
-        {
-            foreach (var u in AllUsers)
-            {
-                Update(user, u, @event);
-            }
-        }
-
-        private void Update(int user1, int user2, int @event)
-        {
-            if (SocAffinities[user1, user2] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
-            {
-                var newPriority = Util(@event, user2, false, CommunityFixEnum.None, _users);
-                if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
-                {
-                    _queue.AddOrUpdate(newPriority.Utility, new UserEvent { User = user2, Event = @event });
-                }
-
-                /*if (_conf.ImmediateReaction)
-                {
-                    if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
-                    {
-                        _queue.AddOrUpdate(newPriority, new UserEvent { User = user2, Event = @event });
-                    }
-                }
-                else
-                {
-                    _queue.AddOrUpdate(newPriority, new UserEvent { User = user2, Event = @event });
-                    _queue.Update(newPriority, new UserEvent { User = user2, Event = @event });
-                }*/
-            }
-        }
-
-        protected override void PrintQueue()
-        {
-            if (!_conf.PrintOutEachStep)
-            {
-                return;
-            }
-
-            var max = _queue.Max;
-            Console.WriteLine("User {0}, Event {1}, Value {2}", (char)(max.User + 97),
-                (char)(max.Event + 88), max.Utility);
         }
 
         public override void Initialize()
@@ -374,11 +251,9 @@ namespace Implementation.Algorithms
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
             Welfare = new Welfare();
-            _queue = new FakeHeap/*<double, UserEvent>*/(false);
+            _queue = new Queue<UserEvent>();
             _phantomEvents = new List<int>();
-            //_deficit = 0;
             _init = true;
-            //_affectedUserEvents = new List<UserEvent>();
 
             for (var i = 0; i < _conf.NumberOfUsers; i++)
             {
@@ -397,20 +272,6 @@ namespace Implementation.Algorithms
             EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
             InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
             SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
-
-            foreach (var u in _users)
-            {
-                foreach (var e in _events)
-                {
-                    if (InAffinities[u][e] != 0)
-                    {
-                        var ue = new UserEvent { Event = e, User = u, Utility = 0d };
-                        ue.Utility += (1 - _conf.Alpha) * InAffinities[u][e];
-                        ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (_users.Count - 1);
-                        _queue.AddOrUpdate(ue.Utility, ue);
-                    }
-                }
-            }
         }
 
         private void SetNullMembers()
@@ -426,26 +287,8 @@ namespace Implementation.Algorithms
             Assignments = null;
             UserAssignments = null;
             EventCapacity = null;
-            _queue = null;
             _phantomEvents = null;
             _init = false;
-        }
-
-        private void Traceout()
-        {
-            var assignments = Assignments.SelectMany(x => x).ToList();
-            if (assignments.Count != assignments.Distinct().Count())
-            {
-                foreach (var assignment in Assignments)
-                {
-                    foreach (var u in assignment)
-                    {
-                        Trace.Write(u + "-");
-                    }
-                    Trace.WriteLine("");
-                }
-                Trace.WriteLine("End");
-            }
         }
     }
 }
