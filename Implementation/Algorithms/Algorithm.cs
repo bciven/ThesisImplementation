@@ -119,7 +119,7 @@ namespace Implementation.Algorithms
 
             for (int i = 0; i < UserAssignments.Count; i++)
             {
-                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value))
+                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value, Assignments[UserAssignments[i].Value]))
                 {
                     UserAssignments[i] = null;
                 }
@@ -143,7 +143,7 @@ namespace Implementation.Algorithms
 
             for (int i = 0; i < UserAssignments.Count; i++)
             {
-                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value))
+                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value, Assignments[UserAssignments[i].Value]))
                 {
                     UserAssignments[i] = null;
                 }
@@ -183,19 +183,12 @@ namespace Implementation.Algorithms
 
         protected void PrepareReassignment(out List<int> availableUsers, out List<int> realOpenEvents)
         {
-            var phantomEvents = AllEvents.Where(x => Assignments[x].Count < EventCapacity[x].Min).ToList();
+            var phantomEvents = GetPhantomEvents();
             realOpenEvents =
                 AllEvents.Where(
                     x => EventCapacity[x].Min <= Assignments[x].Count && Assignments[x].Count < EventCapacity[x].Max)
                     .ToList();
-            availableUsers = new List<int>();
-            for (int i = 0; i < UserAssignments.Count; i++)
-            {
-                if (UserAssignments[i] == null)
-                {
-                    availableUsers.Add(i);
-                }
-            }
+            availableUsers = GetAvailableUsers();
 
             foreach (var phantomEvent in phantomEvents)
             {
@@ -206,7 +199,35 @@ namespace Implementation.Algorithms
                 }
             }
             availableUsers = availableUsers.Distinct().OrderBy(x => x).ToList();
+
+
             PhantomAware(availableUsers, phantomEvents);
+        }
+
+        protected List<int> GetPhantomEvents()
+        {
+            var phantomEvents = AllEvents.Where(x => Assignments[x].Count < EventCapacity[x].Min).ToList();
+            return phantomEvents;
+        }
+
+        protected List<int> GetRealEvents()
+        {
+            var realEvents = AllEvents.Where(x => Assignments[x].Count >= EventCapacity[x].Min).ToList();
+            return realEvents;
+        }
+
+        protected List<int> GetAvailableUsers()
+        {
+            var availableUsers = new List<int>();
+            for (int i = 0; i < UserAssignments.Count; i++)
+            {
+                if (UserAssignments[i] == null)
+                {
+                    availableUsers.Add(i);
+                }
+            }
+
+            return availableUsers;
         }
 
         protected abstract void PhantomAware(List<int> availableUsers, List<int> phantomEvents);
@@ -294,7 +315,7 @@ namespace Implementation.Algorithms
                 var @event = disposeUserEvent.Value.Event;
                 var leftoutUser = disposeUserEvent.Value.User;
                 var assignment = assignments[@event];
-                if (UserAssignments[leftoutUser] != null || !EventIsReal(@event))
+                if (UserAssignments[leftoutUser] != null || !EventIsReal(@event, assignments[@event]))
                 {
                     continue;
                 }
@@ -342,7 +363,7 @@ namespace Implementation.Algorithms
         protected void KeepPotentialPhantomEvents(List<int> availableUsers, List<int> realOpenEvents)
         {
             var phantomEvents =
-                AllEvents.Where(x => !EventIsReal(x)).Select(x => new UserEvent {Event = x, Utility = 0d}).ToList();
+                AllEvents.Where(x => !EventIsReal(x, Assignments[x])).Select(x => new UserEvent {Event = x, Utility = 0d}).ToList();
             foreach (var @event in phantomEvents)
             {
                 @event.Utility = availableUsers.Sum(user => InAffinities[user][@event.Event]);
@@ -398,9 +419,9 @@ namespace Implementation.Algorithms
             return welfare;
         }
 
-        protected void CalculateEventWelfare(List<List<int>> assignments, int @event, Welfare welfare)
+        protected void CalculateEventWelfare(List<List<int>> assignments, int @event, Welfare welfare , bool checkEventReality = true)
         {
-            if (!EventIsReal(@event))
+            if (checkEventReality && !EventIsReal(@event, assignments[@event]))
             {
                 return;
             }
@@ -460,7 +481,7 @@ namespace Implementation.Algorithms
             }
             var assignment = userAssignments.First();
             var @event = assignments.IndexOf(assignment);
-            if (onlyRealEvents && !EventIsReal(@event))
+            if (onlyRealEvents && !EventIsReal(@event, assignments[@event]))
             {
                 return welfare;
             }
@@ -497,7 +518,7 @@ namespace Implementation.Algorithms
 
         public double CalculateRegRatio(int user)
         {
-            if (!UserAssignments[user].HasValue || !EventIsReal(UserAssignments[user].Value))
+            if (!UserAssignments[user].HasValue || !EventIsReal(UserAssignments[user].Value, Assignments[UserAssignments[user].Value]))
             {
                 return 1;
             }
@@ -538,7 +559,7 @@ namespace Implementation.Algorithms
             return phi;
         }
 
-        public bool EventIsReal(int @event)
+        public bool EventIsReal(int @event, List<int> assignment)
         {
             var usersCount = Assignments[@event].Count;
             var min = EventCapacity[@event].Min;
@@ -672,12 +693,13 @@ namespace Implementation.Algorithms
             return (1 - Conf.Alpha) * InAffinities[mainUser][@event];
         }
 
-        protected double Util(int @event, int mainUser, int friend)
+        protected double Util(int @event, int mainUser, int friendUser, UserFriends friends)
         {
-            var g = (1 - Conf.Alpha) * InAffinities[friend][@event];
+            var g = (1 - Conf.Alpha) * InAffinities[friendUser][@event];
 
-            var s = Conf.Alpha * SocAffinities[mainUser, friend] + g;
-            return s;
+            var s = Conf.Alpha * friends.Sum(u => SocAffinities[friendUser, u.User] + (Conf.Asymmetric ? SocAffinities[u.User, friendUser] : 0d));
+
+            return g + s;
         }
     }
 }

@@ -9,5 +9,7 @@ namespace Implementation.Data_Structures
     public class UserFriends: List<UserEvent>
     {
         public double Gain { get; set; }
+
+        public int Event { get; set; }
     }
 }

@@ -25,10 +25,10 @@ namespace Implementation.Data_Structures
 
         public AlgorithmEnum Algorithm { get; set; }
         public bool DeficitFix { get; set; }
-        public bool DoublePriority { get; set; }
         public bool ReuseDisposedPairs { get; set; }
         public bool LazyAdjustment { get; set; }
         public bool Swap { get; set; }
+        public bool PhantomRealization { get; set; }
         public double SwapThreshold { get; set; }
         public double PreservePercentage { get; set; }
 
@@ -44,7 +44,8 @@ namespace Implementation.Data_Structures
             LAPlus,
             OG,
             COG,
-            ECADG
+            ECADG,
+            CPRDG
         }
     }
 }

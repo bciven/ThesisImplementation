@@ -246,7 +246,7 @@ namespace Implementation.Algorithms
                 List<int> realOpenEvents;
                 PrepareReassignment(out availableUsers, out realOpenEvents);
 
-                var queue = new FakeHeap(false);
+                var queue = new FakeHeap();
                 foreach (var @event in realOpenEvents)
                 {
                     foreach (var availableUser in availableUsers)
@@ -374,7 +374,7 @@ namespace Implementation.Algorithms
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
             Welfare = new Welfare();
-            _queue = new FakeHeap/*<double, UserEvent>*/(false);
+            _queue = new FakeHeap/*<double, UserEvent>*/();
             _phantomEvents = new List<int>();
             //_deficit = 0;
             _init = true;

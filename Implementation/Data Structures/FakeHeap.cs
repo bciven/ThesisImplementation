@@ -10,11 +10,6 @@ namespace Implementation.Data_Structures
         public readonly Dictionary<string, UserEvent> _sortedSet;
         //private string _maxKey;
 
-        public FakeHeap()
-        {
-            //_maxKey = null;
-        }
-        
         // O(1)
         public UserEvent Max
         {
@@ -30,25 +25,13 @@ namespace Implementation.Data_Structures
                         max1 = pair.Value;
                     }
                 }
-                if (_doublePriority)
-                {
-                    foreach (var pair in _sortedSet)
-                    {
-                        if (Math.Abs(pair.Value.Utility - max1.Utility) < 0.00001 &&
-                            pair.Value.Priority > max2.Priority)
-                        {
-                            max2 = pair.Value;
-                        }
-                    }
-                    max1 = max2;
-                }
+
                 return max1;
             }
         }
 
-        public FakeHeap(bool doublePriority)
+        public FakeHeap()
         {
-            _doublePriority = doublePriority;
             _sortedSet = new Dictionary<string, UserEvent>();
         }
 

@@ -8,7 +8,7 @@ using Implementation.Data_Structures;
 
 namespace Implementation.Algorithms
 {
-    public class ECADG : Algorithm<List<UserEvent>>
+    public class PV : Algorithm<List<UserEvent>>
     {
         private List<int> _events;
         private List<int> _users;
@@ -22,7 +22,7 @@ namespace Implementation.Algorithms
         private Cardinality _largestCapacity;
         private Queue<UserEvent> _queue;
 
-        public ECADG(ECADGConf conf, IDataFeed dataFeed, int index) : base(index)
+        public PV(ECADGConf conf, IDataFeed dataFeed, int index) : base(index)
         {
             _dataFeeder = dataFeed;
             Conf = conf;
@@ -67,54 +67,20 @@ namespace Implementation.Algorithms
 
         private void FillQueue(List<int> users, List<int> events)
         {
-            var userBestFriends = new Dictionary<int, UserFriends>();
+            var userFriends = new Dictionary<int, UserFriends>();
 
             foreach (var user1 in users)
             {
-                var userSortedFriends = new SortedDictionary<double, int>();
+                userFriends.Add(user1, new UserFriends());
                 foreach (var user2 in users)
                 {
-                    if (user1 != user2 && SocAffinities[user1, user2] > 0)
-                    {
-                        userSortedFriends.Add(SocAffinities[user1, user2], user2);
-                    }
-                }
-
-                var numberOfFriends = userSortedFriends.Count;
-                var userEvents = new UserFriends();
-                for (int i = 0; i < Math.Min(_largestCapacity.Max - 1, numberOfFriends); i++)
-                {
-                    var friendKey = userSortedFriends.Keys.Max();
-                    var friend = userSortedFriends[friendKey];
-                    userEvents.Add(new UserEvent(friend, -1));
-                    userEvents.Gain += friendKey;
-                    userSortedFriends.Remove(friendKey);
-                }
-                userEvents.Gain /= userEvents.Count;
-                userBestFriends.Add(user1, userEvents);
-            }
-
-            //people who are more into their friends has to be put first so that there is a higher chance to end up with their friends
-
-            var tempUserEvents = new List<UserEvent>();
-            foreach (var orderedUserFriend in userBestFriends)
-            {
-                foreach (var @event in events)
-                {
-                    var mainUser = orderedUserFriend.Key;
-                    tempUserEvents.Add(new UserEvent(orderedUserFriend.Key, @event, Util(@event, mainUser)));
-                    foreach (var userFriend in orderedUserFriend.Value)
-                    {
-                        var util = Util(@event, mainUser, userFriend.User, orderedUserFriend.Value);
-                        tempUserEvents.Add(new UserEvent(orderedUserFriend.Key, @event, util));
-                    }
+                    userFriends[user1].Add(new UserEvent(user2, -1, SocAffinities[user2, user1]));
+                    userFriends[user1].Gain += SocAffinities[user2, user1];
                 }
             }
-
-            var orderedUserFriends = OrderUserFriends(tempUserEvents);
-            foreach (var userFriend in orderedUserFriends)
+            var orderedByPopularityUsers = userFriends.OrderByDescending(x => x.Value.Gain);
+            foreach (var user in orderedByPopularityUsers)
             {
-                _queue.Enqueue(userFriend);
             }
         }
 

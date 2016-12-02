@@ -23,19 +23,19 @@ namespace Implementation.Algorithms
         {
             if (reassignment == AlgorithmSpec.ReassignmentEnum.Addition)
             {
-                _phantomEvents = _phantomEvents?.Where(x => !_algorithm.EventIsReal(x)).ToList() ?? _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x)).ToList();
+                _phantomEvents = _phantomEvents?.Where(x => !_algorithm.EventIsReal(x, _algorithm.Assignments[x])).ToList() ?? _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x, _algorithm.Assignments[x])).ToList();
                 var events = _phantomEvents.Select(x => new UserEvent { Event = x, Utility = 0d }).ToList();
                 AdditionStrategy(availableUsers, realOpenEvents, events);
             }
             else if (reassignment == AlgorithmSpec.ReassignmentEnum.Reduction)
             {
-                _phantomEvents = _phantomEvents?.Where(x => !_algorithm.EventIsReal(x)).ToList() ?? _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x)).ToList();
+                _phantomEvents = _phantomEvents?.Where(x => !_algorithm.EventIsReal(x, _algorithm.Assignments[x])).ToList() ?? _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x, _algorithm.Assignments[x])).ToList();
                 var events = _phantomEvents.Select(x => new UserEvent { Event = x, Utility = 0d }).ToList();
                 ReductionStrategy(availableUsers, realOpenEvents, events, preservePerc);
             }
             else if (reassignment == AlgorithmSpec.ReassignmentEnum.Power2Reduction)
             {
-                _phantomEvents = _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x)).ToList();
+                _phantomEvents = _algorithm.AllEvents.Where(x => !_algorithm.EventIsReal(x, _algorithm.Assignments[x])).ToList();
                 var events = _phantomEvents.Select(x => new UserEvent { Event = x, Utility = 0d }).ToList();
                 Power2ReductionStrategy(availableUsers, realOpenEvents, events);
             }

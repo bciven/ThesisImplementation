@@ -183,7 +183,7 @@ namespace Implementation.Algorithms
                         AdjustList(affectedEvents, user, @event, assignmentMade);
                     }
                 }
-                else if(_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
+                else if (_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
                 {
                     DisposeUserEvents.Add(userEvent.Key, userEvent);
                 }
@@ -205,10 +205,60 @@ namespace Implementation.Algorithms
             }
 
             GreedyAssign();
+            Assignments = RealizePhantomEvents(Assignments);
 
             _permanentAssignments = Swap(_permanentAssignments);
             _permanentAssignments = ReuseDisposedPairs(_permanentAssignments);
             Assignments = _permanentAssignments;
+        }
+
+        private List<List<int>> RealizePhantomEvents(List<List<int>> assignments)
+        {
+            var phantomEvents = GetPhantomEvents();
+            var realEvents = GetRealEvents();
+            var phaontomEventsDeficit = phantomEvents.Select((x, y) => new KeyValuePair<int, int>(x, EventCapacity[x].Min - Assignments[x].Count)).OrderBy(x => x.Value);
+            var realUsersWelfare = realEvents.SelectMany(x => Assignments[x]).Select((x, y) => new KeyValuePair<int, Welfare>(x, GetUserWelfare(new UserEvent(x, UserAssignments[x].Value), Assignments[x])))
+                .OrderBy(x => x.Value);
+
+            foreach (var phantomEvent in phaontomEventsDeficit)
+            {
+                foreach (var userWelfare in realUsersWelfare)
+                {
+                    var canditateUser = userWelfare.Key;
+                    var sourceEvent = UserAssignments[canditateUser];
+                    var destinationEvent = phantomEvent.Key;
+
+                    if (sourceEvent != null && Assignments[sourceEvent.Value].Count > EventCapacity[sourceEvent.Value].Min)
+                    {
+                        var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                        CalculateEventWelfare(assignments, sourceEvent.Value, oldWelfare, false);
+                        CalculateEventWelfare(assignments, destinationEvent, oldWelfare, false);
+
+                        assignments[sourceEvent.Value].Remove(canditateUser);
+                        assignments[destinationEvent].Add(canditateUser);
+                        UserAssignments[canditateUser] = destinationEvent;
+
+                        var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                        CalculateEventWelfare(assignments, sourceEvent.Value, newWelfare, false);
+                        CalculateEventWelfare(assignments, destinationEvent, newWelfare, false);
+
+                        if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
+                        {
+                            //undo
+                            assignments[destinationEvent].Remove(canditateUser);
+                            assignments[sourceEvent.Value].Add(canditateUser);
+                            UserAssignments[canditateUser] = sourceEvent;
+                        }
+
+                        if (EventIsReal(destinationEvent, assignments[sourceEvent.Value]))
+                        {
+
+                            break;
+                        }
+                    }
+                }
+            }
+            return assignments;
         }
 
         private List<UserEvent> userEvents1 = new List<UserEvent>();
@@ -268,7 +318,7 @@ namespace Implementation.Algorithms
                 List<int> realOpenEvents;
                 PrepareReassignment(out availableUsers, out realOpenEvents);
 
-                var queue = new FakeHeap(_conf.DoublePriority);
+                var queue = new FakeHeap();
                 foreach (var @event in realOpenEvents)
                 {
                     foreach (var availableUser in availableUsers)
@@ -494,7 +544,7 @@ namespace Implementation.Algorithms
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
             Welfare = new Welfare();
-            _queue = new FakeHeap/*<double, UserEvent>*/(_conf.DoublePriority);
+            _queue = new FakeHeap();
             _phantomEvents = new List<int>();
             //_deficit = 0;
             _init = true;
@@ -524,15 +574,6 @@ namespace Implementation.Algorithms
                 foreach (var e in _events)
                 {
                     var ue = new UserEvent { Event = e, User = u, Utility = 0d };
-                    if (_conf.DoublePriority)
-                    {
-                        var friends = _users.Where(x => SocAffinities[u, x] > 0 || SocAffinities[x, u] > 0 || InAffinities[x][e] > 0);
-                        var bestFriends = friends.OrderByDescending(x => SocAffinities[u, x] + SocAffinities[x, u] + InAffinities[x][e]).Take(EventCapacity[e].Max - 1).ToList();
-                        var worstFriends = friends.OrderBy(x => SocAffinities[u, x] + SocAffinities[x, u] + InAffinities[x][e]).Take(EventCapacity[e].Max - 1).ToList();
-                        var bestGain = bestFriends.Sum(x => SocAffinities[u, x]);
-                        var worstGain = worstFriends.Sum(x => SocAffinities[u, x]);
-                        ue.Priority = (bestGain + worstGain) / 2;
-                    }
 
                     if (InAffinities[u][e] != 0)
                     {

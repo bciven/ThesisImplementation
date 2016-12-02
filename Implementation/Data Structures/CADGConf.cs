@@ -20,7 +20,7 @@ namespace Implementation.Data_Structures
         public int NumberOfPhantomEvents { get; set; }
         public bool CommunityAware { get; set; }
         public CommunityFixEnum CommunityFix { get; set; }
-        public bool DoublePriority { get; set; }
+        public bool PhantomRealization { get; set; }
 
         public CADGConf()
         {
@@ -39,7 +39,7 @@ namespace Implementation.Data_Structures
             CommunityAware = false;
             AlgorithmName = null;
             CommunityFix = CommunityFixEnum.None;
-            DoublePriority = false;
+            PhantomRealization = false;
         }
 
         protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
@@ -117,16 +117,16 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = CommunityFix;
             i++;
 
-            ws.Cells[i, 1].Value = "Double Priority";
-            ws.Cells[i, 2].Value = DoublePriority;
-            i++;
-
             ws.Cells[i, 1].Value = "Swap";
             ws.Cells[i, 2].Value = Swap;
             i++;
 
             ws.Cells[i, 1].Value = "Swap Threshold";
             ws.Cells[i, 2].Value = SwapThreshold;
+            i++;
+
+            ws.Cells[i, 1].Value = "Phantom Realization";
+            ws.Cells[i, 2].Value = PhantomRealization;
             i++;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
@@ -172,11 +172,11 @@ namespace Implementation.Data_Structures
 
             configsFile.WriteLine("{0},{1}", "Community Fix", CommunityFix);
 
-            configsFile.WriteLine("{0},{1}", "Double Priority", DoublePriority);
-
             configsFile.WriteLine("{0},{1}", "Swap", Swap);
 
             configsFile.WriteLine("{0},{1}", "Swap Threshold", SwapThreshold);
+
+            configsFile.WriteLine("{0},{1}", "Phantom Realization", PhantomRealization);
 
             PrintAdditionals(configsFile);
 

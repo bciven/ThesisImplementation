@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\PV.cs" />
     <Compile Include="Algorithms\NCADG.cs" />
     <Compile Include="Algorithms\ECADG.cs" />
     <Compile Include="Algorithms\GlobalGreedy.cs" />

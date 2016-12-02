@@ -77,12 +77,6 @@ namespace Implementation.Experiment
                                            deficitFix = Convert.ToBoolean(x.Attribute("DeficitFix").Value);
                                        }
 
-                                       bool doublePriority = false;
-                                       if (x.Attribute("DoublePriority") != null)
-                                       {
-                                           doublePriority = Convert.ToBoolean(x.Attribute("DoublePriority").Value);
-                                       }
-
                                        bool reuseDisposedPairs = false;
                                        if (x.Attribute("ReuseDisposedPairs") != null)
                                        {
@@ -112,7 +106,6 @@ namespace Implementation.Experiment
                                            Reassignment = reassignment,
                                            TakeChanceLimit = takechancelimit,
                                            DeficitFix = deficitFix,
-                                           DoublePriority = doublePriority,
                                            ReuseDisposedPairs = reuseDisposedPairs,
                                            LazyAdjustment = lazyAdjustment,
                                            Swap = swap,
@@ -127,6 +120,9 @@ namespace Implementation.Experiment
                                                break;
                                            case "IRC":
                                                algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.IRC;
+                                               break;
+                                           case "CPRDG":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.CPRDG;
                                                break;
                                            case "DG":
                                                algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.DG;
@@ -359,7 +355,6 @@ namespace Implementation.Experiment
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
                         CommunityAware = algorithmEnum == AlgorithmSpec.AlgorithmEnum.COG,
-                        DoublePriority = parameters.ExpTypes[i].DoublePriority,
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
@@ -467,6 +462,45 @@ namespace Implementation.Experiment
 
                     configs.Add(conf);
                 }
+                else if(algorithmEnum == AlgorithmSpec.AlgorithmEnum.CPRDG)
+                {
+                    var conf = new CADGConf();
+                    var DG = alg == (int)AlgorithmSpec.AlgorithmEnum.DG;
+                    var PCADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PCADG;
+                    var PADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PADG;
+                    var IR = alg == (int)AlgorithmSpec.AlgorithmEnum.IR;
+                    var IRC = alg == (int)AlgorithmSpec.AlgorithmEnum.IRC;
+
+                    conf = new CADGConf
+                    {
+                        NumberOfUsers = parameters.UserCount,
+                        NumberOfEvents = parameters.EventCount,
+                        InputFilePath = null,
+                        PhantomAware = false,
+                        
+                        PostInitializationInsert = true,
+                        ImmediateReaction = true,
+                        Reassignment = parameters.ExpTypes[i].Reassignment,
+                        DeficitFix = false,
+                        LazyAdjustment = parameters.ExpTypes[i].LazyAdjustment,
+                        PhantomRealization = true,
+                        PrintOutEachStep = false,
+                        FeedType = FeedTypeEnum.SerialExperiment,
+                        CommunityAware = true,
+                        Alpha = parameters.AlphaValue,
+                        AlgorithmName = ConvertToString(algorithmEnum),
+                        Parameters = parameters,
+                        CommunityFix = parameters.ExpTypes[i].CommunityFix,
+                        OutputType = parameters.OutputType,
+                        Swap = parameters.ExpTypes[i].Swap,
+                        SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
+                        Asymmetric = parameters.Asymmetric,
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs
+                    };
+
+                    configs.Add(conf);
+                }
                 else
                 {
                     var conf = new CADGConf();
@@ -483,6 +517,7 @@ namespace Implementation.Experiment
                         InputFilePath = null,
                         PhantomAware = !DG,
                         PostInitializationInsert = true,
+                        PhantomRealization = false,
                         ImmediateReaction = IR || IRC,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
                         DeficitFix = parameters.ExpTypes[i].DeficitFix,
@@ -494,7 +529,6 @@ namespace Implementation.Experiment
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
                         CommunityFix = parameters.ExpTypes[i].CommunityFix,
-                        DoublePriority = parameters.ExpTypes[i].DoublePriority,
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,

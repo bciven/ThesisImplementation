@@ -279,7 +279,7 @@ namespace Implementation.Algorithms
                 List<int> realOpenEvents;
                 PrepareReassignment(out availableUsers, out realOpenEvents);
 
-                var queue = new FakeHeap(_conf.DoublePriority);
+                var queue = new FakeHeap();
                 foreach (var @event in realOpenEvents)
                 {
                     foreach (var availableUser in availableUsers)
@@ -311,7 +311,7 @@ namespace Implementation.Algorithms
 
             for (int i = 0; i < UserAssignments.Count; i++)
             {
-                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value))
+                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value, Assignments[UserAssignments[i].Value]))
                 {
                     UserAssignments[i] = null;
                 }
@@ -341,7 +341,7 @@ namespace Implementation.Algorithms
 
             for (int i = 0; i < UserAssignments.Count; i++)
             {
-                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value))
+                if (UserAssignments[i] != null && !EventIsReal(UserAssignments[i].Value, Assignments[UserAssignments[i].Value]))
                 {
                     UserAssignments[i] = null;
                 }
@@ -584,7 +584,7 @@ namespace Implementation.Algorithms
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
             Welfare = new Welfare();
-            _queue = new FakeHeap/*<double, UserEvent>*/(_conf.DoublePriority);
+            _queue = new FakeHeap/*<double, UserEvent>*/();
             _phantomEvents = new List<int>();
             //_deficit = 0;
             _init = true;
