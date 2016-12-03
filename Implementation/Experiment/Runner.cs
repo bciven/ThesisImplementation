@@ -124,6 +124,9 @@ namespace Implementation.Experiment
                                            case "CPRDG":
                                                algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.CPRDG;
                                                break;
+                                           case "CPRPADG":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.CPRPADG;
+                                               break;
                                            case "DG":
                                                algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.DG;
                                                break;
@@ -462,24 +465,20 @@ namespace Implementation.Experiment
 
                     configs.Add(conf);
                 }
-                else if(algorithmEnum == AlgorithmSpec.AlgorithmEnum.CPRDG)
+                else if(algorithmEnum == AlgorithmSpec.AlgorithmEnum.CPRDG || algorithmEnum == AlgorithmSpec.AlgorithmEnum.CPRPADG)
                 {
                     var conf = new CADGConf();
-                    var DG = alg == (int)AlgorithmSpec.AlgorithmEnum.DG;
-                    var PCADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PCADG;
-                    var PADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PADG;
-                    var IR = alg == (int)AlgorithmSpec.AlgorithmEnum.IR;
-                    var IRC = alg == (int)AlgorithmSpec.AlgorithmEnum.IRC;
+                    var phantomAware = alg == (int)AlgorithmSpec.AlgorithmEnum.CPRPADG;
 
                     conf = new CADGConf
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
                         InputFilePath = null,
-                        PhantomAware = true,
+                        PhantomAware = phantomAware,
                         
                         PostInitializationInsert = true,
-                        ImmediateReaction = true,
+                        ImmediateReaction = phantomAware,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
                         DeficitFix = true,
                         LazyAdjustment = parameters.ExpTypes[i].LazyAdjustment,
