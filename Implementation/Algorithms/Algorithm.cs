@@ -561,7 +561,7 @@ namespace Implementation.Algorithms
 
         public bool EventIsReal(int @event, List<int> assignment)
         {
-            var usersCount = Assignments[@event].Count;
+            var usersCount = assignment.Count;
             var min = EventCapacity[@event].Min;
             var max = EventCapacity[@event].Max;
             return usersCount >= min && usersCount <= max;

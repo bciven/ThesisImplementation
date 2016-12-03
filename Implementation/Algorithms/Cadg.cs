@@ -151,31 +151,7 @@ namespace Implementation.Algorithms
 
                     if (Assignments[@event].Count == minCapacity)
                     {
-                        _phantomEvents.Remove(@event);
-                        foreach (var u in Assignments[@event])
-                        {
-                            //permanently assign all users to real events
-                            UserAssignments[u] = @event;
-                            _permanentAssignments[@event].Add(u);
-
-                            //unassign these users from all other events
-                            var excludedEvents = _events.Where(x => x != @event && Assignments[x].Contains(u));
-                            foreach (var e in excludedEvents)
-                            {
-                                if (_conf.PhantomAware && !_phantomEvents.Contains(e))
-                                {
-                                    Console.WriteLine("This event should be phantom!");
-                                }
-                                Assignments[e].Remove(u);
-                                _numberOfUserAssignments[u]--;
-
-                                //affected_evts.append(e)  # this line is not in ref paper
-                                if (_conf.ImmediateReaction)
-                                {
-                                    affectedEvents.Add(e);
-                                }
-                            }
-                        }
+                        RealizePhantomEvent(Assignments, @event, affectedEvents);
                     }
 
                     if (_conf.LazyAdjustment)
@@ -212,51 +188,115 @@ namespace Implementation.Algorithms
             Assignments = _permanentAssignments;
         }
 
+        private void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
+        {
+            _phantomEvents.Remove(@event);
+            foreach (var u in assignments[@event])
+            {
+                //permanently assign all users to real events
+                UserAssignments[u] = @event;
+                _permanentAssignments[@event].Add(u);
+
+                //unassign these users from all other events
+                var excludedEvents = _events.Where(x => x != @event && assignments[x].Contains(u));
+                foreach (var e in excludedEvents)
+                {
+                    if (_conf.PhantomAware && !_phantomEvents.Contains(e))
+                    {
+                        Console.WriteLine("This event should be phantom!");
+                    }
+                    assignments[e].Remove(u);
+                    _numberOfUserAssignments[u]--;
+
+                    //affected_evts.append(e)  # this line is not in ref paper
+                    if (_conf.ImmediateReaction)
+                    {
+                        affectedEvents.Add(e);
+                    }
+                }
+            }
+        }
+
         private List<List<int>> RealizePhantomEvents(List<List<int>> assignments)
         {
-            var phantomEvents = GetPhantomEvents();
-            var realEvents = GetRealEvents();
-            var phaontomEventsDeficit = phantomEvents.Select((x, y) => new KeyValuePair<int, int>(x, EventCapacity[x].Min - Assignments[x].Count)).OrderBy(x => x.Value);
-            var realUsersWelfare = realEvents.SelectMany(x => Assignments[x]).Select((x, y) => new KeyValuePair<int, Welfare>(x, GetUserWelfare(new UserEvent(x, UserAssignments[x].Value), Assignments[x])))
-                .OrderBy(x => x.Value);
+            if (!_conf.PhantomRealization)
+            {
+                return assignments;
+            }
+
+            var phantomEvents = AllEvents.Where(x => assignments[x].Count < EventCapacity[x].Min).ToList();
+            var realEvents = AllEvents.Where(x => assignments[x].Count >= EventCapacity[x].Min).ToList();
+            var phaontomEventsDeficit = phantomEvents.Select((x, y) => new KeyValuePair<int, int>(x, EventCapacity[x].Min - assignments[x].Count)).OrderBy(x => x.Value);
+            var candidateUsers = realEvents.SelectMany(x => assignments[x]).ToList();
+            var realUsersWelfare = candidateUsers.ToDictionary(x => x, x => GetUserWelfare(new UserEvent(x, UserAssignments[x].Value), assignments[UserAssignments[x].Value]))
+                .OrderBy(x => x.Value.TotalWelfare).ToDictionary(pair => pair.Key, pair => pair.Value);
 
             foreach (var phantomEvent in phaontomEventsDeficit)
             {
+                var transferedUserEvents = new List<UserEvent>();
+                var destinationEvent = phantomEvent.Key;
+                var oldSocialWelfare = CalculateSocialWelfare(assignments);
+                var finalizedUsers = new List<int>();
+
                 foreach (var userWelfare in realUsersWelfare)
                 {
                     var canditateUser = userWelfare.Key;
                     var sourceEvent = UserAssignments[canditateUser];
-                    var destinationEvent = phantomEvent.Key;
 
-                    if (sourceEvent != null && Assignments[sourceEvent.Value].Count > EventCapacity[sourceEvent.Value].Min)
+                    if (sourceEvent != null && assignments[sourceEvent.Value].Count > EventCapacity[sourceEvent.Value].Min)
                     {
-                        var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                        CalculateEventWelfare(assignments, sourceEvent.Value, oldWelfare, false);
-                        CalculateEventWelfare(assignments, destinationEvent, oldWelfare, false);
+                        //var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                        //CalculateEventWelfare(assignments, sourceEvent.Value, oldWelfare, false);
+                        //CalculateEventWelfare(assignments, destinationEvent, oldWelfare, false);
 
-                        assignments[sourceEvent.Value].Remove(canditateUser);
-                        assignments[destinationEvent].Add(canditateUser);
-                        UserAssignments[canditateUser] = destinationEvent;
-
-                        var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                        CalculateEventWelfare(assignments, sourceEvent.Value, newWelfare, false);
-                        CalculateEventWelfare(assignments, destinationEvent, newWelfare, false);
-
-                        if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
+                        if (InAffinities[sourceEvent.Value][sourceEvent.Value] < InAffinities[sourceEvent.Value][destinationEvent])
                         {
-                            //undo
-                            assignments[destinationEvent].Remove(canditateUser);
-                            assignments[sourceEvent.Value].Add(canditateUser);
-                            UserAssignments[canditateUser] = sourceEvent;
+                            assignments[sourceEvent.Value].Remove(canditateUser);
+                            assignments[destinationEvent].Add(canditateUser);
+                            transferedUserEvents.Add(new UserEvent(canditateUser, sourceEvent.Value));
                         }
 
-                        if (EventIsReal(destinationEvent, assignments[sourceEvent.Value]))
-                        {
+                        //var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                        //CalculateEventWelfare(assignments, sourceEvent.Value, newWelfare, false);
+                        //CalculateEventWelfare(assignments, destinationEvent, newWelfare, false);
 
-                            break;
+                        //if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
+                        //{
+                        //    //undo
+                        //    assignments[destinationEvent].Remove(canditateUser);
+                        //    assignments[sourceEvent.Value].Add(canditateUser);
+                        //}
+                        //else
+                        //{
+                        //    transferedUserEvents.Add(new UserEvent(canditateUser, sourceEvent.Value));
+                        //}
+
+                        if (EventIsReal(destinationEvent, assignments[destinationEvent]))
+                        {
+                            var newSocialWelfare = CalculateSocialWelfare(assignments);
+                            if (newSocialWelfare.TotalWelfare > oldSocialWelfare.TotalWelfare)
+                            {
+                                RealizePhantomEvent(assignments, destinationEvent, new List<int>());
+                                foreach (var finializedUser in assignments[destinationEvent])
+                                {
+                                    finalizedUsers.Add(finializedUser);
+                                }
+
+                                break;
+                            }
+                            else
+                            {
+                                foreach (var userEvent in transferedUserEvents)
+                                {
+                                    assignments[destinationEvent].Remove(userEvent.User);
+                                    assignments[userEvent.Event].Add(userEvent.User);
+                                }
+                            }
                         }
                     }
                 }
+
+                finalizedUsers.ForEach(x => realUsersWelfare.Remove(x));
             }
             return assignments;
         }
