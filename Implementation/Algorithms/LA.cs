@@ -40,14 +40,11 @@ namespace Implementation.Algorithms
                 var @event = userEvent.Event;
                 var minCapacity = EventCapacity[@event].Min;
                 var maxCapacity = EventCapacity[@event].Max;
-                bool assignmentMade = false;
-                List<int> affectedEvents = new List<int>();
 
                 if (UserAssignments[user] == null && Assignments[@event].Count < maxCapacity)
                 {
                     Assignments[@event].Add(user);
                     _numberOfUserAssignments[user]++;
-                    assignmentMade = true;
                     if (_users.Contains(user))
                     {
                         _users.Remove(user);
@@ -67,19 +64,7 @@ namespace Implementation.Algorithms
 
                     if (Assignments[@event].Count == minCapacity)
                     {
-                        foreach (var u in Assignments[@event])
-                        {
-                            //permanently assign all users to real events
-                            UserAssignments[u] = @event;
-
-                            //unassign these users from all other events
-                            var excludedEvents = _events.Where(x => x != @event && Assignments[x].Contains(u));
-                            foreach (var e in excludedEvents)
-                            {
-                                Assignments[e].Remove(u);
-                                _numberOfUserAssignments[u]--;
-                            }
-                        }
+                        RealizePhantomEvent(Assignments, @event, null);
                     }
 
                     //AdjustList(affectedEvents, user, @event, assignmentMade);
@@ -105,8 +90,27 @@ namespace Implementation.Algorithms
                     Assignments[userAssignment.Value].Add(user);
                 }
             }
+
+            Assignments = RealizePhantomEvents(Assignments);
             Assignments = Swap(Assignments);
             Assignments = ReuseDisposedPairs(Assignments);
+        }
+
+        protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
+        {
+            foreach (var u in assignments[@event])
+            {
+                //permanently assign all users to real events
+                UserAssignments[u] = @event;
+
+                //unassign these users from all other events
+                var excludedEvents = _events.Where(x => x != @event && assignments[x].Contains(u));
+                foreach (var e in excludedEvents)
+                {
+                    assignments[e].Remove(u);
+                    _numberOfUserAssignments[u]--;
+                }
+            }
         }
 
         protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)

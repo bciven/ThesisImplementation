@@ -106,6 +106,11 @@ namespace Implementation.Algorithms
             Assignments = Swap(Assignments);
         }
 
+        protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
+        {
+            throw new NotImplementedException();
+        }
+
         private double Util(int @event, int user)
         {
             var g = (1 - _conf.Alpha) * InAffinities[user][@event];

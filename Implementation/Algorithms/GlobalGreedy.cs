@@ -141,31 +141,7 @@ namespace Implementation.Algorithms
 
                     if (Assignments[@event].Count == minCapacity)
                     {
-                        _phantomEvents.Remove(@event);
-                        foreach (var u in Assignments[@event])
-                        {
-                            //permanently assign all users to real events
-                            UserAssignments[u] = @event;
-                            _permanentAssignments[@event].Add(u);
-
-                            //unassign these users from all other events
-                            var excludedEvents = _events.Where(x => x != @event && Assignments[x].Contains(u));
-                            foreach (var e in excludedEvents)
-                            {
-                                if (_conf.PhantomAware && !_phantomEvents.Contains(e))
-                                {
-                                    Console.WriteLine("This event should be phantom!");
-                                }
-                                Assignments[e].Remove(u);
-                                _numberOfUserAssignments[u]--;
-
-                                //affected_evts.append(e)  # this line is not in ref paper
-                                if (_conf.ImmediateReaction)
-                                {
-                                    affectedEvents.Add(e);
-                                }
-                            }
-                        }
+                        RealizePhantomEvent(Assignments, @event, affectedEvents);
                     }
 
                     if (_conf.LazyAdjustment)
@@ -266,6 +242,35 @@ namespace Implementation.Algorithms
             } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > 0.001);
 
             return assignments;
+        }
+
+        protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
+        {
+            _phantomEvents.Remove(@event);
+            foreach (var u in assignments[@event])
+            {
+                //permanently assign all users to real events
+                UserAssignments[u] = @event;
+                _permanentAssignments[@event].Add(u);
+
+                //unassign these users from all other events
+                var excludedEvents = _events.Where(x => x != @event && assignments[x].Contains(u));
+                foreach (var e in excludedEvents)
+                {
+                    if (_conf.PhantomAware && !_phantomEvents.Contains(e))
+                    {
+                        Console.WriteLine("This event should be phantom!");
+                    }
+                    assignments[e].Remove(u);
+                    _numberOfUserAssignments[u]--;
+
+                    //affected_evts.append(e)  # this line is not in ref paper
+                    if (_conf.ImmediateReaction)
+                    {
+                        affectedEvents.Add(e);
+                    }
+                }
+            }
         }
 
         private void GreedyAssign()

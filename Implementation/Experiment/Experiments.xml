@@ -2,6 +2,36 @@
 <Experiments>
   <Experiment count="5" output="1">
     <users count="500" />
+    <events count="25" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
+      <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
+      <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PCADG</type>
+      <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PCADG</type>
+      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true">PCADG</type>
+      <type Reassignment="3" PreservePercentage="90" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">PCADG</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true">IRC</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">IRC</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">CPRDG</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true">CPRDG</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true">CPRPADG</type>
+    </exptypes>
+  </Experiment>
+  
+  <Experiment count="5" output="1">
+    <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
     <capmean value="20" />
@@ -14,6 +44,7 @@
     <exptypes>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>
@@ -43,6 +74,7 @@
     <exptypes>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>
@@ -72,6 +104,7 @@
     <exptypes>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>
@@ -101,6 +134,7 @@
     <exptypes>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>
@@ -130,6 +164,7 @@
     <exptypes>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>
@@ -159,6 +194,7 @@
     <exptypes>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>
@@ -188,6 +224,7 @@
     <exptypes>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>
@@ -217,6 +254,7 @@
     <exptypes>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>
@@ -246,6 +284,7 @@
     <exptypes>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>
@@ -274,6 +313,7 @@
     <exptypes>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="true" SwapThreshold="0.001" PostPhantomRealization="true">LA</type>
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="false">PADG</type>
       <type Reassignment="1" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="false">PADG</type>

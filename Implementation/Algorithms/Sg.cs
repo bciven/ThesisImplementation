@@ -272,6 +272,11 @@ namespace Implementation.Algorithms
             return u;
         }
 
+        protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Initialize()
         {
             AllUsers = new List<int>();

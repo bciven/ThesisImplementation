@@ -28,7 +28,7 @@ namespace Implementation.Data_Structures
         public bool ReuseDisposedPairs { get; set; }
         public bool LazyAdjustment { get; set; }
         public bool Swap { get; set; }
-        public bool PhantomRealization { get; set; }
+        public bool PostPhantomRealization { get; set; }
         public double SwapThreshold { get; set; }
         public double PreservePercentage { get; set; }
 

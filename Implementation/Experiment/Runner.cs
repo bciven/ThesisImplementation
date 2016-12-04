@@ -89,6 +89,12 @@ namespace Implementation.Experiment
                                            lazyAdjustment = Convert.ToBoolean(x.Attribute("LazyAdjustment").Value);
                                        }
 
+                                       bool postPhantomRealization = true;
+                                       if (x.Attribute("PostPhantomRealization") != null)
+                                       {
+                                           postPhantomRealization = Convert.ToBoolean(x.Attribute("PostPhantomRealization").Value);
+                                       }
+
                                        bool swap = false;
                                        double swapThreshold = 0d;
                                        if (x.Attribute("Swap") != null)
@@ -110,7 +116,8 @@ namespace Implementation.Experiment
                                            LazyAdjustment = lazyAdjustment,
                                            Swap = swap,
                                            SwapThreshold = swapThreshold,
-                                           PreservePercentage = preservePercentage
+                                           PreservePercentage = preservePercentage,
+                                           PostPhantomRealization = postPhantomRealization
                                        };
 
                                        switch (x.Value.ToUpper())
@@ -417,7 +424,8 @@ namespace Implementation.Experiment
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
-                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs,
+                        PostPhantomRealization = parameters.ExpTypes[i].PostPhantomRealization
                     };
 
                     if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.LA)
@@ -482,7 +490,7 @@ namespace Implementation.Experiment
                         Reassignment = parameters.ExpTypes[i].Reassignment,
                         DeficitFix = true,
                         LazyAdjustment = parameters.ExpTypes[i].LazyAdjustment,
-                        PhantomRealization = true,
+                        PostPhantomRealization = true,
                         PrintOutEachStep = false,
                         FeedType = FeedTypeEnum.SerialExperiment,
                         CommunityAware = true,
@@ -516,7 +524,7 @@ namespace Implementation.Experiment
                         InputFilePath = null,
                         PhantomAware = !DG,
                         PostInitializationInsert = true,
-                        PhantomRealization = false,
+                        PostPhantomRealization = false,
                         ImmediateReaction = IR || IRC,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
                         DeficitFix = parameters.ExpTypes[i].DeficitFix,

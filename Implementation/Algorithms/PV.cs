@@ -170,7 +170,12 @@ namespace Implementation.Algorithms
 
         protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
         {
+            throw new NotImplementedException();
+        }
 
+        protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Initialize()

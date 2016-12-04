@@ -29,6 +29,7 @@ namespace Implementation.Data_Structures
         public double SwapThreshold { get; set; }
         public double PreservePercentage { get; set; }
         public AlgorithmSpec.ReassignmentEnum Reassignment { get; set; }
+        public bool PostPhantomRealization { get; set; }
 
         public SGConf()
         {
@@ -48,6 +49,7 @@ namespace Implementation.Data_Structures
             PreservePercentage = 50;
             Reassignment = AlgorithmSpec.ReassignmentEnum.None;
             ReuseDisposedPairs = false;
+            PostPhantomRealization = false;
         }
 
         public void PrintToExcel(ExcelPackage excel, Stopwatch stopwatch)
@@ -121,6 +123,10 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = ReuseDisposedPairs;
             i++;
 
+            ws.Cells[i, 1].Value = "Post Phantom Realization";
+            ws.Cells[i, 2].Value = PostPhantomRealization;
+            i++;
+
             PrintAdditionals(ws, i);
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
@@ -157,6 +163,8 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Preserve Percentage", PreservePercentage);
 
             configsFile.WriteLine("{0},{1}", "Reuse Disposed Pairs", ReuseDisposedPairs);
+
+            configsFile.WriteLine("{0},{1}", "Post Phantom Realization", PostPhantomRealization);
 
             PrintAdditionals(configsFile);
 

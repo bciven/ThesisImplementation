@@ -293,6 +293,11 @@ namespace Implementation.Algorithms
 
         }
 
+        protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
+        {
+            throw new NotImplementedException();
+        }
+
         private void AdjustList(List<int> affectedEvents, int user, int @event)
         {
             foreach (var u in AllUsers)

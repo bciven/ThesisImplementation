@@ -20,7 +20,6 @@ namespace Implementation.Data_Structures
         public int NumberOfPhantomEvents { get; set; }
         public bool CommunityAware { get; set; }
         public CommunityFixEnum CommunityFix { get; set; }
-        public bool PhantomRealization { get; set; }
 
         public CADGConf()
         {
@@ -39,7 +38,6 @@ namespace Implementation.Data_Structures
             CommunityAware = false;
             AlgorithmName = null;
             CommunityFix = CommunityFixEnum.None;
-            PhantomRealization = false;
         }
 
         protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
@@ -126,8 +124,7 @@ namespace Implementation.Data_Structures
             i++;
 
             ws.Cells[i, 1].Value = "Phantom Realization";
-            ws.Cells[i, 2].Value = PhantomRealization;
-            i++;
+            ws.Cells[i, 2].Value = PostPhantomRealization;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
         }
@@ -176,7 +173,7 @@ namespace Implementation.Data_Structures
 
             configsFile.WriteLine("{0},{1}", "Swap Threshold", SwapThreshold);
 
-            configsFile.WriteLine("{0},{1}", "Phantom Realization", PhantomRealization);
+            configsFile.WriteLine("{0},{1}", "Phantom Realization", PostPhantomRealization);
 
             PrintAdditionals(configsFile);
 

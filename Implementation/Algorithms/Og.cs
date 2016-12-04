@@ -160,6 +160,11 @@ namespace Implementation.Algorithms
             throw new NotImplementedException();
         }
 
+        protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
+        {
+            throw new NotImplementedException();
+        }
+
         private void AdjustList(int user, int @event, bool assignmentMade)
         {
             foreach (var u in AllUsers)
