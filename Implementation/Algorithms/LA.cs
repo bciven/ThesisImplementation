@@ -109,6 +109,7 @@ namespace Implementation.Algorithms
                 {
                     assignments[e].Remove(u);
                     _numberOfUserAssignments[u]--;
+                    affectedEvents?.Add(e);
                 }
             }
         }

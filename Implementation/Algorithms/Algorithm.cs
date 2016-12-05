@@ -45,6 +45,15 @@ namespace Implementation.Algorithms
             return _watch;
         }
 
+        protected void UserAssignmentFault()
+        {
+            var userAssignments = Assignments.Where(x => x.Distinct().Count() != x.Count).ToList();
+            if (userAssignments.Count > 0)
+            {
+                throw new Exception("User assigned to more than one event");
+            }
+        }
+
         protected void PrintAssignments(bool assignmentMade)
         {
             if (!Conf.PrintOutEachStep)
@@ -439,6 +448,7 @@ namespace Implementation.Algorithms
                 var destinationEvent = phantomEvent.Key;
                 var oldSocialWelfare = CalculateSocialWelfare(assignments);
                 var finalizedUsers = new List<int>();
+                bool dealmade = false;
 
                 foreach (var userWelfare in realUsersWelfare)
                 {
@@ -483,7 +493,7 @@ namespace Implementation.Algorithms
                                 {
                                     finalizedUsers.Add(finializedUser);
                                 }
-
+                                dealmade = true;
                                 break;
                             }
                             else
@@ -493,9 +503,20 @@ namespace Implementation.Algorithms
                                     assignments[destinationEvent].Remove(userEvent.User);
                                     assignments[userEvent.Event].Add(userEvent.User);
                                 }
+                                transferedUserEvents.RemoveAll(x=> true);
                             }
                         }
                     }
+                }
+
+                if (!dealmade)
+                {
+                    foreach (var userEvent in transferedUserEvents)
+                    {
+                        assignments[destinationEvent].Remove(userEvent.User);
+                        assignments[userEvent.Event].Add(userEvent.User);
+                    }
+                    transferedUserEvents.RemoveAll(x => true);
                 }
 
                 finalizedUsers.ForEach(x => realUsersWelfare.Remove(x));
