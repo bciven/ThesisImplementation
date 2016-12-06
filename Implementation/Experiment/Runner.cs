@@ -283,11 +283,13 @@ namespace Implementation.Experiment
             {
                 if (round == 0)
                 {
-                    configs[round].InputFilePath = null;
+                    configs[round].InputFilePath = @"E:\Concordia\Thesis\Implementation\Implementation\bin\Debug\Batch - 1480903688.76701\2016-12-05 18-43-30-525\02-12";
+                    //configs[round].InputFilePath = null;
                 }
                 else if (round > 0)
                 {
-                    configs[round].InputFilePath = configs[round - 1].InputFilePath;
+                    //configs[round].InputFilePath = configs[round - 1].InputFilePath;
+                    configs[round].InputFilePath = @"E:\Concordia\Thesis\Implementation\Implementation\bin\Debug\Batch - 1480903688.76701\2016-12-05 18-43-30-525\02-12";
                 }
             }
         }

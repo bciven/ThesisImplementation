@@ -181,10 +181,10 @@ namespace Implementation.Algorithms
             }
 
             GreedyAssign();
-            Assignments = RealizePhantomEvents(Assignments);
-
+            Assignments = RealizePhantomEvents(Assignments, _permanentAssignments, _numberOfUserAssignments);
             _permanentAssignments = Swap(_permanentAssignments);
             _permanentAssignments = ReuseDisposedPairs(_permanentAssignments);
+            UserMultiAssignmentFault(_permanentAssignments);
             Assignments = _permanentAssignments;
         }
 
@@ -203,7 +203,7 @@ namespace Implementation.Algorithms
                 {
                     if (_conf.PhantomAware && !_phantomEvents.Contains(e))
                     {
-                        Console.WriteLine("This event should be phantom!");
+                        throw new Exception("This event should be phantom!");
                     }
                     assignments[e].Remove(u);
                     _numberOfUserAssignments[u]--;

@@ -91,7 +91,7 @@ namespace Implementation.Algorithms
                 }
             }
 
-            Assignments = RealizePhantomEvents(Assignments);
+            Assignments = RealizePhantomEvents(Assignments, null, _numberOfUserAssignments);
             Assignments = Swap(Assignments);
             Assignments = ReuseDisposedPairs(Assignments);
         }
