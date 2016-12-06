@@ -45,7 +45,6 @@ namespace Implementation.Algorithms
             return _watch;
         }
 
-
         protected void UserAssignmentFault(List<List<int>> assignments)
         {
             var userAssignments = assignments.Where(x => x.Distinct().Count() != x.Count).ToList();

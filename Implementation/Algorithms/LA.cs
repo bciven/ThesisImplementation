@@ -91,9 +91,9 @@ namespace Implementation.Algorithms
                 }
             }
 
-            Assignments = RealizePhantomEvents(Assignments, null, _numberOfUserAssignments);
             Assignments = Swap(Assignments);
             Assignments = ReuseDisposedPairs(Assignments);
+            Assignments = RealizePhantomEvents(Assignments, null, _numberOfUserAssignments);
         }
 
         protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
