@@ -470,12 +470,12 @@ namespace Implementation.Algorithms
 
             var phantomEvents = AllEvents.Where(x => assignments[x].Count < EventCapacity[x].Min).ToList();
             var realEvents = AllEvents.Where(x => assignments[x].Count >= EventCapacity[x].Min).ToList();
-            var phaontomEventsDeficit = phantomEvents.Select((x, y) => new KeyValuePair<int, int>(x, EventCapacity[x].Min - assignments[x].Count)).OrderBy(x => x.Value);
+            var phantomEventsInterests = phantomEvents.Select((x, y) => new KeyValuePair<int, int>(x, EventCapacity[x].Min - assignments[x].Count)).OrderBy(x => x.Value);
             var candidateUsers = realEvents.SelectMany(x => assignments[x]).ToList();
-            var realUsersWelfare = candidateUsers.ToDictionary(x => x, x => GetUserWelfare(new UserEvent(x, UserAssignments[x].Value), assignments[UserAssignments[x].Value]))
-                .OrderBy(x => x.Value.TotalWelfare).ToDictionary(pair => pair.Key, pair => pair.Value);
+            var realUsersWelfare = candidateUsers.ToDictionary(x => x, x => InAffinities[x][UserAssignments[x].Value])
+                .OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-            foreach (var phantomEvent in phaontomEventsDeficit)
+            foreach (var phantomEvent in phantomEventsInterests)
             {
                 var transferedUserEvents = new List<UserEvent>();
                 var destinationEvent = phantomEvent.Key;
@@ -494,7 +494,7 @@ namespace Implementation.Algorithms
                         //CalculateEventWelfare(assignments, sourceEvent.Value, oldWelfare, false);
                         //CalculateEventWelfare(assignments, destinationEvent, oldWelfare, false);
 
-                        if (InAffinities[sourceEvent.Value][sourceEvent.Value] < InAffinities[sourceEvent.Value][destinationEvent])
+                        if (InAffinities[canditateUser][sourceEvent.Value] < InAffinities[canditateUser][destinationEvent])
                         {
                             assignments[sourceEvent.Value].Remove(canditateUser);
                             permanentAssignments?[sourceEvent.Value].Remove(canditateUser);
