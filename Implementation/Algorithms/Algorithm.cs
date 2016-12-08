@@ -54,6 +54,19 @@ namespace Implementation.Algorithms
             }
         }
 
+        protected void RemovePhantomEvents()
+        {
+            Assignments = AllEvents.Select(x => new List<int>()).ToList();
+            for (int user = 0; user < UserAssignments.Count; user++)
+            {
+                var userAssignment = UserAssignments[user];
+                if (userAssignment.HasValue && !Assignments[userAssignment.Value].Contains(user))
+                {
+                    Assignments[userAssignment.Value].Add(user);
+                }
+            }
+        }
+
         protected void UserMultiAssignmentFault(List<List<int>> assignments)
         {
             foreach (var user in AllUsers)
@@ -461,7 +474,7 @@ namespace Implementation.Algorithms
             return welfare;
         }
 
-        protected List<List<int>> RealizePhantomEvents(List<List<int>> assignments, List<List<int>> permanentAssignments, List<int> numberOfUserAssignments)
+        protected List<List<int>> RealizePhantomEvents(List<List<int>> assignments, List<int> numberOfUserAssignments)
         {
             if (!Conf.PostPhantomRealization)
             {
@@ -497,7 +510,6 @@ namespace Implementation.Algorithms
                         if (InAffinities[canditateUser][sourceEvent.Value] < InAffinities[canditateUser][destinationEvent])
                         {
                             assignments[sourceEvent.Value].Remove(canditateUser);
-                            permanentAssignments?[sourceEvent.Value].Remove(canditateUser);
                             assignments[destinationEvent].Add(canditateUser);
                             transferedUserEvents.Add(new UserEvent(canditateUser, sourceEvent.Value));
                         }
@@ -536,7 +548,6 @@ namespace Implementation.Algorithms
                                 {
                                     assignments[destinationEvent].Remove(userEvent.User);
                                     assignments[userEvent.Event].Add(userEvent.User);
-                                    permanentAssignments?[userEvent.Event].Remove(userEvent.User);
                                 }
                                 transferedUserEvents.RemoveAll(x => true);
                             }
@@ -550,7 +561,6 @@ namespace Implementation.Algorithms
                     {
                         assignments[destinationEvent].Remove(userEvent.User);
                         assignments[userEvent.Event].Add(userEvent.User);
-                        permanentAssignments?[userEvent.Event].Remove(userEvent.User);
                     }
                     transferedUserEvents.RemoveAll(x => true);
                 }

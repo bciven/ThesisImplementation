@@ -81,19 +81,11 @@ namespace Implementation.Algorithms
                 }
             }
 
-            Assignments = AllEvents.Select(x => new List<int>()).ToList();
-            for (int user = 0; user < UserAssignments.Count; user++)
-            {
-                var userAssignment = UserAssignments[user];
-                if (userAssignment.HasValue && !Assignments[userAssignment.Value].Contains(user))
-                {
-                    Assignments[userAssignment.Value].Add(user);
-                }
-            }
+            RemovePhantomEvents();
 
             Assignments = Swap(Assignments);
             Assignments = ReuseDisposedPairs(Assignments);
-            Assignments = RealizePhantomEvents(Assignments, null, _numberOfUserAssignments);
+            Assignments = RealizePhantomEvents(Assignments, _numberOfUserAssignments);
         }
 
         protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)

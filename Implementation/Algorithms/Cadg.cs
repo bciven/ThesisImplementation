@@ -14,7 +14,6 @@ namespace Implementation.Algorithms
         private List<int> _users;
         private List<int> _numberOfUserAssignments;
         private List<int> _eventDeficitContribution;
-        private List<List<int>> _permanentAssignments;
         private int _deficit = 0;
         private FakeHeap _queue;
         private List<int> _phantomEvents;
@@ -135,7 +134,6 @@ namespace Implementation.Algorithms
                     if (Assignments[@event].Count > minCapacity)
                     {
                         UserAssignments[user] = @event;
-                        _permanentAssignments[@event].Add(user);
 
                         var excludedEvents = _events.Where(x => x != @event && Assignments[x].Contains(user)).ToList();
                         foreach (var e in excludedEvents)
@@ -181,11 +179,11 @@ namespace Implementation.Algorithms
             }
 
             GreedyAssign();
-            Assignments = RealizePhantomEvents(Assignments, _permanentAssignments, _numberOfUserAssignments);
-            _permanentAssignments = Swap(_permanentAssignments);
-            _permanentAssignments = ReuseDisposedPairs(_permanentAssignments);
-            UserMultiAssignmentFault(_permanentAssignments);
-            Assignments = _permanentAssignments;
+            Assignments = RealizePhantomEvents(Assignments, _numberOfUserAssignments);
+            RemovePhantomEvents();
+            Assignments = Swap(Assignments);
+            Assignments = ReuseDisposedPairs(Assignments);
+            UserMultiAssignmentFault(Assignments);
         }
 
         protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
@@ -195,7 +193,6 @@ namespace Implementation.Algorithms
             {
                 //permanently assign all users to real events
                 UserAssignments[u] = @event;
-                _permanentAssignments[@event].Add(u);
 
                 //unassign these users from all other events
                 var excludedEvents = _events.Where(x => x != @event && assignments[x].Contains(u));
@@ -495,7 +492,6 @@ namespace Implementation.Algorithms
             _users = new List<int>();
             _events = new List<int>();
             Assignments = new List<List<int>>();
-            _permanentAssignments = new List<List<int>>();
             UserAssignments = new List<int?>();
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
@@ -518,7 +514,6 @@ namespace Implementation.Algorithms
                 _events.Add(i);
                 _eventDeficitContribution.Add(0);
                 Assignments.Add(new List<int>());
-                _permanentAssignments.Add(new List<int>());
             }
 
             EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
