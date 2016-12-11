@@ -485,15 +485,16 @@ namespace Implementation.Algorithms
             var realEvents = AllEvents.Where(x => assignments[x].Count >= EventCapacity[x].Min).ToList();
             var phantomEventsInterests = phantomEvents.Select((x, y) => new KeyValuePair<int, int>(x, EventCapacity[x].Min - assignments[x].Count)).OrderBy(x => x.Value);
             var candidateUsers = realEvents.SelectMany(x => assignments[x]).ToList();
-            var realUsersWelfare = candidateUsers.ToDictionary(x => x, x => InAffinities[x][UserAssignments[x].Value])
-                .OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
-
+            
             foreach (var phantomEvent in phantomEventsInterests)
             {
                 var transferedUserEvents = new List<UserEvent>();
                 var destinationEvent = phantomEvent.Key;
                 var oldSocialWelfare = CalculateSocialWelfare(assignments);
                 var finalizedUsers = new List<int>();
+                var realUsersWelfare = candidateUsers.ToDictionary(x => x, x => InAffinities[x][destinationEvent])
+                .OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+
                 bool dealmade = false;
 
                 foreach (var userWelfare in realUsersWelfare)
@@ -565,7 +566,7 @@ namespace Implementation.Algorithms
                     transferedUserEvents.RemoveAll(x => true);
                 }
 
-                finalizedUsers.ForEach(x => realUsersWelfare.Remove(x));
+                candidateUsers.RemoveAll(x=> finalizedUsers.Contains(x));
             }
 
             return assignments;
