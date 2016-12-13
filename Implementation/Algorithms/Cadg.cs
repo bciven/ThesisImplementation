@@ -550,6 +550,7 @@ namespace Implementation.Algorithms
             }
         }
 
+
         private void SetNullMembers()
         {
             InAffinities = null;

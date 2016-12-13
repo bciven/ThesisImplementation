@@ -660,6 +660,39 @@ namespace Implementation.Algorithms
             return welfare;
         }
 
+        public Welfare CalculateSocialWelfare(List<int> assignment, int user, int @event)
+        {
+            var welfare = new Welfare
+            {
+                TotalWelfare = 0d,
+                InnateWelfare = 0d,
+                SocialWelfare = 0d
+            };
+
+            if (!assignment.Contains(user))
+            {
+                return welfare;
+            }
+
+            double s1 = InAffinities[user][@event];
+            double s2 = 0;
+
+            foreach (var user2 in assignment)
+            {
+                if (user != user2)
+                {
+                    s2 += SocAffinities[user, user2];
+                }
+            }
+            s1 = (1 - Conf.Alpha) * s1;
+            s2 = Conf.Alpha * s2;
+            welfare.InnateWelfare += s1;
+            welfare.SocialWelfare += s2;
+            welfare.TotalWelfare += s1 + s2;
+
+            return welfare;
+        }
+
         public Dictionary<int, double> CalcRegRatios(List<int> allUsers)
         {
             var ratios = new Dictionary<int, double>();
@@ -841,6 +874,58 @@ namespace Implementation.Algorithms
             userevent.Utility = g;
 
             return userevent; //Math.Round(g, Conf.Percision);
+        }
+
+        protected List<UserEvent> PredictiveInitialization()
+        {
+            var userEvents1 = new Dictionary<string, UserEvent>();
+            var userEvents2 = new List<UserEvent>();
+            foreach (var u in AllUsers)
+            {
+                foreach (var e in AllEvents)
+                {
+                    var ue = new UserEvent { Event = e, User = u, Utility = 0d };
+
+                    ue.Utility += (1 - Conf.Alpha) * InAffinities[u][e];
+                    ue.Utility += Conf.Alpha * EventCapacity[e].Max * AllUsers.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (AllUsers.Count - 1);
+                    userEvents1.Add(ue.Key, ue);
+                }
+            }
+
+            //foreach (var ue1 in userEvents1)
+            //{
+            //    var ue = new UserEvent { Event = ue1.Value.Event, User = ue1.Value.User, Utility = ue1.Value.Utility };
+            //    userEvents2.Add(ue);
+            //}
+
+            var maxInterest = userEvents1.Max(x => x.Value.Utility);
+            var rnd = new Random();
+            foreach (var u in AllUsers)
+            {
+                foreach (var e in AllEvents)
+                {
+                    var ue = new UserEvent { Event = e, User = u, Utility = 0d };
+
+                    ue.Utility += (1 - Conf.Alpha) * InAffinities[u][e];
+                    var probableParticipants = 0;
+                    //probability of landing on this event
+                    var potentialSocialGain = AllUsers.Sum(x =>
+                    {
+                        var probabilityOfLanding = userEvents1[UserEvent.GetKey(x, e)].Utility / maxInterest * 100;
+                        var thereOrNotThere = rnd.Next(0, 100) < probabilityOfLanding;
+                        if (thereOrNotThere)
+                        {
+                            probableParticipants++;
+                            return SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d);
+                        }
+                        return 0;
+                    });
+                    ue.Utility += Conf.Alpha * EventCapacity[e].Max * (potentialSocialGain / probableParticipants);
+                    userEvents2.Add(ue);
+                }
+            }
+
+            return userEvents2;
         }
 
         protected double Util(int @event, int mainUser)

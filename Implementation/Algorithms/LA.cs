@@ -251,7 +251,8 @@ namespace Implementation.Algorithms
                     RandomInitialization();
                     break;
                 case InitStrategyEnum.PredictiveSort:
-                    PredictiveInitialization();
+                    var userEvents = PredictiveInitialization();
+                    AddtoQueue(userEvents);
                     break;
             }
         }
@@ -278,7 +279,15 @@ namespace Implementation.Algorithms
             }
         }
 
-        private void PredictiveInitialization()
+        private void AddtoQueue(List<UserEvent> userEvents2)
+        {
+            foreach (var userEvent in userEvents2.OrderByDescending(x => x.Utility))
+            {
+                _queue.Enqueue(userEvent);
+            }
+        }
+
+        private void CommunityInitialization()
         {
             var communities = DetectCommunities();
             var dictionary = new Dictionary<string, int>(AllUsers.Count * AllEvents.Count);

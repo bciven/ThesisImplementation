@@ -33,7 +33,44 @@ namespace Implementation.Data_Structures
 
         public UserEvent()
         {
-            
+
+        }
+
+        public void SetUserEvent(string key)
+        {
+            var values = key.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+
+            try
+            {
+                User = int.Parse(values[0]);
+                Event = int.Parse(values[1]);
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Corrupt User-Event Key");
+            }
+        }
+
+        public static UserEvent GetUserEvent(string key, double utility)
+        {
+            var values = key.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+
+            try
+            {
+                var userEvent = new UserEvent(int.Parse(values[0]), int.Parse(values[1]), utility);
+                return userEvent;
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Corrupt User-Event Key");
+            }
+        }
+
+        public static string GetKey(int user, int @event)
+        {
+            return user + "-" + @event;
         }
 
         public int User { get; set; }
