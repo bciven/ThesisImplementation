@@ -282,15 +282,15 @@ namespace Implementation.Experiment
         {
             if (serial)
             {
-                configs[round].InputFilePath = @"E:\Concordia\Thesis\Implementation\Implementation\bin\Debug\Batch - 1481580375.2857\2016-12-12 22-06-15-291\0-0.xlsx";
-                //if (round == 0)
-                //{
-                //    configs[round].InputFilePath = null;
-                //}
-                //else if (round > 0)
-                //{
-                //    configs[round].InputFilePath = configs[round - 1].InputFilePath;
-                //}
+                //configs[round].InputFilePath = @"E:\Concordia\Thesis\Implementation\Implementation\bin\Debug\Batch - 1481580375.2857\2016-12-12 22-06-15-291\0-0.xlsx";
+                if (round == 0)
+                {
+                    configs[round].InputFilePath = null;
+                }
+                else if (round > 0)
+                {
+                    configs[round].InputFilePath = configs[round - 1].InputFilePath;
+                }
             }
         }
 
