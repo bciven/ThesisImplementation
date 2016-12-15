@@ -276,11 +276,7 @@ namespace Implementation.Algorithms
                 {
                     foreach (var availableUser in availableUsers)
                     {
-                        var q = Util(@event, availableUser, _conf.CommunityAware, _conf.CommunityFix, _users);
-                        if (q.Utility > 0)
-                        {
-                            queue.AddOrUpdate(q.Utility, new UserEvent { User = availableUser, Event = @event });
-                        }
+                        AddToQueue(@event, availableUser, true);
                     }
                 }
 
@@ -305,12 +301,6 @@ namespace Implementation.Algorithms
                     AddToQueue(@event, availableUser);
                 }
             }
-        }
-
-        private void AddToQueue(int @event, int user)
-        {
-            var q = Util(@event, user, _conf.CommunityAware, _conf.CommunityFix, _users);
-            _queue.AddOrUpdate(q.Utility, new UserEvent { User = user, Event = @event });
         }
 
         protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
@@ -388,8 +378,7 @@ namespace Implementation.Algorithms
 
             foreach (var ue in userEvents)
             {
-                var newPriority = Util(ue.Event, ue.User, _conf.CommunityAware, _conf.CommunityFix, _users);
-                _queue.AddOrUpdate(newPriority.Utility, ue);
+                AddToQueue(ue.Event, ue.User);
                 foreach (var user in AllUsers)
                 {
                     Update(ue.User, user, ue.Event);
@@ -420,17 +409,16 @@ namespace Implementation.Algorithms
             if (SocAffinities[user1, user2] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
             {
                 //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
-                var newPriority = Util(@event, user2, _conf.CommunityAware, _conf.CommunityFix, _users);
                 if (!_conf.LazyAdjustment)
                 {
                     if (!Assignments[@event].Contains(user2) && Assignments[@event].Count < EventCapacity[@event].Max)
                     {
-                        _queue.AddOrUpdate(newPriority.Utility, new UserEvent { User = user2, Event = @event });
+                        AddToQueue(@event, user2);
                     }
                 }
                 else
                 {
-                    _queue.AddOrUpdate(newPriority.Utility, new UserEvent { User = user2, Event = @event });
+                    AddToQueue(@event, user2);
                 }
 
                 /*if (_conf.ImmediateReaction)
@@ -445,6 +433,17 @@ namespace Implementation.Algorithms
                     _queue.AddOrUpdate(newPriority, new UserEvent { User = user2, Event = @event });
                     _queue.Update(newPriority, new UserEvent { User = user2, Event = @event });
                 }*/
+            }
+        }
+
+        private void AddToQueue(int @event, int user, bool addOnPositiveUtility = false)
+        {
+            var q = Util(@event, user, _conf.CommunityAware, _conf.CommunityFix, _users);
+            if (!addOnPositiveUtility || q.Utility > 0)
+            {
+                var userEvent = new UserEvent { User = user, Event = @event, Utility = q.Utility };
+                _queue.AddOrUpdate(q.Utility, new UserEvent { User = user, Event = @event });
+                UserEventsInit[userEvent.Key].Utility = q.Utility;
             }
         }
 
@@ -520,6 +519,28 @@ namespace Implementation.Algorithms
             InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
             SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
 
+            InitializeQueue();
+        }
+
+        private void InitializeQueue()
+        {
+            List<UserEvent> userEvents;
+            if (_conf.CommunityFix.HasFlag(CommunityFixEnum.PredictiveInitialization))
+            {
+                userEvents = PredictiveInitialization();
+            }
+            else
+            {
+                userEvents = DefaultQueueInitialization();
+            }
+
+            InitializeQueue(userEvents);
+        }
+
+        private List<UserEvent> DefaultQueueInitialization()
+        {
+            var userEvents = new List<UserEvent>();
+            UserEventsInit = new Dictionary<string, UserEvent>();
             foreach (var u in _users)
             {
                 foreach (var e in _events)
@@ -539,17 +560,29 @@ namespace Implementation.Algorithms
                         {
                             denomDeduction = 0;
                         }
-                        ue.Utility += _conf.Alpha * EventCapacity[e].Max * _users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (_users.Count - denomDeduction);
+                        ue.Utility += _conf.Alpha * EventCapacity[e].Max *
+                                      _users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) /
+                                      (_users.Count - denomDeduction);
                     }
 
+                    UserEventsInit.Add(ue.Key, ue);
                     if (ue.Utility != 0)
                     {
-                        _queue.AddOrUpdate(ue.Utility, ue);
+                        userEvents.Add(ue);
                     }
                 }
             }
+
+            return userEvents;
         }
 
+        private void InitializeQueue(List<UserEvent> userEvents)
+        {
+            foreach (var ue in userEvents)
+            {
+                _queue.AddOrUpdate(ue.Utility, ue);
+            }
+        }
 
         private void SetNullMembers()
         {

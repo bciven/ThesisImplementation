@@ -15,6 +15,8 @@ namespace Implementation.Data_Structures
         Version3 = 4,
         Version4 = 8,
         InitializationFix = 16,
-        DenomFix = 32
+        DenomFix = 32,
+        PredictiveInitialization = 64,
+        Predictive = 128
     }
 }

@@ -27,6 +27,8 @@ namespace Implementation.Algorithms
         private readonly ReassignmentStrategy<T> _reassignmentStrategy;
         private readonly PrintOutput<T> _printOutput;
         protected Dictionary<string, UserEvent> DisposeUserEvents;
+        protected double MaxInterest;
+        protected Dictionary<string, UserEvent> UserEventsInit;
 
         protected Algorithm(int index)
         {
@@ -485,7 +487,7 @@ namespace Implementation.Algorithms
             var realEvents = AllEvents.Where(x => assignments[x].Count >= EventCapacity[x].Min).ToList();
             var phantomEventsInterests = phantomEvents.Select((x, y) => new KeyValuePair<int, int>(x, EventCapacity[x].Min - assignments[x].Count)).OrderBy(x => x.Value);
             var candidateUsers = realEvents.SelectMany(x => assignments[x]).ToList();
-            
+
             foreach (var phantomEvent in phantomEventsInterests)
             {
                 var transferedUserEvents = new List<UserEvent>();
@@ -566,7 +568,7 @@ namespace Implementation.Algorithms
                     transferedUserEvents.RemoveAll(x => true);
                 }
 
-                candidateUsers.RemoveAll(x=> finalizedUsers.Contains(x));
+                candidateUsers.RemoveAll(x => finalizedUsers.Contains(x));
             }
 
             return assignments;
@@ -790,11 +792,34 @@ namespace Implementation.Algorithms
         protected UserEvent Util(int @event, int user, bool communityAware, CommunityFixEnum communityFix,
             List<int> users)
         {
+            //if (communityAware && communityFix.HasFlag(CommunityFixEnum.Predictive))
+            //{
+            //    var ue = new UserEvent(user, @event);
+            //    ue.Utility += (1 - Conf.Alpha) * InAffinities[user][@event];
+            //    var probableParticipants = 0;
+            //    //probability of landing on this event
+            //    var potentialSocialGain = AllUsers.Sum(x =>
+            //    {
+            //        var probabilityOfLanding = userEvents1[UserEvent.GetKey(x, e)].Utility / maxInterest * 100;
+            //        var thereOrNotThere = rnd.Next(0, 100) < probabilityOfLanding;
+            //        if (thereOrNotThere)
+            //        {
+            //            probableParticipants++;
+            //            return SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d);
+            //        }
+            //        return 0;
+            //    });
+            //    ue.Utility += Conf.Alpha * EventCapacity[e].Max * (potentialSocialGain / probableParticipants);
+            //    userEvents2.Add(ue);
+            //    return ue;
+            //}
+
             var userevent = new UserEvent
             {
                 Event = @event,
                 User = user
             };
+
             var g = (1 - Conf.Alpha) * InAffinities[user][@event];
 
             var s = Conf.Alpha *
@@ -862,6 +887,23 @@ namespace Implementation.Algorithms
                             u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
                          (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1));
                 }
+                else if (communityFix.HasFlag(CommunityFixEnum.Predictive))
+                {
+                    int probableParticipants = 0;
+                    var rnd = new Random();
+                    var potentialSocialGain = users.Sum(x =>
+                    {
+                        var probabilityOfLanding = UserEventsInit[UserEvent.GetKey(x, @event)].Utility / MaxInterest * 100;
+                        var thereOrNotThere = rnd.Next(0, 100) < probabilityOfLanding;
+                        if (thereOrNotThere)
+                        {
+                            probableParticipants++;
+                            return SocAffinities[user, x] + (Conf.Asymmetric ? SocAffinities[x, user] : 0d);
+                        }
+                        return 0;
+                    });
+                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (potentialSocialGain / probableParticipants);
+                }
 
                 g = s + g;
                 /*var firstNotSecond = usersints.Except(users).ToList();
@@ -878,8 +920,8 @@ namespace Implementation.Algorithms
 
         protected List<UserEvent> PredictiveInitialization()
         {
-            var userEvents1 = new Dictionary<string, UserEvent>();
-            var userEvents2 = new List<UserEvent>();
+            UserEventsInit = new Dictionary<string, UserEvent>();
+            List<UserEvent> userEvents = new List<UserEvent>();
             foreach (var u in AllUsers)
             {
                 foreach (var e in AllEvents)
@@ -888,7 +930,7 @@ namespace Implementation.Algorithms
 
                     ue.Utility += (1 - Conf.Alpha) * InAffinities[u][e];
                     ue.Utility += Conf.Alpha * EventCapacity[e].Max * AllUsers.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (AllUsers.Count - 1);
-                    userEvents1.Add(ue.Key, ue);
+                    UserEventsInit.Add(ue.Key, ue);
                 }
             }
 
@@ -898,7 +940,7 @@ namespace Implementation.Algorithms
             //    userEvents2.Add(ue);
             //}
 
-            var maxInterest = userEvents1.Max(x => x.Value.Utility);
+            MaxInterest = UserEventsInit.Max(x => x.Value.Utility);
             var rnd = new Random();
             foreach (var u in AllUsers)
             {
@@ -911,7 +953,7 @@ namespace Implementation.Algorithms
                     //probability of landing on this event
                     var potentialSocialGain = AllUsers.Sum(x =>
                     {
-                        var probabilityOfLanding = userEvents1[UserEvent.GetKey(x, e)].Utility / maxInterest * 100;
+                        var probabilityOfLanding = UserEventsInit[UserEvent.GetKey(x, e)].Utility / MaxInterest * 100;
                         var thereOrNotThere = rnd.Next(0, 100) < probabilityOfLanding;
                         if (thereOrNotThere)
                         {
@@ -921,11 +963,12 @@ namespace Implementation.Algorithms
                         return 0;
                     });
                     ue.Utility += Conf.Alpha * EventCapacity[e].Max * (potentialSocialGain / probableParticipants);
-                    userEvents2.Add(ue);
+                    ue.Priority = ue.Utility;
+                    userEvents.Add(ue);
                 }
             }
 
-            return userEvents2;
+            return userEvents;
         }
 
         protected double Util(int @event, int mainUser)
