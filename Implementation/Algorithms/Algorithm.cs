@@ -902,7 +902,7 @@ namespace Implementation.Algorithms
                         }
                         return 0;
                     });
-                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (potentialSocialGain / probableParticipants);
+                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (potentialSocialGain /  Math.Max(probableParticipants,1));
                 }
 
                 g = s + g;
@@ -962,7 +962,7 @@ namespace Implementation.Algorithms
                         }
                         return 0;
                     });
-                    ue.Utility += Conf.Alpha * EventCapacity[e].Max * (potentialSocialGain / probableParticipants);
+                    ue.Utility += Conf.Alpha * EventCapacity[e].Max * (potentialSocialGain / Math.Max(probableParticipants, 1));
                     ue.Priority = ue.Utility;
                     userEvents.Add(ue);
                 }
