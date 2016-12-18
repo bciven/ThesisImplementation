@@ -22,6 +22,7 @@ namespace Implementation.Data_Structures
 
         public int? TakeChanceLimit { get; set; }
         public CommunityFixEnum CommunityFix { get; set; }
+        public InitStrategyEnum InitStrategy { get; set; }
 
         public AlgorithmEnum Algorithm { get; set; }
         public bool DeficitFix { get; set; }

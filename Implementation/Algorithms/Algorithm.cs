@@ -902,7 +902,7 @@ namespace Implementation.Algorithms
                         }
                         return 0;
                     });
-                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (potentialSocialGain /  Math.Max(probableParticipants,1));
+                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (potentialSocialGain / Math.Max(probableParticipants, 1));
                 }
 
                 g = s + g;
@@ -918,7 +918,7 @@ namespace Implementation.Algorithms
             return userevent; //Math.Round(g, Conf.Percision);
         }
 
-        protected List<UserEvent> PredictiveInitialization()
+        protected List<UserEvent> PredictiveInitialization(InitStrategyEnum initStrategy)
         {
             UserEventsInit = new Dictionary<string, UserEvent>();
             List<UserEvent> userEvents = new List<UserEvent>();
@@ -931,7 +931,16 @@ namespace Implementation.Algorithms
                     ue.Utility += (1 - Conf.Alpha) * InAffinities[u][e];
                     ue.Utility += Conf.Alpha * EventCapacity[e].Max * AllUsers.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (AllUsers.Count - 1);
                     UserEventsInit.Add(ue.Key, ue);
+                    if (initStrategy != InitStrategyEnum.ProbabilisticSort)
+                    {
+                        userEvents.Add(ue);
+                    }
                 }
+            }
+
+            if (initStrategy != InitStrategyEnum.ProbabilisticSort)
+            {
+                return userEvents;
             }
 
             //foreach (var ue1 in userEvents1)
@@ -939,7 +948,6 @@ namespace Implementation.Algorithms
             //    var ue = new UserEvent { Event = ue1.Value.Event, User = ue1.Value.User, Utility = ue1.Value.Utility };
             //    userEvents2.Add(ue);
             //}
-
             MaxInterest = UserEventsInit.Max(x => x.Value.Utility);
             var rnd = new Random();
             foreach (var u in AllUsers)

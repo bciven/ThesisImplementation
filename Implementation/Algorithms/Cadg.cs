@@ -527,7 +527,7 @@ namespace Implementation.Algorithms
             List<UserEvent> userEvents;
             if (_conf.CommunityFix.HasFlag(CommunityFixEnum.PredictiveInitialization))
             {
-                userEvents = PredictiveInitialization();
+                userEvents = PredictiveInitialization(InitStrategyEnum.ProbabilisticSort);
             }
             else
             {

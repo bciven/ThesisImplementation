@@ -106,6 +106,12 @@ namespace Implementation.Experiment
                                            }
                                        }
 
+                                       var initStrategy = InitStrategyEnum.RandomSort;
+                                       if (x.Attribute("InitStrategy") != null)
+                                       {
+                                           initStrategy = (InitStrategyEnum) Convert.ToInt32(x.Attribute("InitStrategy").Value);
+                                       }
+
                                        var algspec = new AlgorithmSpec
                                        {
                                            CommunityFix = communityfix,
@@ -117,7 +123,8 @@ namespace Implementation.Experiment
                                            Swap = swap,
                                            SwapThreshold = swapThreshold,
                                            PreservePercentage = preservePercentage,
-                                           PostPhantomRealization = postPhantomRealization
+                                           PostPhantomRealization = postPhantomRealization,
+                                           InitStrategy = initStrategy
                                        };
 
                                        switch (x.Value.ToUpper())
@@ -401,7 +408,7 @@ namespace Implementation.Experiment
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
-                        InitStrategyEnum = InitStrategyEnum.RandomSort
+                        InitStrategyEnum = parameters.ExpTypes[i].InitStrategy
                     };
 
                     configs.Add(conf);
@@ -436,7 +443,7 @@ namespace Implementation.Experiment
                     }
                     else if(algorithmEnum == AlgorithmSpec.AlgorithmEnum.PLA)
                     {
-                        conf.InitStrategyEnum = InitStrategyEnum.PredictiveSort;
+                        conf.InitStrategyEnum = parameters.ExpTypes[i].InitStrategy;
                     }
 
                     configs.Add(conf);

@@ -250,8 +250,8 @@ namespace Implementation.Algorithms
                 case InitStrategyEnum.RandomSort:
                     RandomInitialization();
                     break;
-                case InitStrategyEnum.PredictiveSort:
-                    var userEvents = PredictiveInitialization();
+                default:
+                    var userEvents = PredictiveInitialization(_conf.InitStrategyEnum);
                     AddtoQueue(userEvents);
                     break;
             }
