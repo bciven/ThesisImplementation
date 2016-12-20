@@ -108,13 +108,7 @@ namespace Implementation.Algorithms
 
         protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
         {
-            foreach (var @event in realOpenEvents)
-            {
-                foreach (var availableUser in availableUsers)
-                {
-                    _queue.Enqueue(new UserEvent { User = availableUser, Event = @event });
-                }
-            }
+            InitializationStrategy(availableUsers, realOpenEvents);
         }
 
         protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
@@ -240,33 +234,33 @@ namespace Implementation.Algorithms
             InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
             SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
 
-            InitializationStrategy();
+            InitializationStrategy(AllUsers, AllEvents);
         }
 
-        private void InitializationStrategy()
+        private void InitializationStrategy(List<int> users, List<int> events)
         {
             switch (_conf.InitStrategyEnum)
             {
                 case InitStrategyEnum.RandomSort:
-                    RandomInitialization();
+                    RandomInitialization(users, events);
                     break;
                 default:
-                    var userEvents = PredictiveInitialization(_conf.InitStrategyEnum);
+                    var userEvents = PredictiveInitialization(_conf.InitStrategyEnum, users, events);
                     AddtoQueue(userEvents);
                     break;
             }
         }
 
-        private void RandomInitialization()
+        private void RandomInitialization(List<int> users, List<int> events)
         {
             var randomQueue = new List<UserEvent>();
             var rnd = new System.Random();
-            _users = _users.OrderBy(item => rnd.Next()).ToList();
-            _events = _events.OrderBy(item => rnd.Next()).ToList();
+            _users = users.OrderBy(item => rnd.Next()).ToList();
+            _events = events.OrderBy(item => rnd.Next()).ToList();
 
-            foreach (var u in _users)
+            foreach (var u in users)
             {
-                foreach (var e in _events)
+                foreach (var e in events)
                 {
                     var ue = new UserEvent { Event = e, User = u, Utility = 0 };
                     randomQueue.Add(ue);

@@ -294,13 +294,14 @@ namespace Implementation.Algorithms
 
         protected override void RefillQueue(List<int> realOpenEvents, List<int> availableUsers)
         {
-            foreach (var @event in realOpenEvents)
-            {
-                foreach (var availableUser in availableUsers)
-                {
-                    AddToQueue(@event, availableUser);
-                }
-            }
+            //foreach (var @event in realOpenEvents)
+            //{
+            //    foreach (var availableUser in availableUsers)
+            //    {
+            //        AddToQueue(@event, availableUser);
+            //    }
+            //}
+            InitializeQueue(availableUsers, realOpenEvents);
         }
 
         protected override void PhantomAware(List<int> availableUsers, List<int> phantomEvents)
@@ -443,6 +444,7 @@ namespace Implementation.Algorithms
             {
                 var userEvent = new UserEvent { User = user, Event = @event, Utility = q.Utility };
                 _queue.AddOrUpdate(q.Utility, new UserEvent { User = user, Event = @event });
+                MaxInterest = Math.Max(userEvent.Utility, MaxInterest);
                 UserEventsInit[userEvent.Key].Utility = q.Utility;
             }
         }
@@ -519,31 +521,31 @@ namespace Implementation.Algorithms
             InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
             SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
 
-            InitializeQueue();
+            InitializeQueue(AllUsers, AllEvents);
         }
 
-        private void InitializeQueue()
+        private void InitializeQueue(List<int> users, List<int> events)
         {
             List<UserEvent> userEvents;
             if (_conf.CommunityFix.HasFlag(CommunityFixEnum.PredictiveInitialization))
             {
-                userEvents = PredictiveInitialization(InitStrategyEnum.ProbabilisticSort);
+                userEvents = PredictiveInitialization(InitStrategyEnum.ProbabilisticSort, users, events);
             }
             else
             {
-                userEvents = DefaultQueueInitialization();
+                userEvents = DefaultQueueInitialization(users, events);
             }
 
             InitializeQueue(userEvents);
         }
 
-        private List<UserEvent> DefaultQueueInitialization()
+        private List<UserEvent> DefaultQueueInitialization(List<int> users, List<int> events)
         {
             var userEvents = new List<UserEvent>();
             UserEventsInit = new Dictionary<string, UserEvent>();
-            foreach (var u in _users)
+            foreach (var u in users)
             {
-                foreach (var e in _events)
+                foreach (var e in events)
                 {
                     var ue = new UserEvent { Event = e, User = u, Utility = 0d };
 
@@ -561,8 +563,8 @@ namespace Implementation.Algorithms
                             denomDeduction = 0;
                         }
                         ue.Utility += _conf.Alpha * EventCapacity[e].Max *
-                                      _users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) /
-                                      (_users.Count - denomDeduction);
+                                      users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) /
+                                      (users.Count - denomDeduction);
                     }
 
                     UserEventsInit.Add(ue.Key, ue);

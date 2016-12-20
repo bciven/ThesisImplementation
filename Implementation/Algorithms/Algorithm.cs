@@ -889,7 +889,7 @@ namespace Implementation.Algorithms
                 }
                 else if (communityFix.HasFlag(CommunityFixEnum.Predictive))
                 {
-                    int probableParticipants = 0;
+                    /*int probableParticipants = 0;
                     var rnd = new Random();
                     var potentialSocialGain = users.Sum(x =>
                     {
@@ -902,7 +902,10 @@ namespace Implementation.Algorithms
                         }
                         return 0;
                     });
-                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (potentialSocialGain / Math.Max(probableParticipants, 1));
+                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (potentialSocialGain / Math.Max(probableParticipants, 1));*/
+                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
+                        users.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
+                        (double)Math.Max(users.Count - denumDeduction, 1);
                 }
 
                 g = s + g;
@@ -918,27 +921,33 @@ namespace Implementation.Algorithms
             return userevent; //Math.Round(g, Conf.Percision);
         }
 
-        protected List<UserEvent> PredictiveInitialization(InitStrategyEnum initStrategy)
+        protected List<UserEvent> PredictiveInitialization(InitStrategyEnum initStrategy, List<int> users, List<int> events)
         {
             UserEventsInit = new Dictionary<string, UserEvent>();
             List<UserEvent> userEvents = new List<UserEvent>();
-            foreach (var u in AllUsers)
+            foreach (var u in users)
             {
-                foreach (var e in AllEvents)
+                foreach (var e in events)
                 {
                     var ue = new UserEvent { Event = e, User = u, Utility = 0d };
 
                     ue.Utility += (1 - Conf.Alpha) * InAffinities[u][e];
-                    ue.Utility += Conf.Alpha * EventCapacity[e].Max * AllUsers.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) / (AllUsers.Count - 1);
+                    ue.Utility += Conf.Alpha * EventCapacity[e].Max *
+                                  users.Sum(
+                                      x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) /
+                                  (users.Count - 1);
                     UserEventsInit.Add(ue.Key, ue);
-                    if (initStrategy != InitStrategyEnum.ProbabilisticSort)
+
+                    if (initStrategy == InitStrategyEnum.CommunityAwareSort)
                     {
                         userEvents.Add(ue);
                     }
                 }
             }
 
-            if (initStrategy != InitStrategyEnum.ProbabilisticSort)
+
+            MaxInterest = UserEventsInit.Count > 0 ? UserEventsInit.Max(x => x.Value.Utility) : 0d;
+            if (initStrategy == InitStrategyEnum.CommunityAwareSort)
             {
                 return userEvents;
             }
@@ -948,18 +957,17 @@ namespace Implementation.Algorithms
             //    var ue = new UserEvent { Event = ue1.Value.Event, User = ue1.Value.User, Utility = ue1.Value.Utility };
             //    userEvents2.Add(ue);
             //}
-            MaxInterest = UserEventsInit.Max(x => x.Value.Utility);
-            var rnd = new Random();
+            /*var rnd = new Random();
             foreach (var u in AllUsers)
             {
-                foreach (var e in AllEvents)
+                foreach (var e in events)
                 {
                     var ue = new UserEvent { Event = e, User = u, Utility = 0d };
 
                     ue.Utility += (1 - Conf.Alpha) * InAffinities[u][e];
                     var probableParticipants = 0;
-                    //probability of landing on this event
-                    var potentialSocialGain = AllUsers.Sum(x =>
+                    probability of landing on this event
+                    var potentialSocialGain = users.Sum(x =>
                     {
                         var probabilityOfLanding = UserEventsInit[UserEvent.GetKey(x, e)].Utility / MaxInterest * 100;
                         var thereOrNotThere = rnd.Next(0, 100) < probabilityOfLanding;
@@ -973,6 +981,31 @@ namespace Implementation.Algorithms
                     ue.Utility += Conf.Alpha * EventCapacity[e].Max * (potentialSocialGain / Math.Max(probableParticipants, 1));
                     ue.Priority = ue.Utility;
                     userEvents.Add(ue);
+                }
+            }*/
+
+            if (initStrategy == InitStrategyEnum.ProbabilisticSort)
+            {
+                foreach (var u in users)
+                {
+                    foreach (var e in events)
+                    {
+                        var ue = new UserEvent { Event = e, User = u, Utility = 0d };
+
+                        ue.Utility += (1 - Conf.Alpha) * InAffinities[u][e];
+                        //probability of landing on this event
+                        var gains = users.Select(x => new UserEvent(x, e, UserEventsInit[UserEvent.GetKey(x, e)].Utility));
+                        var gain = gains.OrderByDescending(x => x.Utility).Take(EventCapacity[e].Max - 1).Sum(x => x.Utility);
+
+                        ue.Utility += Conf.Alpha * gain;
+                        ue.Priority = ue.Utility;
+                        userEvents.Add(ue);
+                    }
+                }
+
+                if (initStrategy != InitStrategyEnum.ProbabilisticSort)
+                {
+                    return userEvents;
                 }
             }
 
