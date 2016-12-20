@@ -16,7 +16,6 @@ namespace Implementation.Data_Structures
             get
             {
                 var max1 = new UserEvent { Utility = double.MinValue, Priority = double.MinValue };
-                var max2 = new UserEvent { Utility = double.MinValue, Priority = double.MinValue};
 
                 foreach (var pair in _sortedSet)
                 {
@@ -38,6 +37,11 @@ namespace Implementation.Data_Structures
         // O(logn)
         public void AddOrUpdate(double key, UserEvent value)
         {
+            if (Double.IsNaN(key))
+            {
+                throw new Exception("Key is Not an number");
+            }
+
             value.Utility = key;
             var stringKey = CreateKey(value.User, value.Event);
 
@@ -67,6 +71,11 @@ namespace Implementation.Data_Structures
 
         public void Update(double key, UserEvent value)
         {
+            if (Double.IsNaN(key))
+            {
+                throw new Exception("Key is Not an number");
+            }
+
             value.Utility = key;
             var stringKey = CreateKey(value.User, value.Event);
             UserEvent newValue;
@@ -102,6 +111,11 @@ namespace Implementation.Data_Structures
         // O(logn)
         public void Remove(double key, UserEvent value)
         {
+            if (Double.IsNaN(key))
+            {
+                throw new Exception("Key is Not an number");
+            }
+
             _sortedSet.Remove(CreateKey(value.User, value.Event));
         }
 

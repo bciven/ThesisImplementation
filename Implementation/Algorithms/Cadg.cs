@@ -562,9 +562,19 @@ namespace Implementation.Algorithms
                         {
                             denomDeduction = 0;
                         }
-                        ue.Utility += _conf.Alpha * EventCapacity[e].Max *
-                                      users.Sum(x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) /
-                                      (users.Count - denomDeduction);
+
+                        if (users.Count - denomDeduction > 0)
+                        {
+                            ue.Utility += _conf.Alpha*EventCapacity[e].Max*
+                                          users.Sum(
+                                              x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d))/
+                                          (users.Count - denomDeduction);
+                        }
+                    }
+
+                    if (Double.IsNaN(ue.Utility))
+                    {
+                        throw new Exception("Utility is not a number.");
                     }
 
                     UserEventsInit.Add(ue.Key, ue);
