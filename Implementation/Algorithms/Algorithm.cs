@@ -315,6 +315,7 @@ namespace Implementation.Algorithms
                     {
                         var user2 = users[j];
                         if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null
+                            && UserAssignments[user1] != UserAssignments[user2]
                             && !assignments[UserAssignments[user1].Value].Contains(user2)
                             && !assignments[UserAssignments[user2].Value].Contains(user1)
                             && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])

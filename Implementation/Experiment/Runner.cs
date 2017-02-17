@@ -289,15 +289,15 @@ namespace Implementation.Experiment
         {
             if (serial)
             {
-                configs[round].InputFilePath = @"E:\Concordia\Thesis\Implementation\Implementation\bin\Debug\Batch - 1482217922.10948\2016-12-20 08-55-47-108\04-06";
-                /*if (round == 0)
+                //configs[round].InputFilePath = @"E:\Concordia\Thesis\Implementation\Implementation\bin\Debug\Batch - 1482217922.10948\2016-12-20 08-55-47-108\04-06";
+                if (round == 0)
                 {
                     configs[round].InputFilePath = null;
                 }
                 else if (round > 0)
                 {
                     configs[round].InputFilePath = configs[round - 1].InputFilePath;
-                }*/
+                }
             }
         }
 
