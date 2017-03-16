@@ -18,6 +18,12 @@ namespace Implementation.Data_Structures
             Priority = priority;
         }
 
+        public UserEvent Copy()
+        {
+            var ue = new UserEvent(User,Event,Utility,Priority);
+            return ue;
+        }
+
         public UserEvent(int user, int @event)
         {
             User = user;

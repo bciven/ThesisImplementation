@@ -244,9 +244,17 @@ namespace Implementation.Algorithms
                 case InitStrategyEnum.RandomSort:
                     RandomInitialization(users, events);
                     break;
+                case InitStrategyEnum.ExtraversionIndex:
+                    {
+                        var userEvents = ExtraversionIndexInitialization(users, events);
+                        AddtoQueue(userEvents);
+                    }
+                    break;
                 default:
-                    var userEvents = PredictiveInitialization(_conf.InitStrategyEnum, users, events);
-                    AddtoQueue(userEvents);
+                    {
+                        var userEvents = PredictiveInitialization(_conf.InitStrategyEnum, users, events);
+                        AddtoQueue(userEvents);
+                    }
                     break;
             }
         }

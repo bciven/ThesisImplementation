@@ -15,7 +15,7 @@ namespace Implementation.Algorithms
         private List<int> _numberOfUserAssignments;
         private List<int> _eventDeficitContribution;
         private int _deficit = 0;
-        private FakeHeap _queue;
+        private IHeap _queue;
         private List<int> _phantomEvents;
         private bool _init;
         private readonly IDataFeed _dataFeeder;
@@ -27,26 +27,26 @@ namespace Implementation.Algorithms
             Conf = conf;
         }
 
-        protected void WriteQueue(int hitCount, FileInfo output)
-        {
-            if (hitCount % 10 != 0)
-            {
-                return;
-            }
+        //protected void WriteQueue(int hitCount, FileInfo output)
+        //{
+        //    if (hitCount % 10 != 0)
+        //    {
+        //        return;
+        //    }
 
-            var list = _queue._sortedSet.OrderByDescending(x => x.Value.Utility).ToList();
-            if (output != null)
-            {
-                var dir = Directory.CreateDirectory(output.DirectoryName + @"\" + Conf.AlgorithmName + "-" + _index);
-                var path = dir.FullName + @"\" + hitCount + ".csv";
-                var file = new StreamWriter(path);
-                foreach (var item in list)
-                {
-                    file.WriteLine("{0}, {1}, {2}", item.Value.Utility, item.Value.User, item.Value.Event);
-                }
-                file.Close();
-            }
-        }
+        //    var list = _queue._sortedSet.OrderByDescending(x => x.Value.Utility).ToList();
+        //    if (output != null)
+        //    {
+        //        var dir = Directory.CreateDirectory(output.DirectoryName + @"\" + Conf.AlgorithmName + "-" + _index);
+        //        var path = dir.FullName + @"\" + hitCount + ".csv";
+        //        var file = new StreamWriter(path);
+        //        foreach (var item in list)
+        //        {
+        //            file.WriteLine("{0}, {1}, {2}", item.Value.Utility, item.Value.User, item.Value.Event);
+        //        }
+        //        file.Close();
+        //    }
+        //}
 
         public override void Run(FileInfo output)
         {
@@ -125,6 +125,11 @@ namespace Implementation.Algorithms
 
                     _numberOfUserAssignments[user]++;
                     assignmentMade = true;
+
+                    if (_conf.SetType == SetType.Fibonacci)
+                    {
+                        UserAssignments[user] = @event;
+                    }
 
                     if (_users.Contains(user))
                     {
@@ -497,7 +502,15 @@ namespace Implementation.Algorithms
             _numberOfUserAssignments = new List<int>();
             _eventDeficitContribution = new List<int>();
             Welfare = new Welfare();
-            _queue = new FakeHeap();
+            if (_conf.SetType == SetType.Fibonacci)
+            {
+                _queue = new FiboHeap();
+            }
+            else
+            {
+                _queue = new FakeHeap();
+            }
+
             _phantomEvents = new List<int>();
             //_deficit = 0;
             _init = true;
@@ -565,10 +578,10 @@ namespace Implementation.Algorithms
 
                         if (users.Count - denomDeduction > 0)
                         {
-                            ue.Utility += _conf.Alpha*EventCapacity[e].Max*
+                            ue.Utility += _conf.Alpha*(EventCapacity[e].Max*
                                           users.Sum(
                                               x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d))/
-                                          (users.Count - denomDeduction);
+                                          (users.Count - denomDeduction));
                         }
                     }
 

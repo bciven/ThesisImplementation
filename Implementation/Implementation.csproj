@@ -86,6 +86,13 @@
     <Compile Include="Algorithms\LA.cs" />
     <Compile Include="Algorithms\ReassignmentStrategy.cs" />
     <Compile Include="Data Structures\ECADGConf.cs" />
+    <Compile Include="Data Structures\FibHeap\BinaryHeap.cs" />
+    <Compile Include="Data Structures\FibHeap\FibonacciHeap.cs" />
+    <Compile Include="Data Structures\FibHeap\INode.cs" />
+    <Compile Include="Data Structures\FibHeap\IPriorityQueue.cs" />
+    <Compile Include="Data Structures\FibHeap\Node.cs" />
+    <Compile Include="Data Structures\FiboHeap.cs" />
+    <Compile Include="Data Structures\IHeap.cs" />
     <Compile Include="Data Structures\InitStrategyEnum.cs" />
     <Compile Include="Data Structures\OutputFiles.cs" />
     <Compile Include="Data Structures\OutputEnum.cs" />
@@ -96,6 +103,7 @@
     <Compile Include="Data Structures\LAPlusConf.cs" />
     <Compile Include="Data Structures\LAConf.cs" />
     <Compile Include="Data Structures\Graph.cs" />
+    <Compile Include="Data Structures\SetType.cs" />
     <Compile Include="Data Structures\SGConf.cs" />
     <Compile Include="Data Structures\SocialNetworkModels.cs" />
     <Compile Include="Data Structures\EventInterest.cs" />
@@ -115,8 +123,6 @@
     <Compile Include="Dataset Reader\ExcelFileFeed.cs" />
     <Compile Include="Data Structures\FeedTypeEnum.cs" />
     <Compile Include="Dataset Reader\IDataFeed.cs" />
-    <Compile Include="Data Structures\FibonacciHeap.cs" />
-    <Compile Include="Data Structures\FibonacciHeapNode.cs" />
     <Compile Include="Data Structures\Cardinality.cs" />
     <Compile Include="Data Structures\FakeHeap.cs" />
     <Compile Include="Data Structures\Heap.cs" />
@@ -138,7 +144,9 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Code.png" />

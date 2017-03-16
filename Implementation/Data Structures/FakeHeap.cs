@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Implementation.Data_Structures
 {
-    public class FakeHeap
+    public class FakeHeap : IHeap
     {
         private readonly bool _doublePriority;
         public readonly Dictionary<string, UserEvent> _sortedSet;

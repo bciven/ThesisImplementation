@@ -19,6 +19,7 @@ namespace Implementation.Data_Structures
         public bool LazyAdjustment { get; set; }
         public int NumberOfPhantomEvents { get; set; }
         public bool CommunityAware { get; set; }
+        public SetType SetType { get; set; }
         public CommunityFixEnum CommunityFix { get; set; }
 
         public CADGConf()
@@ -38,6 +39,7 @@ namespace Implementation.Data_Structures
             CommunityAware = false;
             AlgorithmName = null;
             CommunityFix = CommunityFixEnum.None;
+            SetType = SetType.List;
         }
 
         protected override void PrintConfigs(ExcelPackage excel, Stopwatch stopwatch)
@@ -125,6 +127,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Phantom Realization";
             ws.Cells[i, 2].Value = PostPhantomRealization;
+            i++;
+
+            ws.Cells[i, 1].Value = "Set Type";
+            ws.Cells[i, 2].Value = SetType;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
         }
@@ -174,6 +180,8 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Swap Threshold", SwapThreshold);
 
             configsFile.WriteLine("{0},{1}", "Phantom Realization", PostPhantomRealization);
+
+            configsFile.WriteLine("{0},{1}", "Set Type", SetType);
 
             PrintAdditionals(configsFile);
 

@@ -112,6 +112,12 @@ namespace Implementation.Experiment
                                            initStrategy = (InitStrategyEnum) Convert.ToInt32(x.Attribute("InitStrategy").Value);
                                        }
 
+                                       var setType = SetType.List;
+                                       if (x.Attribute("SetType") != null)
+                                       {
+                                           setType = (SetType) Convert.ToInt32(x.Attribute("SetType").Value);
+                                       }
+
                                        var algspec = new AlgorithmSpec
                                        {
                                            CommunityFix = communityfix,
@@ -124,7 +130,8 @@ namespace Implementation.Experiment
                                            SwapThreshold = swapThreshold,
                                            PreservePercentage = preservePercentage,
                                            PostPhantomRealization = postPhantomRealization,
-                                           InitStrategy = initStrategy
+                                           InitStrategy = initStrategy,
+                                           SetType = setType
                                        };
 
                                        switch (x.Value.ToUpper())
@@ -512,7 +519,8 @@ namespace Implementation.Experiment
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
-                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs,
+                        SetType = parameters.ExpTypes[i].SetType
                     };
 
                     configs.Add(conf);
@@ -550,7 +558,8 @@ namespace Implementation.Experiment
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
-                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs,
+                        SetType = parameters.ExpTypes[i].SetType
                     };
 
                     configs.Add(conf);
