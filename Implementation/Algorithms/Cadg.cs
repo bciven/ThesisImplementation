@@ -52,6 +52,47 @@ namespace Implementation.Algorithms
         {
             if (!_init)
                 throw new Exception("Not Initialized");
+            if (Conf.Sweep)
+            {
+                ExcludingUserEvents = new List<UserEvent>();
+                var queueCount = 0;
+                while (_queue.Count() > 0 && queueCount != _queue.Count())
+                {
+                    queueCount = _queue.Count();
+                    RunAlgorithm(output);
+                    for (int i = 0; i < UserAssignments.Count; i++)
+                    {
+                        if (!UserAssignments[i].HasValue)
+                        {
+                            continue;
+                        }
+                        var @event = UserAssignments[i].Value;
+                        if (!ExcludingUserEvents.Any(x => x.Event == @event && x.User == i))
+                        {
+                            var wf = CalculateSocialWelfare(Assignments[@event], i, @event);
+                            ExcludingUserEvents.Add(new UserEvent(i, UserAssignments[i].Value, wf.TotalWelfare));
+                        }
+                    }
+
+                    Initialize();
+                }
+                _queue.RemoveAll();
+                foreach (var userEvent in ExcludingUserEvents)
+                {
+                    _queue.AddOrUpdate(userEvent.Utility, userEvent);
+                }
+                RunAlgorithm(output);
+            }
+            else
+            {
+                RunAlgorithm(output);
+            }
+        }
+
+        public void RunAlgorithm(FileInfo output)
+        {
+            if (!_init)
+                throw new Exception("Not Initialized");
             int hitcount = 0;
 
             while (!_queue.IsEmpty())
@@ -187,6 +228,7 @@ namespace Implementation.Algorithms
             Assignments = RealizePhantomEvents(Assignments, _numberOfUserAssignments);
             RemovePhantomEvents();
             Assignments = Swap(Assignments);
+            Assignments = Sweep(Assignments);
             Assignments = ReuseDisposedPairs(Assignments);
             UserMultiAssignmentFault(Assignments);
         }
@@ -444,6 +486,11 @@ namespace Implementation.Algorithms
 
         private void AddToQueue(int @event, int user, bool addOnPositiveUtility = false)
         {
+            if(ExcludingUserEvents != null && ExcludingUserEvents.Any(x=> x.Event == @event && x.User == user))
+            {
+                return;
+            }
+
             var q = Util(@event, user, _conf.CommunityAware, _conf.CommunityFix, _users);
             if (!addOnPositiveUtility || q.Utility > 0)
             {
@@ -560,6 +607,11 @@ namespace Implementation.Algorithms
             {
                 foreach (var e in events)
                 {
+                    if (ExcludingUserEvents != null && ExcludingUserEvents.Any(x => x.User == u && x.Event == e))
+                    {
+                        continue;
+                    }
+
                     var ue = new UserEvent { Event = e, User = u, Utility = 0d };
 
                     if (InAffinities[u][e] != 0)

@@ -104,6 +104,7 @@ namespace Implementation.Algorithms
                 }
             }
             Assignments = Swap(Assignments);
+            Assignments = Sweep(Assignments);
         }
 
         protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)

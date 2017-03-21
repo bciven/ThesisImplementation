@@ -62,6 +62,7 @@ namespace Implementation.Algorithms
 
             GreedyAssign();
             Assignments = Swap(Assignments);
+            Assignments = Sweep(Assignments);
             Assignments = ReuseDisposedPairs(Assignments);
         }
 

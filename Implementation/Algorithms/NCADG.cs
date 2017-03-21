@@ -167,6 +167,7 @@ namespace Implementation.Algorithms
             GreedyAssign();
 
             Assignments = Swap(Assignments);
+            Assignments = Sweep(Assignments);
             Assignments = ReuseDisposedPairs(Assignments);
         }
 
@@ -277,6 +278,10 @@ namespace Implementation.Algorithms
             {
                 foreach (var availableUser in availableUsers)
                 {
+                    if(ExcludingUserEvents != null && ExcludingUserEvents.Any(x=> x.Event == @event && x.User == availableUser))
+                    {
+                        continue;
+                    }
                     AddToQueue(@event, availableUser);
                 }
             }

@@ -106,6 +106,12 @@ namespace Implementation.Experiment
                                            }
                                        }
 
+                                       bool sweep = false;
+                                       if (x.Attribute("Sweep") != null)
+                                       {
+                                           sweep = Convert.ToBoolean(x.Attribute("Sweep").Value);
+                                       }
+
                                        var initStrategy = InitStrategyEnum.RandomSort;
                                        if (x.Attribute("InitStrategy") != null)
                                        {
@@ -127,6 +133,7 @@ namespace Implementation.Experiment
                                            ReuseDisposedPairs = reuseDisposedPairs,
                                            LazyAdjustment = lazyAdjustment,
                                            Swap = swap,
+                                           Sweep = sweep,
                                            SwapThreshold = swapThreshold,
                                            PreservePercentage = preservePercentage,
                                            PostPhantomRealization = postPhantomRealization,
@@ -383,6 +390,7 @@ namespace Implementation.Experiment
                         CommunityAware = algorithmEnum == AlgorithmSpec.AlgorithmEnum.COG,
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
+                        Sweep = parameters.ExpTypes[i].Sweep,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
@@ -411,6 +419,7 @@ namespace Implementation.Experiment
                         TakeChanceLimit = tcl,
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
+                        Sweep = parameters.ExpTypes[i].Sweep,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
@@ -436,6 +445,7 @@ namespace Implementation.Experiment
                         Parameters = parameters,
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
+                        Sweep = parameters.ExpTypes[i].Sweep,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
@@ -481,6 +491,7 @@ namespace Implementation.Experiment
                         CommunityFix = parameters.ExpTypes[i].CommunityFix,
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
+                        Sweep = parameters.ExpTypes[i].Sweep,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
@@ -516,6 +527,7 @@ namespace Implementation.Experiment
                         CommunityFix = parameters.ExpTypes[i].CommunityFix,
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
+                        Sweep = parameters.ExpTypes[i].Sweep,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
@@ -555,6 +567,7 @@ namespace Implementation.Experiment
                         CommunityFix = parameters.ExpTypes[i].CommunityFix,
                         OutputType = parameters.OutputType,
                         Swap = parameters.ExpTypes[i].Swap,
+                        Sweep = parameters.ExpTypes[i].Sweep,
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
@@ -762,7 +775,10 @@ namespace Implementation.Experiment
 
         private void Print(List<UserEvent> result, Welfare welfare, Stopwatch watch)
         {
-            Console.WriteLine("Date: {0}", DateTime.Now.ToString("HH:mm:ss"));
+            var time = DateTime.Now;
+            var formattedTime = time.ToString("HH:mm:ss");
+            formattedTime = string.Format("Date: {0}", formattedTime).ToString();
+            //Console.WriteLine(formattedTime);
             Console.WriteLine("Exection Time: {0}ms", watch.ElapsedMilliseconds);
             Console.WriteLine("Social Welfare: {0}", welfare.SocialWelfare);
             Console.WriteLine("Innate Welfare: {0}", welfare.InnateWelfare);

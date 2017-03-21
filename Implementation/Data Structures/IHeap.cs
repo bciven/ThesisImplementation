@@ -10,5 +10,6 @@
         void Remove(double key, UserEvent value);
         UserEvent RemoveMax();
         void Update(double key, UserEvent value);
+        void RemoveAll();
     }
 }

@@ -29,6 +29,46 @@ namespace Implementation.Algorithms
         {
             if (!_init)
                 throw new Exception("Not Initialized");
+            if (Conf.Sweep)
+            {
+                ExcludingUserEvents = new List<UserEvent>();
+                var queueCount = 0;
+                while (_queue.Count > 0 && queueCount != _queue.Count)
+                {
+                    queueCount = _queue.Count;
+                    RunAlgorithm();
+                    for (int i = 0; i < UserAssignments.Count; i++)
+                    {
+                        if (!UserAssignments[i].HasValue)
+                        {
+                            continue;
+                        }
+                        var @event = UserAssignments[i].Value;
+                        if (!ExcludingUserEvents.Any(x => x.Event == @event && x.User == i))
+                        {
+                            var wf = CalculateSocialWelfare(Assignments[@event], i, @event);
+                            ExcludingUserEvents.Add(new UserEvent(i, UserAssignments[i].Value, wf.TotalWelfare));
+                        }
+                    }
+
+                    Initialize();
+                }
+                _queue.Clear();
+                ExcludingUserEvents = ExcludingUserEvents.OrderByDescending(x => x.Utility).ToList();
+                foreach (var userEvent in ExcludingUserEvents)
+                {
+                    _queue.Enqueue(userEvent);
+                }
+                RunAlgorithm();
+            }
+            else
+            {
+                RunAlgorithm();
+            }
+        }
+
+        private void RunAlgorithm()
+        {
             int hitcount = 0;
 
             while (_queue.Count > 0)
@@ -84,6 +124,7 @@ namespace Implementation.Algorithms
             RemovePhantomEvents();
 
             Assignments = Swap(Assignments);
+            Assignments = Sweep(Assignments);
             Assignments = ReuseDisposedPairs(Assignments);
             Assignments = RealizePhantomEvents(Assignments, _numberOfUserAssignments);
         }
@@ -187,7 +228,7 @@ namespace Implementation.Algorithms
             DisposeUserEvents = new Dictionary<string, UserEvent>();
             _init = false;
 
-            if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
+            if ((_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile) && _conf.NumberOfUsers == 0)
             {
                 int numberOfUsers;
                 int numberOfEvents;
@@ -230,10 +271,13 @@ namespace Implementation.Algorithms
                 Assignments.Add(new List<int>());
             }
 
-            EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
-            InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
-            SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
-
+            if (EventCapacity == null || EventCapacity.Count == 0)
+            {
+                EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
+                InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
+                SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
+            }
+            
             InitializationStrategy(AllUsers, AllEvents);
         }
 
@@ -247,6 +291,12 @@ namespace Implementation.Algorithms
                 case InitStrategyEnum.ExtraversionIndex:
                     {
                         var userEvents = ExtraversionIndexInitialization(users, events);
+                        AddtoQueue(userEvents);
+                    }
+                    break;
+                case InitStrategyEnum.EventRanking:
+                    {
+                        var userEvents = EventRankingInitialization(users, events);
                         AddtoQueue(userEvents);
                     }
                     break;

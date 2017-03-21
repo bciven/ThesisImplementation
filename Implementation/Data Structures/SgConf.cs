@@ -26,6 +26,7 @@ namespace Implementation.Data_Structures
         public bool Asymmetric { get; set; }
         public bool ReuseDisposedPairs { get; set; }
         public bool Swap { get; set; }
+        public bool Sweep { get; set; }
         public double SwapThreshold { get; set; }
         public double PreservePercentage { get; set; }
         public AlgorithmSpec.ReassignmentEnum Reassignment { get; set; }
@@ -50,6 +51,7 @@ namespace Implementation.Data_Structures
             Reassignment = AlgorithmSpec.ReassignmentEnum.None;
             ReuseDisposedPairs = false;
             PostPhantomRealization = false;
+            Sweep = false;
         }
 
         public void PrintToExcel(ExcelPackage excel, Stopwatch stopwatch)
@@ -111,6 +113,10 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = Swap;
             i++;
 
+            ws.Cells[i, 1].Value = "Sweep";
+            ws.Cells[i, 2].Value = Sweep;
+            i++;
+
             ws.Cells[i, 1].Value = "Swap Threshold";
             ws.Cells[i, 2].Value = SwapThreshold;
             i++;
@@ -157,6 +163,8 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Asymmetric", Asymmetric);
 
             configsFile.WriteLine("{0},{1}", "Swap", Swap);
+
+            configsFile.WriteLine("{0},{1}", "Sweep", Sweep);
 
             configsFile.WriteLine("{0},{1}", "Swap Threshold", SwapThreshold);
 

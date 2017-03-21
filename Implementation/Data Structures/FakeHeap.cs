@@ -149,6 +149,9 @@ namespace Implementation.Data_Structures
             }
         }
 
-
+        public void RemoveAll()
+        {
+            _sortedSet.Clear();
+        }
     }
 }

@@ -120,5 +120,10 @@ namespace Implementation.Data_Structures
         {
             throw new NotImplementedException();
         }
+
+        public void RemoveAll()
+        {
+            _heap.Clear();
+        }
     }
 }
