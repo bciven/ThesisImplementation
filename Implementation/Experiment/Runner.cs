@@ -778,7 +778,7 @@ namespace Implementation.Experiment
             var time = DateTime.Now;
             var formattedTime = time.ToString("HH:mm:ss");
             formattedTime = string.Format("Date: {0}", formattedTime).ToString();
-            //Console.WriteLine(formattedTime);
+            Console.WriteLine(formattedTime);
             Console.WriteLine("Exection Time: {0}ms", watch.ElapsedMilliseconds);
             Console.WriteLine("Social Welfare: {0}", welfare.SocialWelfare);
             Console.WriteLine("Innate Welfare: {0}", welfare.InnateWelfare);
