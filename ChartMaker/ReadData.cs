@@ -90,6 +90,7 @@ namespace ChartMaker
                 welfare.AvgInnatelWelfare = welfare.AvgInnatelWelfare / welfare.Count;
                 welfare.AvgSocialWelfare = welfare.AvgSocialWelfare / welfare.Count;
                 welfare.AvgRegRatio = welfare.AvgRegRatio / welfare.Count;
+                welfare.AvgExecTime = welfare.AvgExecTime / welfare.Count;
             }
         }
 
@@ -226,6 +227,16 @@ namespace ChartMaker
             }
             welfare.MinCardinalityOption = Convert.ToString(wsParameters.Cells[minCardinalityOptionIndex, 2].Value);
 
+            var execTimeIndex = 1;
+            for (; ; execTimeIndex++)
+            {
+                if (Convert.ToString(wsParameters.Cells[execTimeIndex, 1].Value) == "Execution Time")
+                {
+                    break;
+                }
+            }
+            welfare.AvgExecTime = Convert.ToDouble(wsParameters.Cells[minCardinalityOptionIndex, 2].Value);
+
             var socialNetworkModelIndex = 1;
             for (; ; socialNetworkModelIndex++)
             {
@@ -249,6 +260,7 @@ namespace ChartMaker
             welfare.Alpha = CsvReader.ReadDoubleValue(configLines.First(x => x.Contains("Alpha")), 1);
             welfare.UserCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Number Of Users")), 1);
             welfare.EventCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Number Of Events")), 1);
+            welfare.AvgExecTime = CsvReader.ReadDoubleValue(configLines.First(x => x.Contains("Execution Time")), 1);
 
             if (!File.Exists(Path.Combine(directory.FullName, OutputFiles.Parameters)))
             {
@@ -278,5 +290,6 @@ namespace ChartMaker
         public int Count { get; set; }
         public string MinCardinalityOption { get; set; }
         public string SocialNetworkModel { get; set; }
+        public double AvgExecTime { get; internal set; }
     }
 }

@@ -21,6 +21,7 @@ namespace ChartMaker
             var innateWelfareEventChart = ws.Drawings.AddChart("chart2", eChartType.ColumnClustered);
             var socialWelfareEventChart = ws.Drawings.AddChart("chart3", eChartType.ColumnClustered);
             var regretEventChart = ws.Drawings.AddChart("chart4", eChartType.ColumnClustered);
+            var execTimeChart = ws.Drawings.AddChart("chart5", eChartType.ColumnClustered);
 
             var col = 1;
             ws.Cells[1, col].Value = "User Count";
@@ -115,12 +116,24 @@ namespace ChartMaker
                     }
                 }
 
+                for (int j = 0; j < welfares[i].Count; j++, col++)
+                {
+                    ws.Cells[1, col].Value = welfares[i][j].Version;
+                    ws.Cells[i + 2, col].Value = welfares[i][j].AvgExecTime;
+                    if (i == 0)
+                    {
+                        execTimeChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, horizontalFactor, rows, 2]);
+                        execTimeChart.Series[execTimeChart.Series.Count - 1].HeaderAddress = ws.Cells[1, col];
+                    }
+                }
+
             }
 
             welfareEventChart.SetPosition(1, 0, 1, 0);
             innateWelfareEventChart.SetPosition(12, 0, 1, 0);
             socialWelfareEventChart.SetPosition(24, 0, 1, 0);
             regretEventChart.SetPosition(36, 0, 1, 0);
+            execTimeChart.SetPosition(48, 0, 1, 0);
 
             package.Save();
         }

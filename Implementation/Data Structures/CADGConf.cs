@@ -111,6 +111,7 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Execution Time";
             ws.Cells[i, 2].Value = stopwatch.ElapsedMilliseconds;
+            ws.Cells[i, 2].Style.Numberformat.Format = "0.000";
             i++;
 
             ws.Cells[i, 1].Value = "Community Fix";
