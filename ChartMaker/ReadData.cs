@@ -90,7 +90,7 @@ namespace ChartMaker
                 welfare.AvgInnatelWelfare = welfare.AvgInnatelWelfare / welfare.Count;
                 welfare.AvgSocialWelfare = welfare.AvgSocialWelfare / welfare.Count;
                 welfare.AvgRegRatio = welfare.AvgRegRatio / welfare.Count;
-                welfare.AvgExecTime = welfare.AvgExecTime / welfare.Count;
+                welfare.AvgExecTime = Math.Round(welfare.AvgExecTime / 1000, 2);
             }
         }
 
@@ -235,7 +235,7 @@ namespace ChartMaker
                     break;
                 }
             }
-            welfare.AvgExecTime = Convert.ToDouble(wsParameters.Cells[minCardinalityOptionIndex, 2].Value);
+            welfare.AvgExecTime = Convert.ToDouble(wsParameters.Cells[execTimeIndex, 2].Value);
 
             var socialNetworkModelIndex = 1;
             for (; ; socialNetworkModelIndex++)
@@ -256,7 +256,7 @@ namespace ChartMaker
             var configLines = File.ReadAllLines(Path.Combine(directory.FullName, OutputFiles.Configs)).ToList();
             var welfare = new AlgorithmWelfare();
 
-            welfare.Version = CsvReader.ReadStringValue(configLines.First(x=> x.Contains("Algorithm Name")), 1);
+            welfare.Version = CsvReader.ReadStringValue(configLines.First(x => x.Contains("Algorithm Name")), 1);
             welfare.Alpha = CsvReader.ReadDoubleValue(configLines.First(x => x.Contains("Alpha")), 1);
             welfare.UserCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Number Of Users")), 1);
             welfare.EventCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Number Of Events")), 1);
