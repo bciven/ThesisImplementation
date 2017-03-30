@@ -413,12 +413,12 @@ namespace Implementation.Algorithms
             {
                 var lastEvent = realEvents.Last();
                 realEvents.Remove(realEvents.Count - 1);
-                eventPairBatches.Add(new List<EventPair>());
                 foreach (var e2 in realEvents)
                 {
+                    eventPairBatches.Add(new List<EventPair>());
                     eventPairBatches[batchIndex].Add(new EventPair { event1 = lastEvent, event2 = e2 });
+                    batchIndex++;
                 }
-                batchIndex++;
             }
 
             var keys = new List<int>(usedEvents.Keys);
@@ -427,11 +427,11 @@ namespace Implementation.Algorithms
                 for (int i = 0; i < realEvents.Count; i++)
                 {
                     var e1 = realEvents[i];
-                    var e2 = realEvents.ElementAtOrDefault(i + step);
-                    if (e2 == null)
+                    if (i + step >= realEvents.Count)
                     {
                         continue;
                     }
+                    var e2 = realEvents[i + step];
 
                     if (!usedEvents[e1] && !usedEvents[e2])
                     {
