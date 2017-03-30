@@ -29,7 +29,7 @@ namespace Implementation.Data_Structures
         public bool DeficitFix { get; set; }
         public bool ReuseDisposedPairs { get; set; }
         public bool LazyAdjustment { get; set; }
-        public bool Swap { get; set; }
+        public SwapEnum Swap { get; set; }
         public bool Sweep { get; set; }
         public bool PostPhantomRealization { get; set; }
         public double SwapThreshold { get; set; }

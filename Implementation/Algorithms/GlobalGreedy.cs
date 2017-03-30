@@ -175,7 +175,7 @@ namespace Implementation.Algorithms
 
         private List<List<int>> Swap(List<List<int>> assignments)
         {
-            if (!_conf.Swap)
+            if (_conf.Swap == SwapEnum.None)
             {
                 return assignments;
             }

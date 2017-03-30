@@ -95,12 +95,12 @@ namespace Implementation.Experiment
                                            postPhantomRealization = Convert.ToBoolean(x.Attribute("PostPhantomRealization").Value);
                                        }
 
-                                       bool swap = false;
+                                       SwapEnum swap = SwapEnum.None;
                                        double swapThreshold = 0d;
                                        if (x.Attribute("Swap") != null)
                                        {
-                                           swap = Convert.ToBoolean(x.Attribute("Swap").Value);
-                                           if (swap && x.Attribute("SwapThreshold") != null)
+                                           swap = (SwapEnum)Convert.ToInt32(x.Attribute("Swap").Value);
+                                           if (swap != SwapEnum.None && x.Attribute("SwapThreshold") != null)
                                            {
                                                swapThreshold = Convert.ToDouble(x.Attribute("SwapThreshold").Value);
                                            }
@@ -115,13 +115,13 @@ namespace Implementation.Experiment
                                        var initStrategy = InitStrategyEnum.RandomSort;
                                        if (x.Attribute("InitStrategy") != null)
                                        {
-                                           initStrategy = (InitStrategyEnum) Convert.ToInt32(x.Attribute("InitStrategy").Value);
+                                           initStrategy = (InitStrategyEnum)Convert.ToInt32(x.Attribute("InitStrategy").Value);
                                        }
 
                                        var setType = SetType.List;
                                        if (x.Attribute("SetType") != null)
                                        {
-                                           setType = (SetType) Convert.ToInt32(x.Attribute("SetType").Value);
+                                           setType = (SetType)Convert.ToInt32(x.Attribute("SetType").Value);
                                        }
 
                                        var algspec = new AlgorithmSpec
@@ -458,14 +458,14 @@ namespace Implementation.Experiment
                     {
                         conf.InitStrategyEnum = InitStrategyEnum.RandomSort;
                     }
-                    else if(algorithmEnum == AlgorithmSpec.AlgorithmEnum.PLA)
+                    else if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.PLA)
                     {
                         conf.InitStrategyEnum = parameters.ExpTypes[i].InitStrategy;
                     }
 
                     configs.Add(conf);
                 }
-                else if(algorithmEnum == AlgorithmSpec.AlgorithmEnum.ECADG)
+                else if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.ECADG)
                 {
                     var conf = new ECADGConf();
                     var DG = alg == (int)AlgorithmSpec.AlgorithmEnum.DG;
@@ -500,7 +500,7 @@ namespace Implementation.Experiment
 
                     configs.Add(conf);
                 }
-                else if(algorithmEnum == AlgorithmSpec.AlgorithmEnum.CPRDG || algorithmEnum == AlgorithmSpec.AlgorithmEnum.CPRPADG)
+                else if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.CPRDG || algorithmEnum == AlgorithmSpec.AlgorithmEnum.CPRPADG)
                 {
                     var conf = new CADGConf();
                     var phantomAware = alg == (int)AlgorithmSpec.AlgorithmEnum.CPRPADG;
@@ -511,7 +511,7 @@ namespace Implementation.Experiment
                         NumberOfEvents = parameters.EventCount,
                         InputFilePath = null,
                         PhantomAware = phantomAware,
-                        
+
                         PostInitializationInsert = true,
                         ImmediateReaction = phantomAware,
                         Reassignment = parameters.ExpTypes[i].Reassignment,

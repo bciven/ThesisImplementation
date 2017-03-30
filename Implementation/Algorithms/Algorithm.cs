@@ -6,6 +6,7 @@ using System.Linq;
 using Implementation.Data_Structures;
 using LouvainCommunityPL;
 using OfficeOpenXml;
+using System.Threading.Tasks;
 
 namespace Implementation.Algorithms
 {
@@ -288,11 +289,24 @@ namespace Implementation.Algorithms
 
         protected List<List<int>> Swap(List<List<int>> assignments)
         {
-            if (!Conf.Swap)
+            switch (Conf.Swap)
             {
-                return assignments;
+                case SwapEnum.None:
+                    return assignments;
+                    break;
+                case SwapEnum.Linear:
+                    return LinearSwap(assignments);
+                    break;
+                case SwapEnum.Parallel:
+                    return ParallelSwap(assignments);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+        }
 
+        protected List<List<int>> LinearSwap(List<List<int>> assignments)
+        {
             var users = new List<int>();
             for (int i = 0; i < UserAssignments.Count; i++)
             {
@@ -360,6 +374,172 @@ namespace Implementation.Algorithms
             } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > Conf.SwapThreshold);
 
             return assignments;
+        }
+
+        protected struct EventPair
+        {
+            public int event1;
+            public int event2;
+            public bool used;
+        }
+
+        protected List<List<int>> ParallelSwap(List<List<int>> assignments)
+        {
+            var users = new List<int>();
+            for (int i = 0; i < UserAssignments.Count; i++)
+            {
+                var userAssignment = UserAssignments[i];
+                if (userAssignment.HasValue)
+                {
+                    users.Add(i);
+                }
+            }
+
+            var realEvents = new List<int>();
+            var usedEvents = new Dictionary<int, bool>();
+
+            for (int i = 0; i < AllEvents.Count; i++)
+            {
+                if (EventIsReal(i, assignments[i]))
+                {
+                    realEvents.Add(i);
+                    usedEvents.Add(i, false);
+                }
+            }
+
+            var eventPairBatches = new List<List<EventPair>>();
+            var batchIndex = 0;
+            if (usedEvents.Count % 2 != 0)
+            {
+                var lastEvent = realEvents.Last();
+                realEvents.Remove(realEvents.Count - 1);
+                eventPairBatches.Add(new List<EventPair>());
+                foreach (var e2 in realEvents)
+                {
+                    eventPairBatches[batchIndex].Add(new EventPair { event1 = lastEvent, event2 = e2 });
+                }
+                batchIndex++;
+            }
+
+            var keys = new List<int>(usedEvents.Keys);
+            for (int step = 1; step < realEvents.Count; step++)
+            {
+                for (int i = 0; i < realEvents.Count; i++)
+                {
+                    var e1 = realEvents[i];
+                    var e2 = realEvents.ElementAtOrDefault(i + step);
+                    if (e2 == null)
+                    {
+                        continue;
+                    }
+
+                    if (!usedEvents[e1] && !usedEvents[e2])
+                    {
+                        var batch = eventPairBatches.ElementAtOrDefault(batchIndex);
+                        if (batch == null)
+                        {
+                            eventPairBatches.Add(new List<EventPair>());
+                        }
+
+                        eventPairBatches[batchIndex].Add(new EventPair { event1 = e1, event2 = e2 });
+                        usedEvents[e1] = true;
+                        usedEvents[e2] = true;
+                    }
+                }
+
+                foreach (var key in keys)
+                {
+                    usedEvents[key] = false;
+                }
+                batchIndex++;
+            }
+
+            var oldSocialWelfare = new Welfare();
+            var newSocialWelfare = new Welfare();
+            do
+            {
+                oldSocialWelfare = CalculateSocialWelfare(assignments);
+                //for (int i = 0; i < users.Count; i++)
+
+                assignments = ExchangeEvents(assignments, eventPairBatches);
+
+                newSocialWelfare = CalculateSocialWelfare(assignments);
+
+            } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > Conf.SwapThreshold);
+
+            return assignments;
+        }
+
+        private List<List<int>> ExchangeEvents(List<List<int>> assignments, List<List<EventPair>> eventPairsBatches)
+        {
+            foreach (var eventPairs in eventPairsBatches)
+            {
+                Task[] taskArray = new Task[eventPairs.Count];
+
+                for (int taskIndex = 0; taskIndex < taskArray.Length; taskIndex++)
+                {
+                    taskArray[taskIndex] = Task.Factory.StartNew((object obj) =>
+                    {
+                        var index = Convert.ToInt32(obj);
+                        var eventPair = eventPairs[index];
+                        for (int i = 0; i < assignments[eventPair.event1].Count; i++)
+                        {
+                            var user1 = assignments[eventPair.event1][i];
+
+                            for (int j = 0; j < assignments[eventPair.event2].Count; j++)
+                            {
+                                var user2 = assignments[eventPair.event2][j];
+
+                                TryExchange(assignments, user1, user2);
+                            }
+                        }
+                    }, taskIndex);
+                }
+                Task.WaitAll(taskArray);
+            }
+            return assignments;
+        }
+
+        private void TryExchange(List<List<int>> assignments, int user1, int user2)
+        {
+            if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null
+                                                && UserAssignments[user1] != UserAssignments[user2]
+                                                && !assignments[UserAssignments[user1].Value].Contains(user2)
+                                                && !assignments[UserAssignments[user2].Value].Contains(user1)
+                                                && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])
+                                                && EventIsReal(UserAssignments[user2].Value, assignments[UserAssignments[user2].Value]))
+            {
+                var e1 = UserAssignments[user1].Value;
+                var e2 = UserAssignments[user2].Value;
+                var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                CalculateEventWelfare(assignments, e1, oldWelfare);
+                CalculateEventWelfare(assignments, e2, oldWelfare);
+
+                assignments[e1].Remove(user1);
+                assignments[e1].Add(user2);
+
+                assignments[e2].Remove(user2);
+                assignments[e2].Add(user1);
+                UserAssignments[user1] = e2;
+                UserAssignments[user2] = e1;
+
+                var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                CalculateEventWelfare(assignments, e1, newWelfare);
+                CalculateEventWelfare(assignments, e2, newWelfare);
+
+                if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
+                {
+                    //undo
+                    assignments[e1].Remove(user2);
+                    assignments[e1].Add(user1);
+
+                    assignments[e2].Remove(user1);
+                    assignments[e2].Add(user2);
+
+                    UserAssignments[user1] = e1;
+                    UserAssignments[user2] = e2;
+                }
+            }
         }
 
         protected List<List<int>> Sweep(List<List<int>> assignments)
@@ -484,7 +664,7 @@ namespace Implementation.Algorithms
             //  }
             //}
 
-            if (!Conf.Swap)
+            if (Conf.Swap == SwapEnum.None)
             {
                 return assignments;
             }
@@ -1219,7 +1399,7 @@ namespace Implementation.Algorithms
             {
                 foreach (var e in events)
                 {
-                    if(ExcludingUserEvents != null && ExcludingUserEvents.Any(x=> x.Event == e && x.User == u))
+                    if (ExcludingUserEvents != null && ExcludingUserEvents.Any(x => x.Event == e && x.User == u))
                     {
                         continue;
                     }

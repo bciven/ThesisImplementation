@@ -25,7 +25,7 @@ namespace Implementation.Data_Structures
         public OutputTypeEnum OutputType { get; set; }
         public bool Asymmetric { get; set; }
         public bool ReuseDisposedPairs { get; set; }
-        public bool Swap { get; set; }
+        public SwapEnum Swap { get; set; }
         public bool Sweep { get; set; }
         public double SwapThreshold { get; set; }
         public double PreservePercentage { get; set; }
@@ -45,7 +45,7 @@ namespace Implementation.Data_Structures
             Parameters = null;
             OutputType = OutputTypeEnum.Excel;
             Asymmetric = false;
-            Swap = false;
+            Swap = SwapEnum.None;
             SwapThreshold = 0.001;
             PreservePercentage = 50;
             Reassignment = AlgorithmSpec.ReassignmentEnum.None;

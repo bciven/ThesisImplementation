@@ -95,6 +95,7 @@
     <Compile Include="Data Structures\FiboHeap.cs" />
     <Compile Include="Data Structures\IHeap.cs" />
     <Compile Include="Data Structures\InitStrategyEnum.cs" />
+    <Compile Include="Data Structures\SwapEnum.cs" />
     <Compile Include="Data Structures\OutputFiles.cs" />
     <Compile Include="Data Structures\OutputEnum.cs" />
     <Compile Include="Data Structures\AlgorithmEnum.cs" />
