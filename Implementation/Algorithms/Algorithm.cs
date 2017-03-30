@@ -407,51 +407,39 @@ namespace Implementation.Algorithms
                 }
             }
 
-            var eventPairBatches = new List<List<EventPair>>();
-            var batchIndex = 0;
-            if (usedEvents.Count % 2 != 0)
+            var allPossibleEventPairs = new List<EventPair>();
+            for (int i = 0; i < realEvents.Count; i++)
             {
-                var lastEvent = realEvents.Last();
-                realEvents.Remove(realEvents.Count - 1);
-                foreach (var e2 in realEvents)
+                var e1 = realEvents[i];
+                for (int j = i + 1; j < realEvents.Count; j++)
                 {
-                    eventPairBatches.Add(new List<EventPair>());
-                    eventPairBatches[batchIndex].Add(new EventPair { event1 = lastEvent, event2 = e2 });
-                    batchIndex++;
+                    var e2 = realEvents[j];
+                    allPossibleEventPairs.Add(new EventPair { event1 = e1, event2 = e2 });
                 }
             }
 
-            var keys = new List<int>(usedEvents.Keys);
-            for (int step = 1; step < realEvents.Count; step++)
+            var eventPairBatches = new List<List<EventPair>>();
+            var eventPairBatcheContains = new List<List<int>>();
+            eventPairBatches.Add(new List<EventPair>());
+            eventPairBatcheContains.Add(new List<int>());
+
+            foreach (var eventPair in allPossibleEventPairs)
             {
-                for (int i = 0; i < realEvents.Count; i++)
+                for (int batchIndex = 0; batchIndex < eventPairBatches.Count; batchIndex++)
                 {
-                    var e1 = realEvents[i];
-                    if (i + step >= realEvents.Count)
+                    if (!eventPairBatcheContains[batchIndex].Exists(x => x == eventPair.event1 || x == eventPair.event2))
                     {
-                        continue;
+                        eventPairBatches[batchIndex].Add(eventPair);
+                        eventPairBatcheContains[batchIndex].Add(eventPair.event1);
+                        eventPairBatcheContains[batchIndex].Add(eventPair.event2);
+                        break;
                     }
-                    var e2 = realEvents[i + step];
-
-                    if (!usedEvents[e1] && !usedEvents[e2])
+                    else if (batchIndex == eventPairBatches.Count - 1)
                     {
-                        var batch = eventPairBatches.ElementAtOrDefault(batchIndex);
-                        if (batch == null)
-                        {
-                            eventPairBatches.Add(new List<EventPair>());
-                        }
-
-                        eventPairBatches[batchIndex].Add(new EventPair { event1 = e1, event2 = e2 });
-                        usedEvents[e1] = true;
-                        usedEvents[e2] = true;
+                        eventPairBatches.Add(new List<EventPair>());
+                        eventPairBatcheContains.Add(new List<int>());
                     }
                 }
-
-                foreach (var key in keys)
-                {
-                    usedEvents[key] = false;
-                }
-                batchIndex++;
             }
 
             var oldSocialWelfare = new Welfare();
