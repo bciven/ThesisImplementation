@@ -29,6 +29,7 @@ namespace Implementation.Algorithms
         {
             if (!_init)
                 throw new Exception("Not Initialized");
+
             if (Conf.Sweep)
             {
                 ExcludingUserEvents = new List<UserEvent>();
@@ -69,11 +70,12 @@ namespace Implementation.Algorithms
 
         private void RunAlgorithm()
         {
-            int hitcount = 0;
+            Conf.PopOperationCount = 0;
+            Conf.LListSize = _queue.Count;
 
             while (_queue.Count > 0)
             {
-                hitcount++;
+                Conf.PopOperationCount++;
                 PrintQueue();
                 var userEvent = _queue.Dequeue();
                 var user = userEvent.User;
@@ -227,6 +229,7 @@ namespace Implementation.Algorithms
             AllEvents = new List<int>();
             DisposeUserEvents = new Dictionary<string, UserEvent>();
             _init = false;
+            Conf.EvenSwitchRoundCount = 0;
 
             if ((_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile) && _conf.NumberOfUsers == 0)
             {

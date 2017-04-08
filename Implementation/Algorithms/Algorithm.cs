@@ -235,7 +235,6 @@ namespace Implementation.Algorithms
 
         protected abstract void RefillQueue(List<int> realOpenEvents, List<int> availableUsers);
 
-
         protected void PrepareReassignment(out List<int> availableUsers, out List<int> realOpenEvents)
         {
             var phantomEvents = GetPhantomEvents();
@@ -321,6 +320,7 @@ namespace Implementation.Algorithms
             var newSocialWelfare = new Welfare();
             do
             {
+                Conf.EvenSwitchRoundCount++;
                 oldSocialWelfare = CalculateSocialWelfare(assignments);
                 for (int i = 0; i < users.Count; i++)
                 {
@@ -442,10 +442,15 @@ namespace Implementation.Algorithms
                 }
             }
 
+            var different = allPossibleEventPairs.RemoveAll(x=> eventPairBatches.Any(y=> y.Any(z => 
+               (x.event1 == z.event1 && x.event2 == z.event2) 
+            || (x.event1 == z.event2 && x.event2 == z.event1))));
+
             var oldSocialWelfare = new Welfare();
             var newSocialWelfare = new Welfare();
             do
             {
+                Conf.EvenSwitchRoundCount++;
                 oldSocialWelfare = CalculateSocialWelfare(assignments);
                 //for (int i = 0; i < users.Count; i++)
 

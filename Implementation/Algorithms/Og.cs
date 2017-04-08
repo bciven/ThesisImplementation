@@ -31,11 +31,12 @@ namespace Implementation.Algorithms
         {
             if (!_init)
                 throw new Exception("Not Initialized");
-            int hitcount = 0;
+            Conf.PopOperationCount = 0;
+            Conf.LListSize = _queue.Count;
 
             while (_queue.Count > 0)
             {
-                hitcount++;
+                Conf.PopOperationCount++;
                 PrintQueue();
                 var userEvents = _queue.Dequeue();
                 var user = userEvents.User;
@@ -214,6 +215,7 @@ namespace Implementation.Algorithms
             AllUsers = new List<int>();
             AllEvents = new List<int>();
             _init = false;
+            Conf.EvenSwitchRoundCount = 0;
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {

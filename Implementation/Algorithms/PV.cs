@@ -36,9 +36,12 @@ namespace Implementation.Algorithms
             _maxCapacityEvent = MaxCapacity();
             _largestCapacity = EventCapacity[_maxCapacityEvent];
             FillQueue(_users, _events);
+            Conf.PopOperationCount = 0;
+            Conf.LListSize = _queue.Count;
 
             while (_queue.Count > 0)
             {
+                Conf.PopOperationCount++;
                 var userEvent = _queue.Dequeue();
                 var user = userEvent.User;
                 var @event = userEvent.Event;

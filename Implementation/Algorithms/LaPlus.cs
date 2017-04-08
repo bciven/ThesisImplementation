@@ -190,6 +190,7 @@ namespace Implementation.Algorithms
             AllUsers = new List<int>();
             AllEvents = new List<int>();
             _init = false;
+            Conf.EvenSwitchRoundCount = 0;
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {

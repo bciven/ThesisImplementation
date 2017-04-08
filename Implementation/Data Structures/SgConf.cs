@@ -31,6 +31,9 @@ namespace Implementation.Data_Structures
         public double PreservePercentage { get; set; }
         public AlgorithmSpec.ReassignmentEnum Reassignment { get; set; }
         public bool PostPhantomRealization { get; set; }
+        public int PopOperationCount { get; set; }
+        public int EvenSwitchRoundCount { get; set; }
+        public int LListSize { get; set; }
 
         public SGConf()
         {
@@ -52,6 +55,9 @@ namespace Implementation.Data_Structures
             ReuseDisposedPairs = false;
             PostPhantomRealization = false;
             Sweep = false;
+            PopOperationCount = 0;
+            EvenSwitchRoundCount = 0;
+            LListSize = 0;
         }
 
         public void PrintToExcel(ExcelPackage excel, Stopwatch stopwatch)
@@ -134,6 +140,18 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = PostPhantomRealization;
             i++;
 
+            ws.Cells[i, 1].Value = "Pop Operation Count";
+            ws.Cells[i, 2].Value = PopOperationCount;
+            i++;
+
+            ws.Cells[i, 1].Value = "Even Switch Round Count";
+            ws.Cells[i, 2].Value = EvenSwitchRoundCount;
+            i++;
+
+            ws.Cells[i, 1].Value = "L List Size";
+            ws.Cells[i, 2].Value = LListSize;
+            i++;
+
             PrintAdditionals(ws, i);
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
@@ -174,6 +192,12 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Reuse Disposed Pairs", ReuseDisposedPairs);
 
             configsFile.WriteLine("{0},{1}", "Post Phantom Realization", PostPhantomRealization);
+
+            configsFile.WriteLine("{0},{1}", "Pop Operation Count", PopOperationCount);
+
+            configsFile.WriteLine("{0},{1}", "Even Switch Round Count", EvenSwitchRoundCount);
+
+            configsFile.WriteLine("{0},{1}", "L List Size", LListSize);
 
             PrintAdditionals(configsFile);
 

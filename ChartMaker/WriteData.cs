@@ -34,7 +34,7 @@ namespace ChartMaker
             col++;
             ws.Cells[1, col].Value = "MinCardinalityOption";
 
-            var rows = welfares.Count + 1;
+            var rows = welfares.Count + 2;
             for (int i = 0; i < welfares.Count; i++)
             {
                 var horizontalFactor = 1;
@@ -61,72 +61,122 @@ namespace ChartMaker
                 }*/
 
                 col = 1;
-                ws.Cells[i + 2, col].Value = welfares[i][0].UserCount;
+                ws.Cells[i + 3, col].Value = welfares[i][0].UserCount;
                 col++;
-                ws.Cells[i + 2, col].Value = welfares[i][0].EventCount;
+                ws.Cells[i + 3, col].Value = welfares[i][0].EventCount;
                 col++;
-                ws.Cells[i + 2, col].Value = welfares[i][0].SocialNetworkModel;
+                ws.Cells[i + 3, col].Value = welfares[i][0].SocialNetworkModel;
                 col++;
-                ws.Cells[i + 2, col].Value = welfares[i][0].NetworkDensity;
+                ws.Cells[i + 3, col].Value = welfares[i][0].NetworkDensity;
                 col++;
-                ws.Cells[i + 2, col].Value = welfares[i][0].MinCardinalityOption;
+                ws.Cells[i + 3, col].Value = welfares[i][0].MinCardinalityOption;
                 col++;
 
+                var dataRow = 2;
                 for (int j = 0; j < welfares[i].Count; j++, col++)
                 {
-                    ws.Cells[1, col].Value = welfares[i][j].Version;
-                    ws.Cells[i + 2, col].Value = welfares[i][j].AvgTotalWelfare;
+                    ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                    ws.Cells[i + 3, col].Value = welfares[i][j].AvgTotalWelfare;
                     if (i == 0)
                     {
-                        welfareEventChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, horizontalFactor, rows, 2]);
-                        welfareEventChart.Series[welfareEventChart.Series.Count - 1].HeaderAddress = ws.Cells[1, col];
+                        welfareEventChart.Series.Add(ws.Cells[3, col, rows, col], ws.Cells[3, horizontalFactor, rows, 2]);
+                        welfareEventChart.Series[welfareEventChart.Series.Count - 1].HeaderAddress = ws.Cells[2, col];
+                        if (j == 0)
+                        {
+                            ws.Cells[1, col].Value = "AverageTotalWelfare";
+                        }
                     }
                 }
 
                 for (int j = 0; j < welfares[i].Count; j++, col++)
                 {
-                    ws.Cells[1, col].Value = welfares[i][j].Version;
-                    ws.Cells[i + 2, col].Value = welfares[i][j].AvgInnatelWelfare;
+                    ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                    ws.Cells[i + 3, col].Value = welfares[i][j].AvgInnatelWelfare;
                     if (i == 0)
                     {
-                        innateWelfareEventChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, horizontalFactor, rows, 2]);
-                        innateWelfareEventChart.Series[innateWelfareEventChart.Series.Count - 1].HeaderAddress = ws.Cells[1, col];
+                        innateWelfareEventChart.Series.Add(ws.Cells[3, col, rows, col], ws.Cells[3, horizontalFactor, rows, 2]);
+                        innateWelfareEventChart.Series[innateWelfareEventChart.Series.Count - 1].HeaderAddress = ws.Cells[2, col];
+                        if (j == 0)
+                        {
+                            ws.Cells[1, col].Value = "AverageInnateWelfare";
+                        }
                     }
                 }
 
                 for (int j = 0; j < welfares[i].Count; j++, col++)
                 {
-                    ws.Cells[1, col].Value = welfares[i][j].Version;
-                    ws.Cells[i + 2, col].Value = welfares[i][j].AvgSocialWelfare;
+                    ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                    ws.Cells[i + 3, col].Value = welfares[i][j].AvgSocialWelfare;
                     if (i == 0)
                     {
-                        socialWelfareEventChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, horizontalFactor, rows, 2]);
-                        socialWelfareEventChart.Series[socialWelfareEventChart.Series.Count - 1].HeaderAddress = ws.Cells[1, col];
+                        socialWelfareEventChart.Series.Add(ws.Cells[3, col, rows, col], ws.Cells[3, horizontalFactor, rows, 2]);
+                        socialWelfareEventChart.Series[socialWelfareEventChart.Series.Count - 1].HeaderAddress = ws.Cells[2, col];
+                        if (j == 0)
+                        {
+                            ws.Cells[1, col].Value = "AverageSocialWelfare";
+                        }
                     }
                 }
 
                 for (int j = 0; j < welfares[i].Count; j++, col++)
                 {
-                    ws.Cells[1, col].Value = welfares[i][j].Version;
-                    ws.Cells[i + 2, col].Value = welfares[i][j].AvgRegRatio;
+                    ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                    ws.Cells[i + 3, col].Value = welfares[i][j].AvgRegRatio;
                     if (i == 0)
                     {
-                        regretEventChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, horizontalFactor, rows, 2]);
-                        regretEventChart.Series[regretEventChart.Series.Count - 1].HeaderAddress = ws.Cells[1, col];
+                        regretEventChart.Series.Add(ws.Cells[3, col, rows, col], ws.Cells[3, horizontalFactor, rows, 2]);
+                        regretEventChart.Series[regretEventChart.Series.Count - 1].HeaderAddress = ws.Cells[2, col];
+                        if (j == 0)
+                        {
+                            ws.Cells[1, col].Value = "RegretEvent";
+                        }
                     }
                 }
 
                 for (int j = 0; j < welfares[i].Count; j++, col++)
                 {
-                    ws.Cells[1, col].Value = welfares[i][j].Version;
-                    ws.Cells[i + 2, col].Value = welfares[i][j].AvgExecTime;
+                    ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                    ws.Cells[i + 3, col].Value = welfares[i][j].AvgExecTime;
                     if (i == 0)
                     {
-                        execTimeChart.Series.Add(ws.Cells[2, col, rows, col], ws.Cells[2, horizontalFactor, rows, 2]);
-                        execTimeChart.Series[execTimeChart.Series.Count - 1].HeaderAddress = ws.Cells[1, col];
+                        execTimeChart.Series.Add(ws.Cells[3, col, rows, col], ws.Cells[3, horizontalFactor, rows, 2]);
+                        execTimeChart.Series[execTimeChart.Series.Count - 1].HeaderAddress = ws.Cells[2, col];
+                        if (j == 0)
+                        {
+                            ws.Cells[1, col].Value = "ExecutionTime";
+                        }
                     }
                 }
 
+                for (int j = 0; j < welfares[i].Count; j++, col++)
+                {
+                    ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                    ws.Cells[i + 3, col].Value = welfares[i][j].PopOperationCount;
+                    if (i == 0 && j == 0)
+                    {
+                        ws.Cells[1, col].Value = "PopOperationCount";
+                    }
+                }
+
+                for (int j = 0; j < welfares[i].Count; j++, col++)
+                {
+                    ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                    ws.Cells[i + 3, col].Value = welfares[i][j].EvenSwitchRoundCount;
+                    if (i == 0 && j == 0)
+                    {
+                        ws.Cells[1, col].Value = "EvenSwitchRoundCount";
+                    }
+                }
+
+                for (int j = 0; j < welfares[i].Count; j++, col++)
+                {
+                    ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                    ws.Cells[i + 3, col].Value = welfares[i][j].LListSize;
+                    if (i == 0 && j == 0)
+                    {
+                        ws.Cells[1, col].Value = "LListSize";
+                    }
+                }
             }
 
             welfareEventChart.SetPosition(1, 0, 1, 0);

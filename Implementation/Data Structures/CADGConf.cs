@@ -130,6 +130,18 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = PostPhantomRealization;
             i++;
 
+            ws.Cells[i, 1].Value = "Pop Operation Count";
+            ws.Cells[i, 2].Value = PopOperationCount;
+            i++;
+
+            ws.Cells[i, 1].Value = "Even Switch Round Count";
+            ws.Cells[i, 2].Value = EvenSwitchRoundCount;
+            i++;
+
+            ws.Cells[i, 1].Value = "L List Size";
+            ws.Cells[i, 2].Value = LListSize;
+            i++;
+
             ws.Cells[i, 1].Value = "Set Type";
             ws.Cells[i, 2].Value = SetType;
 
@@ -181,6 +193,12 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Swap Threshold", SwapThreshold);
 
             configsFile.WriteLine("{0},{1}", "Phantom Realization", PostPhantomRealization);
+
+            configsFile.WriteLine("{0},{1}", "Pop Operation Count", PopOperationCount);
+
+            configsFile.WriteLine("{0},{1}", "Even Switch Round Count", EvenSwitchRoundCount);
+
+            configsFile.WriteLine("{0},{1}", "L List Size", LListSize);
 
             configsFile.WriteLine("{0},{1}", "Set Type", SetType);
 

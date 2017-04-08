@@ -55,10 +55,13 @@ namespace Implementation.Algorithms
             if (!_init)
                 throw new Exception("Not Initialized");
 
-            int hitcount = 0;
+            Conf.PopOperationCount = 0;
+            Conf.LListSize = _queue.Count();
+
             while (!_queue.IsEmpty())
             {
                 //WriteQueue(hitcount, output);
+                Conf.PopOperationCount++;
                 PrintQueue();
                 var userEvent = _queue.RemoveMax();
                 var user = userEvent.User;
@@ -70,7 +73,6 @@ namespace Implementation.Algorithms
 
                 if (UserAssignments[user] == null /*&& Assignments[@event].Count < maxCapacity*/ && !Assignments[@event].Contains(user))
                 {
-                    hitcount++;
                     Assignments[@event].Add(user);
                     _userTempAssignments[user].Add(@event);
                 }
@@ -80,7 +82,6 @@ namespace Implementation.Algorithms
                 if (_queue.IsEmpty())
                 {
                     RemovalProcess();
-                    hitcount = 0;
                     if (_queue.Count() == 0)
                     {
                         DefaultReassign();
@@ -99,7 +100,7 @@ namespace Implementation.Algorithms
 
         private void RemovalProcess()
         {
-            var ordered = _userTempAssignments.OrderBy(x => x.Value.Count).Where(x => x.Value.Count > 1).ToDictionary(x=> x.Key, x=> x.Value);
+            var ordered = _userTempAssignments.OrderBy(x => x.Value.Count).Where(x => x.Value.Count > 1).ToDictionary(x => x.Key, x => x.Value);
             var candidates = new List<UserEvent>();
             foreach (var userAssignment in ordered)
             {
@@ -269,7 +270,7 @@ namespace Implementation.Algorithms
             {
                 foreach (var availableUser in availableUsers)
                 {
-                    if(ExcludingUserEvents != null && ExcludingUserEvents.Any(x=> x.Event == @event && x.User == availableUser))
+                    if (ExcludingUserEvents != null && ExcludingUserEvents.Any(x => x.Event == @event && x.User == availableUser))
                     {
                         continue;
                     }
@@ -428,6 +429,7 @@ namespace Implementation.Algorithms
             _conf.NumberOfPhantomEvents = 0;
             DisposeUserEvents = new Dictionary<string, UserEvent>();
             _userTempAssignments = new Dictionary<int, List<int>>();
+            Conf.EvenSwitchRoundCount = 0;
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {

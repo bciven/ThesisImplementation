@@ -104,6 +104,18 @@ namespace Implementation.Data_Structures
             ws.Cells[i, 2].Value = SwapThreshold;
             i++;
 
+            ws.Cells[i, 1].Value = "Pop Operation Count";
+            ws.Cells[i, 2].Value = PopOperationCount;
+            i++;
+
+            ws.Cells[i, 1].Value = "Even Switch Round Count";
+            ws.Cells[i, 2].Value = EvenSwitchRoundCount;
+            i++;
+
+            ws.Cells[i, 1].Value = "L List Size";
+            ws.Cells[i, 2].Value = LListSize;
+            i++;
+
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
         }
 
@@ -144,6 +156,12 @@ namespace Implementation.Data_Structures
             configsFile.WriteLine("{0},{1}", "Swap", Swap);
 
             configsFile.WriteLine("{0},{1}", "Swap Threshold", SwapThreshold);
+
+            configsFile.WriteLine("{0},{1}", "Pop Operation Count", PopOperationCount);
+
+            configsFile.WriteLine("{0},{1}", "Even Switch Round Count", EvenSwitchRoundCount);
+
+            configsFile.WriteLine("{0},{1}", "L List Size", LListSize);
 
             PrintAdditionals(configsFile);
 

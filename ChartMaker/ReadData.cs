@@ -237,6 +237,36 @@ namespace ChartMaker
             }
             welfare.AvgExecTime = Convert.ToDouble(wsParameters.Cells[execTimeIndex, 2].Value);
 
+            var popOperationCountIndex = 1;
+            for (; ; popOperationCountIndex++)
+            {
+                if (Convert.ToString(wsParameters.Cells[popOperationCountIndex, 1].Value) == "Pop Operation Count")
+                {
+                    break;
+                }
+            }
+            welfare.PopOperationCount = Convert.ToInt32(wsParameters.Cells[popOperationCountIndex, 2].Value);
+
+            var evenSwitchRoundCountIndex = 1;
+            for (; ; evenSwitchRoundCountIndex++)
+            {
+                if (Convert.ToString(wsParameters.Cells[evenSwitchRoundCountIndex, 1].Value) == "Even Switch Round Count")
+                {
+                    break;
+                }
+            }
+            welfare.EvenSwitchRoundCount = Convert.ToInt32(wsParameters.Cells[evenSwitchRoundCountIndex, 2].Value);
+
+            var lListSizeIndex = 1;
+            for (; ; lListSizeIndex++)
+            {
+                if (Convert.ToString(wsParameters.Cells[lListSizeIndex, 1].Value) == "L List Size")
+                {
+                    break;
+                }
+            }
+            welfare.LListSize = Convert.ToInt32(wsParameters.Cells[lListSizeIndex, 2].Value);
+
             var socialNetworkModelIndex = 1;
             for (; ; socialNetworkModelIndex++)
             {
@@ -261,6 +291,9 @@ namespace ChartMaker
             welfare.UserCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Number Of Users")), 1);
             welfare.EventCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Number Of Events")), 1);
             welfare.AvgExecTime = CsvReader.ReadDoubleValue(configLines.First(x => x.Contains("Execution Time")), 1);
+            welfare.PopOperationCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Pop Operation Count")), 1);
+            welfare.EvenSwitchRoundCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Even Switch Round Count")), 1);
+            welfare.LListSize = CsvReader.ReadIntValue(configLines.First(x => x.Contains("L List Size")), 1);
 
             if (!File.Exists(Path.Combine(directory.FullName, OutputFiles.Parameters)))
             {
@@ -291,5 +324,8 @@ namespace ChartMaker
         public string MinCardinalityOption { get; set; }
         public string SocialNetworkModel { get; set; }
         public double AvgExecTime { get; internal set; }
+        public int PopOperationCount { get; internal set; }
+        public int EvenSwitchRoundCount { get; internal set; }
+        public int LListSize { get; internal set; }
     }
 }

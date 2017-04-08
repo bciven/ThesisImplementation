@@ -63,6 +63,12 @@ namespace Implementation.Data_Structures
 
             configsFile.WriteLine("{0},{1}", "Execution Time", stopwatch.ElapsedMilliseconds);
 
+            configsFile.WriteLine("{0},{1}", "Pop Operation Count", PopOperationCount);
+
+            configsFile.WriteLine("{0},{1}", "Even Switch Round Count", EvenSwitchRoundCount);
+
+            configsFile.WriteLine("{0},{1}", "L List Size", LListSize);
+
             PrintAdditionals(configsFile);
 
             configsFile.Close();
@@ -107,6 +113,18 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "Algorithm Name";
             ws.Cells[i, 2].Value = AlgorithmName;
+            i++;
+
+            ws.Cells[i, 1].Value = "Pop Operation Count";
+            ws.Cells[i, 2].Value = PopOperationCount;
+            i++;
+
+            ws.Cells[i, 1].Value = "Even Switch Round Count";
+            ws.Cells[i, 2].Value = EvenSwitchRoundCount;
+            i++;
+
+            ws.Cells[i, 1].Value = "L List Size";
+            ws.Cells[i, 2].Value = LListSize;
             i++;
 
             ws.Cells[i, 1].Value = "Execution Time";

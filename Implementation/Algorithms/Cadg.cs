@@ -93,11 +93,13 @@ namespace Implementation.Algorithms
         {
             if (!_init)
                 throw new Exception("Not Initialized");
-            int hitcount = 0;
+
+            Conf.PopOperationCount = 0;
+            Conf.LListSize = _queue.Count();
 
             while (!_queue.IsEmpty())
             {
-                hitcount++;
+                Conf.PopOperationCount++;
                 //WriteQueue(hitcount, output);
                 PrintQueue();
                 var userEvent = _queue.RemoveMax();
@@ -522,6 +524,7 @@ namespace Implementation.Algorithms
             _init = false;
             _conf.NumberOfPhantomEvents = 0;
             DisposeUserEvents = new Dictionary<string, UserEvent>();
+            Conf.EvenSwitchRoundCount = 0;
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {

@@ -29,10 +29,13 @@ namespace Implementation.Algorithms
         {
             if (!_init)
                 throw new Exception("Not Initialized");
+            Conf.PopOperationCount = 0;
+            Conf.EvenSwitchRoundCount = _queue.Count;
 
             while (_queue.Any())
             {
                 PrintQueue();
+                Conf.PopOperationCount++;
                 var min = _queue.First();
                 var user1 = min.User1;
                 var user2 = min.User2;
@@ -282,7 +285,8 @@ namespace Implementation.Algorithms
             AllUsers = new List<int>();
             AllEvents = new List<int>();
             _init = false;
-
+            Conf.EvenSwitchRoundCount = 0;
+            
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {
                 int numberOfUsers;
