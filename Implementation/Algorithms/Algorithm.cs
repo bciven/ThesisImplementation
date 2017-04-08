@@ -286,8 +286,21 @@ namespace Implementation.Algorithms
 
         protected abstract void PhantomAware(List<int> availableUsers, List<int> phantomEvents);
 
+        Dictionary<string, bool> allEvents;
         protected List<List<int>> Swap(List<List<int>> assignments)
         {
+            if (allEvents == null)
+            {
+                allEvents = new Dictionary<string, bool>();
+                for (int i = 0; i < allEvents.Count; i++)
+                {
+                    for (int j = i + 1; j < allEvents.Count; j++)
+                    {
+                        allEvents.Add(i + "-" + j, false);
+                    }
+                }
+            }
+
             switch (Conf.Swap)
             {
                 case SwapEnum.None:
@@ -336,6 +349,8 @@ namespace Implementation.Algorithms
                             && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])
                             && EventIsReal(UserAssignments[user2].Value, assignments[UserAssignments[user2].Value]))
                         {
+                            AddEvent(UserAssignments[user1].Value, UserAssignments[user2].Value);
+
                             var e1 = UserAssignments[user1].Value;
                             var e2 = UserAssignments[user2].Value;
                             var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
@@ -373,7 +388,21 @@ namespace Implementation.Algorithms
 
             } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > Conf.SwapThreshold);
 
+            PrintUsers(false);
+
             return assignments;
+        }
+
+        private void AddEvent(int e1, int e2)
+        {
+            if (e1 < e2)
+            {
+                allEvents[e1 + "-" + e2] = true;
+            }
+            else
+            {
+                allEvents[e2 + "-" + e1] = true;
+            }
         }
 
         protected struct EventPair
@@ -442,9 +471,9 @@ namespace Implementation.Algorithms
                 }
             }
 
-            var different = allPossibleEventPairs.RemoveAll(x=> eventPairBatches.Any(y=> y.Any(z => 
-               (x.event1 == z.event1 && x.event2 == z.event2) 
-            || (x.event1 == z.event2 && x.event2 == z.event1))));
+            var different = allPossibleEventPairs.RemoveAll(x => eventPairBatches.Any(y => y.Any(z =>
+                 (x.event1 == z.event1 && x.event2 == z.event2)
+              || (x.event1 == z.event2 && x.event2 == z.event1))));
 
             var oldSocialWelfare = new Welfare();
             var newSocialWelfare = new Welfare();
@@ -460,7 +489,26 @@ namespace Implementation.Algorithms
 
             } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > Conf.SwapThreshold);
 
+            PrintUsers(true);
             return assignments;
+        }
+
+        private void PrintUsers(bool parallel)
+        {
+            var fileName = "linear.txt";
+            if (parallel)
+            {
+                fileName = "parallel.txt";
+            }
+
+            System.IO.StreamWriter file = new System.IO.StreamWriter(fileName);
+
+            var keys = allEvents.Where(x => x.Value).Select(x => x.Key).OrderBy(x => x).ToList();
+            foreach (var key in keys)
+            {
+                file.WriteLine(key);
+            }
+            file.Close();
         }
 
         private List<List<int>> ExchangeEvents(List<List<int>> assignments, List<List<EventPair>> eventPairsBatches)
@@ -475,14 +523,14 @@ namespace Implementation.Algorithms
                     {
                         var index = Convert.ToInt32(obj);
                         var eventPair = eventPairs[index];
-                        for (int i = 0; i < assignments[eventPair.event1].Count; i++)
+                        var users = new List<int>();
+                        users.AddRange(assignments[eventPair.event1]);
+                        users.AddRange(assignments[eventPair.event2]);
+
+                        foreach (var user1 in users)
                         {
-                            var user1 = assignments[eventPair.event1][i];
-
-                            for (int j = 0; j < assignments[eventPair.event2].Count; j++)
+                            foreach (var user2 in users)
                             {
-                                var user2 = assignments[eventPair.event2][j];
-
                                 TryExchange(assignments, user1, user2);
                             }
                         }
@@ -492,7 +540,6 @@ namespace Implementation.Algorithms
             }
             return assignments;
         }
-
         private void TryExchange(List<List<int>> assignments, int user1, int user2)
         {
             if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null
@@ -502,6 +549,7 @@ namespace Implementation.Algorithms
                                                 && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])
                                                 && EventIsReal(UserAssignments[user2].Value, assignments[UserAssignments[user2].Value]))
             {
+                AddEvent(UserAssignments[user1].Value, UserAssignments[user2].Value);
                 var e1 = UserAssignments[user1].Value;
                 var e2 = UserAssignments[user2].Value;
                 var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
