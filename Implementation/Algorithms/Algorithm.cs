@@ -286,21 +286,8 @@ namespace Implementation.Algorithms
 
         protected abstract void PhantomAware(List<int> availableUsers, List<int> phantomEvents);
 
-        Dictionary<string, bool> allEvents;
         protected List<List<int>> Swap(List<List<int>> assignments)
         {
-            if (allEvents == null)
-            {
-                allEvents = new Dictionary<string, bool>();
-                for (int i = 0; i < allEvents.Count; i++)
-                {
-                    for (int j = i + 1; j < allEvents.Count; j++)
-                    {
-                        allEvents.Add(i + "-" + j, false);
-                    }
-                }
-            }
-
             switch (Conf.Swap)
             {
                 case SwapEnum.None:
@@ -349,8 +336,6 @@ namespace Implementation.Algorithms
                             && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])
                             && EventIsReal(UserAssignments[user2].Value, assignments[UserAssignments[user2].Value]))
                         {
-                            AddEvent(UserAssignments[user1].Value, UserAssignments[user2].Value);
-
                             var e1 = UserAssignments[user1].Value;
                             var e2 = UserAssignments[user2].Value;
                             var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
@@ -388,21 +373,7 @@ namespace Implementation.Algorithms
 
             } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > Conf.SwapThreshold);
 
-            PrintUsers(false);
-
             return assignments;
-        }
-
-        private void AddEvent(int e1, int e2)
-        {
-            if (e1 < e2)
-            {
-                allEvents[e1 + "-" + e2] = true;
-            }
-            else
-            {
-                allEvents[e2 + "-" + e1] = true;
-            }
         }
 
         protected struct EventPair
@@ -489,26 +460,7 @@ namespace Implementation.Algorithms
 
             } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > Conf.SwapThreshold);
 
-            PrintUsers(true);
             return assignments;
-        }
-
-        private void PrintUsers(bool parallel)
-        {
-            var fileName = "linear.txt";
-            if (parallel)
-            {
-                fileName = "parallel.txt";
-            }
-
-            System.IO.StreamWriter file = new System.IO.StreamWriter(fileName);
-
-            var keys = allEvents.Where(x => x.Value).Select(x => x.Key).OrderBy(x => x).ToList();
-            foreach (var key in keys)
-            {
-                file.WriteLine(key);
-            }
-            file.Close();
         }
 
         private List<List<int>> ExchangeEvents(List<List<int>> assignments, List<List<EventPair>> eventPairsBatches)
@@ -549,7 +501,6 @@ namespace Implementation.Algorithms
                                                 && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])
                                                 && EventIsReal(UserAssignments[user2].Value, assignments[UserAssignments[user2].Value]))
             {
-                AddEvent(UserAssignments[user1].Value, UserAssignments[user2].Value);
                 var e1 = UserAssignments[user1].Value;
                 var e2 = UserAssignments[user2].Value;
                 var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };

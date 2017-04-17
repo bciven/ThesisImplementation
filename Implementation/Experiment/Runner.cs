@@ -33,6 +33,7 @@ namespace Implementation.Experiment
                                let mincard = exp.Element("mincard")
                                let maxcard = exp.Element("maxcard")
                                let snmodel = exp.Element("snmodel")
+                               let inputfile = exp.Element("inputfile")
                                let eventinterestperct = exp.Element("eventinterestperct")
                                where users != null && events != null && alpha != null &&
                                      capmean != null && capvar != null && sndensity != null
@@ -44,6 +45,7 @@ namespace Implementation.Experiment
                                    AlphaValue = Convert.ToDouble(alpha.Attribute("value").Value),
                                    CapmeanValue = Convert.ToDouble(capmean.Attribute("value").Value),
                                    CapVarValue = Convert.ToDouble(capvar.Attribute("value").Value),
+                                   ExperimentInputFile = Convert.ToString(inputfile?.Attribute("fullpath").Value),
                                    EventInterestPerctValue = Convert.ToDouble(eventinterestperct.Attribute("value").Value),
                                    SndensityValue = Convert.ToDouble(sndensity.Attribute("value").Value),
                                    MinCardinalityOption = (MinCardinalityOptions)Convert.ToInt32(mincard.Attribute("value").Value),
@@ -383,7 +385,7 @@ namespace Implementation.Experiment
                         NumberOfEvents = parameters.EventCount,
                         InputFilePath = null,
                         PrintOutEachStep = false,
-                        FeedType = FeedTypeEnum.SerialExperiment,
+                        FeedType = GetFeedType(parameters),
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
@@ -412,7 +414,7 @@ namespace Implementation.Experiment
                         InputFilePath = null,
                         Reassign = true,
                         PrintOutEachStep = false,
-                        FeedType = FeedTypeEnum.SerialExperiment,
+                        FeedType = GetFeedType(parameters),
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
@@ -436,10 +438,10 @@ namespace Implementation.Experiment
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
-                        InputFilePath = null,
+                        InputFilePath = GetInputFile(parameters),
                         Reassign = true,
                         PrintOutEachStep = false,
-                        FeedType = FeedTypeEnum.SerialExperiment,
+                        FeedType = GetFeedType(parameters),
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
                         Parameters = parameters,
@@ -483,7 +485,7 @@ namespace Implementation.Experiment
                         ImmediateReaction = IR || IRC,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
                         PrintOutEachStep = false,
-                        FeedType = FeedTypeEnum.SerialExperiment,
+                        FeedType = GetFeedType(parameters),
                         CommunityAware = IRC || PCADG,
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
@@ -519,7 +521,7 @@ namespace Implementation.Experiment
                         LazyAdjustment = parameters.ExpTypes[i].LazyAdjustment,
                         PostPhantomRealization = true,
                         PrintOutEachStep = false,
-                        FeedType = FeedTypeEnum.SerialExperiment,
+                        FeedType = GetFeedType(parameters),
                         CommunityAware = true,
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
@@ -559,7 +561,7 @@ namespace Implementation.Experiment
                         DeficitFix = parameters.ExpTypes[i].DeficitFix,
                         LazyAdjustment = parameters.ExpTypes[i].LazyAdjustment,
                         PrintOutEachStep = false,
-                        FeedType = FeedTypeEnum.SerialExperiment,
+                        FeedType = GetFeedType(parameters),
                         CommunityAware = IRC || PCADG,
                         Alpha = parameters.AlphaValue,
                         AlgorithmName = ConvertToString(algorithmEnum),
@@ -580,6 +582,41 @@ namespace Implementation.Experiment
             }
 
             return configs;
+        }
+
+        private string GetInputFile(Parameters parameters)
+        {
+            if (parameters.ExperimentInputFile == null)
+            {
+                return null;
+            }
+
+            if (Path.GetExtension(parameters.ExperimentInputFile) == ".xlsx" || Path.GetExtension(parameters.ExperimentInputFile) == ".csv")
+            {
+                return parameters.ExperimentInputFile;
+            }
+
+            throw new NotSupportedException("Input file not is not supported.");
+        }
+
+        private FeedTypeEnum GetFeedType(Parameters parameters)
+        {
+            if(parameters.ExperimentInputFile == null)
+            {
+                return FeedTypeEnum.SerialExperiment;
+            }
+
+            if (Path.GetExtension(parameters.ExperimentInputFile) == ".xlsx")
+            {
+                return FeedTypeEnum.XlsxFile;
+            }
+
+            if (Path.GetExtension(parameters.ExperimentInputFile) == ".csv")
+            {
+                return FeedTypeEnum.TextFile;
+            }
+
+            throw new NotSupportedException("Input file not is not provided or supported.");
         }
 
         private void Exit()

@@ -22,5 +22,6 @@ namespace Implementation.Experiment
         public SocialNetworkModel SocialNetworkModel { get; set; }
         public MaxCardinalityOptions MaxCardinalityOption { get; set; }
         public OutputTypeEnum OutputType { get; set; }
+        public string ExperimentInputFile { get; internal set; }
     }
 }

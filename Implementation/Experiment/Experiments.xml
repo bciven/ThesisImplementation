@@ -1,6 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
-  <Experiment count="15" output="1">
+  
+  <Experiment count="1" output="0">
+    <users count="1000" />
+    <events count="50" />
+    <InputFile fullpath="C:\Users\Behrad\Google Drive\Concordia\Thesis\Meetup Real Datasets\knoxville.xlsx" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="0">PADG</type>
+
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="0">PCADG</type>
+
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
+
+      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
+    </exptypes>
+  </Experiment>
+
+  <Experiment count="1" output="0">
+    <users count="1000" />
+    <events count="50" />
+    <InputFile fullpath="C:\Users\Behrad\Google Drive\Concordia\Thesis\Meetup Real Datasets\louisville.xlsx" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="0">PADG</type>
+
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="0">PCADG</type>
+
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
+
+      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
+    </exptypes>
+  </Experiment>
+
+  <Experiment count="1" output="0">
+    <users count="1000" />
+    <events count="50" />
+    <InputFile fullpath="C:\Users\Behrad\Google Drive\Concordia\Thesis\Meetup Real Datasets\stlouis.xlsx" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <maxcard value="0" />
+    <sndensity value="0" />
+    <eventinterestperct value="5" />
+    <snmodel value="0" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="0">PADG</type>
+
+      <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="0">PCADG</type>
+
+      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
+
+      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
+    </exptypes>
+  </Experiment>
+  
+  <!--<Experiment count="15" output="1">
     <users count="1000" />
     <events count="50" />
     <alpha value="0.5" />
@@ -335,5 +417,5 @@
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
-  </Experiment>
+  </Experiment>-->
 </Experiments>
