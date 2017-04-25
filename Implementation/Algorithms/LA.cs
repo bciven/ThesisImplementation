@@ -125,7 +125,7 @@ namespace Implementation.Algorithms
 
             RemovePhantomEvents();
 
-            Assignments = Swap(Assignments);
+            //Assignments = Swap(Assignments);
             Assignments = Sweep(Assignments);
             Assignments = ReuseDisposedPairs(Assignments);
             Assignments = RealizePhantomEvents(Assignments, _numberOfUserAssignments);
@@ -231,7 +231,7 @@ namespace Implementation.Algorithms
             _init = false;
             Conf.EvenSwitchRoundCount = 0;
 
-            if ((_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile) && _conf.NumberOfUsers == 0)
+            if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {
                 int numberOfUsers;
                 int numberOfEvents;

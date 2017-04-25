@@ -230,42 +230,42 @@ namespace ChartMaker
             var execTimeIndex = 1;
             for (; ; execTimeIndex++)
             {
-                if (Convert.ToString(wsParameters.Cells[execTimeIndex, 1].Value) == "Execution Time")
+                if (Convert.ToString(wsConfigs.Cells[execTimeIndex, 1].Value) == "Execution Time")
                 {
                     break;
                 }
             }
-            welfare.AvgExecTime = Convert.ToDouble(wsParameters.Cells[execTimeIndex, 2].Value);
+            welfare.AvgExecTime = Convert.ToDouble(wsConfigs.Cells[execTimeIndex, 2].Value);
 
             var popOperationCountIndex = 1;
             for (; ; popOperationCountIndex++)
             {
-                if (Convert.ToString(wsParameters.Cells[popOperationCountIndex, 1].Value) == "Pop Operation Count")
+                if (Convert.ToString(wsConfigs.Cells[popOperationCountIndex, 1].Value) == "Pop Operation Count")
                 {
                     break;
                 }
             }
-            welfare.PopOperationCount = Convert.ToInt32(wsParameters.Cells[popOperationCountIndex, 2].Value);
+            welfare.PopOperationCount = Convert.ToInt32(wsConfigs.Cells[popOperationCountIndex, 2].Value);
 
             var evenSwitchRoundCountIndex = 1;
             for (; ; evenSwitchRoundCountIndex++)
             {
-                if (Convert.ToString(wsParameters.Cells[evenSwitchRoundCountIndex, 1].Value) == "Even Switch Round Count")
+                if (Convert.ToString(wsConfigs.Cells[evenSwitchRoundCountIndex, 1].Value) == "Even Switch Round Count")
                 {
                     break;
                 }
             }
-            welfare.EvenSwitchRoundCount = Convert.ToInt32(wsParameters.Cells[evenSwitchRoundCountIndex, 2].Value);
+            welfare.EvenSwitchRoundCount = Convert.ToInt32(wsConfigs.Cells[evenSwitchRoundCountIndex, 2].Value);
 
             var lListSizeIndex = 1;
             for (; ; lListSizeIndex++)
             {
-                if (Convert.ToString(wsParameters.Cells[lListSizeIndex, 1].Value) == "L List Size")
+                if (Convert.ToString(wsConfigs.Cells[lListSizeIndex, 1].Value) == "L List Size")
                 {
                     break;
                 }
             }
-            welfare.LListSize = Convert.ToInt32(wsParameters.Cells[lListSizeIndex, 2].Value);
+            welfare.LListSize = Convert.ToInt32(wsConfigs.Cells[lListSizeIndex, 2].Value);
 
             var socialNetworkModelIndex = 1;
             for (; ; socialNetworkModelIndex++)

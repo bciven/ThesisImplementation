@@ -329,44 +329,7 @@ namespace Implementation.Algorithms
                     for (int j = i + 1; j < users.Count; j++)
                     {
                         var user2 = users[j];
-                        if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null
-                            && UserAssignments[user1] != UserAssignments[user2]
-                            && !assignments[UserAssignments[user1].Value].Contains(user2)
-                            && !assignments[UserAssignments[user2].Value].Contains(user1)
-                            && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])
-                            && EventIsReal(UserAssignments[user2].Value, assignments[UserAssignments[user2].Value]))
-                        {
-                            var e1 = UserAssignments[user1].Value;
-                            var e2 = UserAssignments[user2].Value;
-                            var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                            CalculateEventWelfare(assignments, e1, oldWelfare);
-                            CalculateEventWelfare(assignments, e2, oldWelfare);
-
-                            assignments[e1].Remove(user1);
-                            assignments[e1].Add(user2);
-
-                            assignments[e2].Remove(user2);
-                            assignments[e2].Add(user1);
-                            UserAssignments[user1] = e2;
-                            UserAssignments[user2] = e1;
-
-                            var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                            CalculateEventWelfare(assignments, e1, newWelfare);
-                            CalculateEventWelfare(assignments, e2, newWelfare);
-
-                            if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
-                            {
-                                //undo
-                                assignments[e1].Remove(user2);
-                                assignments[e1].Add(user1);
-
-                                assignments[e2].Remove(user1);
-                                assignments[e2].Add(user2);
-
-                                UserAssignments[user1] = e1;
-                                UserAssignments[user2] = e2;
-                            }
-                        }
+                        TryExchange(assignments, user1, user2);
                     }
                 }
                 newSocialWelfare = CalculateSocialWelfare(assignments);
@@ -374,6 +337,125 @@ namespace Implementation.Algorithms
             } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > Conf.SwapThreshold);
 
             return assignments;
+        }
+
+        //private void TryExchange(List<List<int>> assignments, int user1, int user2)
+        //{
+        //    if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null
+        //                                && UserAssignments[user1] != UserAssignments[user2]
+        //                                && !assignments[UserAssignments[user1].Value].Contains(user2)
+        //                                && !assignments[UserAssignments[user2].Value].Contains(user1)
+        //                                && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])
+        //                                && EventIsReal(UserAssignments[user2].Value, assignments[UserAssignments[user2].Value]))
+        //    {
+        //        var e1 = UserAssignments[user1].Value;
+        //        var e2 = UserAssignments[user2].Value;
+        //        var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+        //        CalculateEventWelfare(assignments, e1, oldWelfare);
+        //        CalculateEventWelfare(assignments, e2, oldWelfare);
+
+        //        assignments[e1].Remove(user1);
+        //        assignments[e1].Add(user2);
+
+        //        assignments[e2].Remove(user2);
+        //        assignments[e2].Add(user1);
+        //        UserAssignments[user1] = e2;
+        //        UserAssignments[user2] = e1;
+
+        //        var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+        //        CalculateEventWelfare(assignments, e1, newWelfare);
+        //        CalculateEventWelfare(assignments, e2, newWelfare);
+
+        //        if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
+        //        {
+        //            //undo
+        //            assignments[e1].Remove(user2);
+        //            assignments[e1].Add(user1);
+
+        //            assignments[e2].Remove(user1);
+        //            assignments[e2].Add(user2);
+
+        //            UserAssignments[user1] = e1;
+        //            UserAssignments[user2] = e2;
+        //        }
+        //    }
+        //}
+
+        private void TryExchange(List<List<int>> assignments, int user1, int user2)
+        {
+            if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null
+                                                && UserAssignments[user1] != UserAssignments[user2]
+                                                && !assignments[UserAssignments[user1].Value].Contains(user2)
+                                                && !assignments[UserAssignments[user2].Value].Contains(user1)
+                                                && assignments[UserAssignments[user1].Value].Count > 0
+                                                && assignments[UserAssignments[user2].Value].Count > 0
+                                                && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])
+                                                && EventIsReal(UserAssignments[user2].Value, assignments[UserAssignments[user2].Value]))
+            {
+                var e1 = UserAssignments[user1].Value;
+                var e2 = UserAssignments[user2].Value;
+                //var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                //CalculateEventWelfare(assignments, e1, oldWelfare);
+                //CalculateEventWelfare(assignments, e2, oldWelfare);
+
+                //assignments[e1].Remove(user1);
+                //assignments[e1].Add(user2);
+
+                //assignments[e2].Remove(user2);
+                //assignments[e2].Add(user1);
+                //UserAssignments[user1] = e2;
+                //UserAssignments[user2] = e1;
+
+                //var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
+                //CalculateEventWelfare(assignments, e1, newWelfare);
+                //CalculateEventWelfare(assignments, e2, newWelfare);
+
+
+                //if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
+                //{
+                //    //undo
+                //    assignments[e1].Remove(user2);
+                //    assignments[e1].Add(user1);
+
+                //    assignments[e2].Remove(user1);
+                //    assignments[e2].Add(user2);
+
+                //    UserAssignments[user1] = e1;
+                //    UserAssignments[user2] = e2;
+                //}
+
+                var different = (1 - Conf.Alpha) * ((InAffinities[user1][e2] + InAffinities[user2][e1]) - (InAffinities[user1][e1] + InAffinities[user2][e2]));
+                double p1 = Sum(assignments, e2, user2, user1);
+                double p2 = Sum(assignments, e1, user1, user2);
+
+                double p3 = Sum(assignments, e1, user1, user1);
+                double p4 = Sum(assignments, e2, user2, user2);
+
+                different += Conf.Alpha * ((p1 + p2) - (p3 + p4));
+
+                if (different > 0)
+                {
+                    assignments[e1].Remove(user1);
+                    assignments[e1].Add(user2);
+
+                    assignments[e2].Remove(user2);
+                    assignments[e2].Add(user1);
+                    UserAssignments[user1] = e2;
+                    UserAssignments[user2] = e1;
+                }
+            }
+        }
+
+        private double Sum(List<List<int>> assignments, int @event, int excludingUser, int includingUser)
+        {
+            var assignment = assignments[@event].Where(x => x != excludingUser).ToList();//.Sum(x => SocAffinities[includingUser, x] + SocAffinities[x, includingUser]);
+            var sum = 0d;
+            for (int i = 0; i < assignment.Count; i++)
+            {
+                var user = assignment[i];
+                sum += SocAffinities[includingUser, user] + SocAffinities[user, includingUser];
+            }
+            return sum;
         }
 
         protected struct EventPair
@@ -465,73 +547,50 @@ namespace Implementation.Algorithms
 
         private List<List<int>> ExchangeEvents(List<List<int>> assignments, List<List<EventPair>> eventPairsBatches)
         {
-            foreach (var eventPairs in eventPairsBatches)
+            foreach (List<EventPair> eventPairs in eventPairsBatches)
             {
-                Task[] taskArray = new Task[eventPairs.Count];
+
+                var batches = new List<List<EventPair>>();
+                var pairIndex = 0;
+                while (pairIndex < eventPairs.Count)
+                {
+                    for (int i = 0; i < 8 && pairIndex < eventPairs.Count; i++)
+                    {
+                        if(batches.ElementAtOrDefault(i) == null)
+                        {
+                            batches.Add(new List<EventPair>());
+                        }
+                        batches[i].Add(eventPairs[pairIndex]);
+                        pairIndex++;
+                    }
+                }
+
+                Task[] taskArray = new Task[batches.Count];
 
                 for (int taskIndex = 0; taskIndex < taskArray.Length; taskIndex++)
                 {
-                    taskArray[taskIndex] = Task.Factory.StartNew((object obj) =>
+                    taskArray[taskIndex] = Task.Factory.StartNew((Action<object>)((object obj) =>
                     {
                         var index = Convert.ToInt32(obj);
-                        var eventPair = eventPairs[index];
-                        var users = new List<int>();
-                        users.AddRange(assignments[eventPair.event1]);
-                        users.AddRange(assignments[eventPair.event2]);
-
-                        foreach (var user1 in users)
+                        foreach (var eventPair in batches[index])
                         {
-                            foreach (var user2 in users)
+                            var users = new List<int>();
+                            users.AddRange(assignments[eventPair.event1]);
+                            users.AddRange(assignments[eventPair.event2]);
+
+                            foreach (var user1 in users)
                             {
-                                TryExchange(assignments, user1, user2);
+                                foreach (var user2 in users)
+                                {
+                                    this.TryExchange((List<List<int>>)assignments, (int)user1, (int)user2);
+                                }
                             }
                         }
-                    }, taskIndex);
+                    }), taskIndex);
                 }
                 Task.WaitAll(taskArray);
             }
             return assignments;
-        }
-        private void TryExchange(List<List<int>> assignments, int user1, int user2)
-        {
-            if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null
-                                                && UserAssignments[user1] != UserAssignments[user2]
-                                                && !assignments[UserAssignments[user1].Value].Contains(user2)
-                                                && !assignments[UserAssignments[user2].Value].Contains(user1)
-                                                && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])
-                                                && EventIsReal(UserAssignments[user2].Value, assignments[UserAssignments[user2].Value]))
-            {
-                var e1 = UserAssignments[user1].Value;
-                var e2 = UserAssignments[user2].Value;
-                var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                CalculateEventWelfare(assignments, e1, oldWelfare);
-                CalculateEventWelfare(assignments, e2, oldWelfare);
-
-                assignments[e1].Remove(user1);
-                assignments[e1].Add(user2);
-
-                assignments[e2].Remove(user2);
-                assignments[e2].Add(user1);
-                UserAssignments[user1] = e2;
-                UserAssignments[user2] = e1;
-
-                var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                CalculateEventWelfare(assignments, e1, newWelfare);
-                CalculateEventWelfare(assignments, e2, newWelfare);
-
-                if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
-                {
-                    //undo
-                    assignments[e1].Remove(user2);
-                    assignments[e1].Add(user1);
-
-                    assignments[e2].Remove(user1);
-                    assignments[e2].Add(user2);
-
-                    UserAssignments[user1] = e1;
-                    UserAssignments[user2] = e2;
-                }
-            }
         }
 
         protected List<List<int>> Sweep(List<List<int>> assignments)
@@ -632,13 +691,6 @@ namespace Implementation.Algorithms
                     Swap(ref list[k], ref list[i]);
                 }
             }
-        }
-
-        static void Main()
-        {
-            string str = "sagiv";
-            char[] arr = str.ToCharArray();
-            GetPer(arr);
         }
 
         protected List<List<int>> Permutations(List<List<int>> assignments)
@@ -962,6 +1014,19 @@ namespace Implementation.Algorithms
             welfare.TotalWelfare += w.InnateWelfare + w.SocialWelfare;
         }
 
+        private static Random random = new Random();
+
+        public static string GetVoucherNumber(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
+        }
+
         protected Welfare CalculateEventWelfare(List<List<int>> assignments, int @event)
         {
             var result = new Welfare
@@ -970,20 +1035,26 @@ namespace Implementation.Algorithms
                 SocialWelfare = 0d,
                 TotalWelfare = 0d
             };
+            //var rand = GetVoucherNumber(5);
 
             var assignment = assignments[@event];
+            //var file = new StreamWriter(string.Format("{0}-{1}.txt", @event, rand));
+            //assignment.ForEach(x => file.WriteLine(x));
 
             foreach (var user1 in assignment)
             {
                 result.InnateWelfare += InAffinities[user1][@event];
+
                 foreach (var user2 in assignment)
                 {
                     if (user1 != user2)
                     {
+                        //file.WriteLine(string.Format("{0},{1}", user1, user2));
                         result.SocialWelfare += SocAffinities[user1, user2];
                     }
                 }
             }
+            //file.Close();
 
             result.InnateWelfare = (1 - Conf.Alpha) * result.InnateWelfare;
             result.SocialWelfare = Conf.Alpha * result.SocialWelfare;

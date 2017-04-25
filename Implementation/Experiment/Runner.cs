@@ -383,7 +383,7 @@ namespace Implementation.Experiment
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
-                        InputFilePath = null,
+                        InputFilePath = GetInputFile(parameters),
                         PrintOutEachStep = false,
                         FeedType = GetFeedType(parameters),
                         Alpha = parameters.AlphaValue,
@@ -411,7 +411,7 @@ namespace Implementation.Experiment
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
-                        InputFilePath = null,
+                        InputFilePath = GetInputFile(parameters),
                         Reassign = true,
                         PrintOutEachStep = false,
                         FeedType = GetFeedType(parameters),
@@ -480,7 +480,7 @@ namespace Implementation.Experiment
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
-                        InputFilePath = null,
+                        InputFilePath = GetInputFile(parameters),
                         PhantomAware = !DG,
                         ImmediateReaction = IR || IRC,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
@@ -511,7 +511,7 @@ namespace Implementation.Experiment
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
-                        InputFilePath = null,
+                        InputFilePath = GetInputFile(parameters),
                         PhantomAware = phantomAware,
 
                         PostInitializationInsert = true,
@@ -552,7 +552,7 @@ namespace Implementation.Experiment
                     {
                         NumberOfUsers = parameters.UserCount,
                         NumberOfEvents = parameters.EventCount,
-                        InputFilePath = null,
+                        InputFilePath = GetInputFile(parameters),
                         PhantomAware = !DG,
                         PostInitializationInsert = true,
                         PostPhantomRealization = false,

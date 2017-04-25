@@ -1,10 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Experiments>
   
-  <Experiment count="1" output="0">
+  <!--<Experiment count="1" output="1">
     <users count="1000" />
     <events count="50" />
-    <InputFile fullpath="C:\Users\Behrad\Google Drive\Concordia\Thesis\Meetup Real Datasets\knoxville.xlsx" />
+    <alpha value="0.5" />
+    <capmean value="20" />
+    <capvar value="10" />
+    <mincard value="0" />
+    <sndensity value="1" />
+    <eventinterestperct value="5" />
+    <snmodel value="1" asymmetric="false"/>
+    <exptypes>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
+    </exptypes>
+  </Experiment>-->
+
+  <!--<Experiment count="1" output="1">
+    <users count="1365" />
+    <events count="10" />
+    <inputfile fullpath="C:\Users\Behrad\Source\Repos\ThesisImplementation\Implementation\bin\Debug\Real Datasets\knoxville.xlsx" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capvar value="10" />
@@ -18,20 +34,18 @@
 
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="0">PCADG</type>
 
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.1">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
-      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
-      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.1" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.01" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="1" output="0">
+<Experiment count="1" output="1">
     <users count="1000" />
     <events count="50" />
-    <InputFile fullpath="C:\Users\Behrad\Google Drive\Concordia\Thesis\Meetup Real Datasets\louisville.xlsx" />
+  <inputfile fullpath="C:\Users\Behrad\Source\Repos\ThesisImplementation\Implementation\bin\Debug\Real Datasets\louisville.xlsx" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capvar value="10" />
@@ -45,20 +59,18 @@
 
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="0">PCADG</type>
 
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.1">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
-      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
-      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.1" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.01" PostPhantomRealization="true">PLA</type>
     </exptypes>
-  </Experiment>
+  </Experiment>-->
 
-  <Experiment count="1" output="0">
+  <Experiment count="1" output="1">
     <users count="1000" />
     <events count="50" />
-    <InputFile fullpath="C:\Users\Behrad\Google Drive\Concordia\Thesis\Meetup Real Datasets\stlouis.xlsx" />
+    <inputfile fullpath="C:\Users\Behrad\Source\Repos\ThesisImplementation\Implementation\bin\Debug\Real Datasets\stlouis.xlsx" />
     <alpha value="0.5" />
     <capmean value="20" />
     <capvar value="10" />
@@ -72,17 +84,15 @@
 
       <type Reassignment="1" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="0">PCADG</type>
 
-      <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
-      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
+      <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.1">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
-      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
-      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.1" PostPhantomRealization="true">PLA</type>
+      <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.01" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
   
-  <!--<Experiment count="15" output="1">
+  <!--<Experiment count="1" output="1">
     <users count="1000" />
     <events count="50" />
     <alpha value="0.5" />
@@ -101,14 +111,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="1500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -127,14 +136,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="2000" />
     <events count="50" />
     <alpha value="0.5" />
@@ -153,14 +161,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="500" />
     <events count="10" />
     <alpha value="0.5" />
@@ -179,14 +186,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="500" />
     <events count="25" />
     <alpha value="0.5" />
@@ -205,14 +211,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="500" />
     <events count="35" />
     <alpha value="0.5" />
@@ -231,14 +236,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -257,14 +261,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -283,14 +286,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -309,14 +311,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -335,14 +336,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -361,14 +361,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -387,14 +386,13 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
     </exptypes>
   </Experiment>
 
-  <Experiment count="15" output="1">
+  <Experiment count="1" output="1">
     <users count="500" />
     <events count="50" />
     <alpha value="0.5" />
@@ -412,7 +410,6 @@
       <type Reassignment="3" CommunityFix="0" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">IRC</type>
       <type Reassignment="3" CommunityFix="16" DeficitFix="false" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" SwapThreshold="0.001">IRC</type>
 
-      <type Reassignment="3" ReuseDisposedPairs="false" LazyAdjustment="false"  Swap="1" SwapThreshold="0.001">LA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="1" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.001" PostPhantomRealization="true">PLA</type>
       <type Reassignment="3" InitStrategy="2" ReuseDisposedPairs="true" LazyAdjustment="false"  Swap="2" Sweep="false" SwapThreshold="0.00001" PostPhantomRealization="true">PLA</type>
