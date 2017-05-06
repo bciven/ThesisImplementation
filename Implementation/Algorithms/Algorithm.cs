@@ -323,16 +323,14 @@ namespace Implementation.Algorithms
             {
                 Conf.EvenSwitchRoundCount++;
                 oldSocialWelfare = CalculateSocialWelfare(assignments);
-                var rndUsers1 = users.OrderBy(item => rnd.Next()).ToList();
-                var rndUsers2 = users.OrderBy(item => rnd.Next()).ToList();
 
-                for (int i = 0; i < rndUsers1.Count; i++)
+                for (int i = 0; i < users.Count; i++)
                 {
-                    var user1 = rndUsers1[i];
+                    var user1 = users[i];
 
-                    for (int j = i + 1; j < rndUsers2.Count; j++)
+                    for (int j = i + 1; j < users.Count; j++)
                     {
-                        var user2 = rndUsers2[j];
+                        var user2 = users[j];
                         TryExchange(assignments, user1, user2);
                     }
                 }
