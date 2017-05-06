@@ -49,7 +49,8 @@ namespace Implementation.Data_Structures
             COG,
             ECADG,
             CPRDG,
-            CPRPADG
+            CPRPADG,
+            POSPG
         }
     }
 }

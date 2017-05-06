@@ -197,10 +197,11 @@ namespace Implementation.Dataset_Reader
         private static UndirectedGraph PowerLawModel(int userCount)
         {
             List<string> lines;
+            var minDegree = 1;
             using (WebClient client = new WebClient())
             {
                 var ip = ConfigurationManager.AppSettings["IP"];
-                var csv = client.DownloadString(ip + $"/powerlaw/{userCount}");
+                var csv = client.DownloadString(ip + $"/powerlaw/{userCount}/{minDegree}");
                 lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             }
 

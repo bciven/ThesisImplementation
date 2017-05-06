@@ -23,5 +23,6 @@ namespace Implementation.Experiment
         public MaxCardinalityOptions MaxCardinalityOption { get; set; }
         public OutputTypeEnum OutputType { get; set; }
         public string ExperimentInputFile { get; internal set; }
+        public string Title { get; internal set; }
     }
 }

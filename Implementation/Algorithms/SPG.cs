@@ -8,7 +8,7 @@ using OfficeOpenXml;
 
 namespace Implementation.Algorithms
 {
-    public class SG : Algorithm<List<UserEvent>>
+    public class SPG : Algorithm<List<UserEvent>>
     {
         private List<List<double>> _inAffinities;
         private double[,] _socAffinities;
@@ -19,7 +19,7 @@ namespace Implementation.Algorithms
         private readonly IDataFeed _dataFeeder;
         private SGConf _conf => (SGConf)Conf;
 
-        public SG(SGConf conf, IDataFeed dataFeeder, int index): base(index)
+        public SPG(SGConf conf, IDataFeed dataFeeder, int index): base(index)
         {
             _dataFeeder = dataFeeder;
             Conf = conf;

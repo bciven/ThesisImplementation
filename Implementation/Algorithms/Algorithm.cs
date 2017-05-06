@@ -306,6 +306,7 @@ namespace Implementation.Algorithms
 
         protected List<List<int>> LinearSwap(List<List<int>> assignments)
         {
+            var rnd = new Random();
             var users = new List<int>();
             for (int i = 0; i < UserAssignments.Count; i++)
             {
@@ -322,13 +323,16 @@ namespace Implementation.Algorithms
             {
                 Conf.EvenSwitchRoundCount++;
                 oldSocialWelfare = CalculateSocialWelfare(assignments);
-                for (int i = 0; i < users.Count; i++)
-                {
-                    var user1 = users[i];
+                var rndUsers1 = users.OrderBy(item => rnd.Next()).ToList();
+                var rndUsers2 = users.OrderBy(item => rnd.Next()).ToList();
 
-                    for (int j = i + 1; j < users.Count; j++)
+                for (int i = 0; i < rndUsers1.Count; i++)
+                {
+                    var user1 = rndUsers1[i];
+
+                    for (int j = i + 1; j < rndUsers2.Count; j++)
                     {
-                        var user2 = users[j];
+                        var user2 = rndUsers2[j];
                         TryExchange(assignments, user1, user2);
                     }
                 }
@@ -556,7 +560,7 @@ namespace Implementation.Algorithms
                 {
                     for (int i = 0; i < 8 && pairIndex < eventPairs.Count; i++)
                     {
-                        if(batches.ElementAtOrDefault(i) == null)
+                        if (batches.ElementAtOrDefault(i) == null)
                         {
                             batches.Add(new List<EventPair>());
                         }

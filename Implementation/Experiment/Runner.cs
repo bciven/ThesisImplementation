@@ -40,6 +40,7 @@ namespace Implementation.Experiment
                                select new Parameters
                                {
                                    ExpCount = Convert.ToInt32(exp.Attribute("count").Value),
+                                   Title = Convert.ToString(exp.Attribute("title")?.Value),
                                    UserCount = Convert.ToInt32(users.Attribute("count").Value),
                                    EventCount = Convert.ToInt32(events.Attribute("count").Value),
                                    AlphaValue = Convert.ToDouble(alpha.Attribute("value").Value),
@@ -160,6 +161,9 @@ namespace Implementation.Experiment
                                            case "DG":
                                                algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.DG;
                                                break;
+                                           case "POSPG":
+                                               algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.POSPG;
+                                               break;
                                            case "PADG":
                                                algspec.Algorithm = AlgorithmSpec.AlgorithmEnum.PADG;
                                                break;
@@ -256,7 +260,7 @@ namespace Implementation.Experiment
 
             foreach (var parameters in experiments)
             {
-                var dir = CreateOutputDirectory();
+                var dir = CreateOutputDirectory(parameters);
                 var numOfExp = experiments.Count();
                 var configs = useMenu ? ShowMenu(parameters) : ToConfigs(parameters);
                 var serial = configs.Any(x => x.FeedType == FeedTypeEnum.SerialExperiment);
@@ -350,7 +354,7 @@ namespace Implementation.Experiment
             {
                 var sgConf = (SGConf)configs[j];
                 var feed = CreateFeed(sgConf.FeedType, sgConf.InputFilePath, parameters);
-                return new SG(sgConf, feed, index);
+                return new SPG(sgConf, feed, index);
             }
         }
 
@@ -629,9 +633,13 @@ namespace Implementation.Experiment
             } while (str.Key != ConsoleKey.Enter);
         }
 
-        private static DirectoryInfo CreateOutputDirectory()
+        private static DirectoryInfo CreateOutputDirectory(Parameters parameters)
         {
             var folder = DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss-fff", CultureInfo.CurrentCulture);
+            if (!string.IsNullOrEmpty(parameters.Title))
+            {
+                folder = string.Format("{0}_{1}", parameters.Title, folder);
+            }
             var dir = Directory.CreateDirectory(folder);
             return dir;
         }
