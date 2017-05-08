@@ -34,6 +34,7 @@ namespace Implementation.Data_Structures
         public int PopOperationCount { get; set; }
         public int EvenSwitchRoundCount { get; set; }
         public int LListSize { get; set; }
+        public bool PersonalityOriented { get; set; }
 
         public SGConf()
         {

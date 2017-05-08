@@ -10,6 +10,7 @@ namespace Implementation.Dataset_Reader
         List<List<double>> GenerateInnateAffinities(List<int> users, List<int> events);
 
         double[,] GenerateSocialAffinities(List<int> users);
+        List<double> GenerateExtrovertIndeces(List<int> users);
 
         void GetNumberOfUsersAndEvents(out int usersCount, out int eventsCount);
     }

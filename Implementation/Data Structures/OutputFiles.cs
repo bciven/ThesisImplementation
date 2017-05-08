@@ -18,6 +18,11 @@ namespace Implementation.Data_Structures
             get { return "User User Social Affinity.csv"; }
         }
 
+        public static string ExtrovertIndeces
+        {
+            get { return "Extrovert Indeces.csv"; }
+        }
+
         public static string Cardinality
         {
             get { return "Event Min Max Cardinality.csv"; }

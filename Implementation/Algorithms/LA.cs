@@ -109,7 +109,6 @@ namespace Implementation.Algorithms
                         RealizePhantomEvent(Assignments, @event, null);
                     }
 
-                    //AdjustList(affectedEvents, user, @event, assignmentMade);
                 }
                 else if (_conf.ReuseDisposedPairs && !DisposeUserEvents.ContainsKey(userEvent.Key))
                 {
@@ -160,32 +159,6 @@ namespace Implementation.Algorithms
             availableUsers.ForEach(x => _numberOfUserAssignments[x] = 0);
         }
 
-        private double Util(int @event, int user)
-        {
-            var g = (1 - _conf.Alpha) * InAffinities[user][@event];
-
-            var s = _conf.Alpha * Assignments[@event].Sum(u => SocAffinities[user, u]);
-
-            g = g + s;
-
-            s = _users.Sum(u => SocAffinities[user, u]) / (double)Math.Max(_users.Count - 1, 1);
-
-            g += s * _conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count);
-
-            return Math.Round(g, _conf.Percision);
-        }
-
-        private void AdjustList(List<int> affectedEvents, int user, int @event, bool assignmentMade)
-        {
-            foreach (var u in AllUsers)
-            {
-                Update(user, u, @event);
-            }
-
-            PrintAssignments(assignmentMade);
-            CheckValidity();
-        }
-
         private void CheckValidity()
         {
             foreach (var assignment in Assignments)
@@ -195,17 +168,6 @@ namespace Implementation.Algorithms
                     Console.WriteLine("Elements are not unique !");
                     break;
                 }
-            }
-        }
-
-        private void Update(int user1, int user2, int @event)
-        {
-            if (SocAffinities[user2, user1] > 0 && UserAssignments[user2] == null) /* or a in affected_evts)*/
-            {
-                //What if this friend is already in that event, should it be aware that his friend is now assigned to this event?
-                var newPriority = Util(@event, user2);
-                _queue.Enqueue(new UserEvent { User = user2, Event = @event, Utility = newPriority });
-                //_randomQueue.Update(newPriority, new UserEvent { User = user2, Event = @event });
             }
         }
 
@@ -279,6 +241,10 @@ namespace Implementation.Algorithms
                 EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
                 InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
                 SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
+                if (Conf.PersonalityOriented)
+                {
+                    ExtrovertIndeces = _dataFeeder.GenerateExtrovertIndeces(_users);
+                }
             }
             
             InitializationStrategy(AllUsers, AllEvents);

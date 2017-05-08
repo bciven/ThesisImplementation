@@ -105,5 +105,23 @@ namespace Implementation.Dataset_Reader
             }
             return result;
         }
+
+        public List<double> GenerateExtrovertIndeces(List<int> users)
+        {
+            var extrovertIndecesLines = File.ReadAllLines(Path.Combine(_filePath, OutputFiles.ExtrovertIndeces));
+            var result = new List<double>();
+            foreach (var line in extrovertIndecesLines)
+            {
+                if (string.IsNullOrEmpty(line))
+                {
+                    continue;
+                }
+                var user = CsvReader.ReadIntValue(line, 0);
+                var extrovertIndex = CsvReader.ReadDoubleValue(line, 2);
+
+                result.Add(extrovertIndex);
+            }
+            return result;
+        }
     }
 }

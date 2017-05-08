@@ -21,6 +21,7 @@ namespace Implementation.Algorithms
         public List<List<int>> Assignments;
         public List<int?> UserAssignments;
         public List<List<double>> InAffinities;
+        public List<double> ExtrovertIndeces;
         public double[,] SocAffinities;
         public SGConf Conf;
         public Stopwatch _watch;
@@ -426,24 +427,54 @@ namespace Implementation.Algorithms
                 //    UserAssignments[user2] = e2;
                 //}
 
-                var different = (1 - Conf.Alpha) * ((InAffinities[user1][e2] + InAffinities[user2][e1]) - (InAffinities[user1][e1] + InAffinities[user2][e2]));
-                double p1 = Sum(assignments, e2, user2, user1);
-                double p2 = Sum(assignments, e1, user1, user2);
-
-                double p3 = Sum(assignments, e1, user1, user1);
-                double p4 = Sum(assignments, e2, user2, user2);
-
-                different += Conf.Alpha * ((p1 + p2) - (p3 + p4));
-
-                if (different > 0)
+                if (!Conf.PersonalityOriented)
                 {
-                    assignments[e1].Remove(user1);
-                    assignments[e1].Add(user2);
+                    var different = (1 - Conf.Alpha) * ((InAffinities[user1][e2] + InAffinities[user2][e1]) - (InAffinities[user1][e1] + InAffinities[user2][e2]));
+                    double p1 = Sum(assignments, e2, user2, user1);
+                    double p2 = Sum(assignments, e1, user1, user2);
 
-                    assignments[e2].Remove(user2);
-                    assignments[e2].Add(user1);
-                    UserAssignments[user1] = e2;
-                    UserAssignments[user2] = e1;
+                    double p3 = Sum(assignments, e1, user1, user1);
+                    double p4 = Sum(assignments, e2, user2, user2);
+
+                    different += Conf.Alpha * ((p1 + p2) - (p3 + p4));
+
+                    if (different > 0)
+                    {
+                        assignments[e1].Remove(user1);
+                        assignments[e1].Add(user2);
+                        assignments[e2].Remove(user2);
+                        assignments[e2].Add(user1);
+
+                        UserAssignments[user1] = e2;
+                        UserAssignments[user2] = e1;
+                    }
+                }
+                else
+                {
+                    var oldWelfare = POGainFunciton(assignments[e1], e1);
+                    oldWelfare += POGainFunciton(assignments[e2], e2);
+
+                    var newAssignmente1 = new List<int>();
+                    var newAssignmente2 = new List<int>();
+
+                    newAssignmente1.AddRange(assignments[e1].Where(x => x != user1));
+                    newAssignmente1.Add(user2);
+                    newAssignmente2.AddRange(assignments[e2].Where(x => x != user2));
+                    newAssignmente2.Add(user1);
+
+                    var newWelfare = POGainFunciton(newAssignmente1, e1);
+                    newWelfare += POGainFunciton(newAssignmente2, e2);
+
+                    if (newWelfare > oldWelfare)
+                    {
+                        assignments[e1].Remove(user1);
+                        assignments[e1].Add(user2);
+                        assignments[e2].Remove(user2);
+                        assignments[e2].Add(user1);
+
+                        UserAssignments[user1] = e2;
+                        UserAssignments[user2] = e1;
+                    }
                 }
             }
         }
@@ -695,95 +726,6 @@ namespace Implementation.Algorithms
             }
         }
 
-        protected List<List<int>> Permutations(List<List<int>> assignments)
-        {
-            //makePermutations(permutation) {
-            //  if (length permutation < required length) {
-            //    for (i = min digit to max digit) {
-            //      if (i not in permutation) {
-            //        makePermutations(permutation+i)
-            //      }
-            //    }
-            //  }
-            //  else {
-            //    add permutation to list
-            //  }
-            //}
-
-            if (Conf.Swap == SwapEnum.None)
-            {
-                return assignments;
-            }
-
-            var users = new List<int>();
-            for (int i = 0; i < UserAssignments.Count; i++)
-            {
-                var userAssignment = UserAssignments[i];
-                if (userAssignment.HasValue)
-                {
-                    users.Add(i);
-                }
-            }
-
-            var oldSocialWelfare = new Welfare();
-            var newSocialWelfare = new Welfare();
-            do
-            {
-                oldSocialWelfare = CalculateSocialWelfare(assignments);
-                for (int i = 0; i < users.Count; i++)
-                {
-                    var user1 = users[i];
-
-                    for (int j = i + 1; j < users.Count; j++)
-                    {
-                        var user2 = users[j];
-                        if (user1 != user2 && UserAssignments[user1] != null && UserAssignments[user2] != null
-                            && UserAssignments[user1] != UserAssignments[user2]
-                            && !assignments[UserAssignments[user1].Value].Contains(user2)
-                            && !assignments[UserAssignments[user2].Value].Contains(user1)
-                            && EventIsReal(UserAssignments[user1].Value, assignments[UserAssignments[user1].Value])
-                            && EventIsReal(UserAssignments[user2].Value, assignments[UserAssignments[user2].Value]))
-                        {
-                            var e1 = UserAssignments[user1].Value;
-                            var e2 = UserAssignments[user2].Value;
-                            var oldWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                            CalculateEventWelfare(assignments, e1, oldWelfare);
-                            CalculateEventWelfare(assignments, e2, oldWelfare);
-
-                            assignments[e1].Remove(user1);
-                            assignments[e1].Add(user2);
-
-                            assignments[e2].Remove(user2);
-                            assignments[e2].Add(user1);
-                            UserAssignments[user1] = e2;
-                            UserAssignments[user2] = e1;
-
-                            var newWelfare = new Welfare { InnateWelfare = 0, SocialWelfare = 0, TotalWelfare = 0 };
-                            CalculateEventWelfare(assignments, e1, newWelfare);
-                            CalculateEventWelfare(assignments, e2, newWelfare);
-
-                            if (newWelfare.TotalWelfare <= oldWelfare.TotalWelfare)
-                            {
-                                //undo
-                                assignments[e1].Remove(user2);
-                                assignments[e1].Add(user1);
-
-                                assignments[e2].Remove(user1);
-                                assignments[e2].Add(user2);
-
-                                UserAssignments[user1] = e1;
-                                UserAssignments[user2] = e2;
-                            }
-                        }
-                    }
-                }
-                newSocialWelfare = CalculateSocialWelfare(assignments);
-
-            } while (1 - oldSocialWelfare.TotalWelfare / newSocialWelfare.TotalWelfare > Conf.SwapThreshold);
-
-            return assignments;
-        }
-
         protected List<List<int>> ReuseDisposedPairs(List<List<int>> assignments)
         {
             if (!Conf.ReuseDisposedPairs)
@@ -897,10 +839,78 @@ namespace Implementation.Algorithms
 
             for (int @event = 0; @event < assignments.Count; @event++)
             {
-                CalculateEventWelfare(assignments, @event, welfare);
+                if (Conf.PersonalityOriented)
+                {
+                    CalculatePersonalityOrientedSocialWelfare(assignments, @event, welfare);
+                }
+                else
+                {
+                    CalculateEventWelfare(assignments, @event, welfare);
+                }
             }
 
             return welfare;
+        }
+
+        private void CalculatePersonalityOrientedSocialWelfare(List<List<int>> assignments, int @event, Welfare welfare, bool checkEventReality = true)
+        {
+            if (checkEventReality && !EventIsReal(@event, assignments[@event]))
+            {
+                return;
+            }
+
+            var w = POGainFunciton(assignments[@event], @event);
+            welfare.InnateWelfare += 0;
+            welfare.SocialWelfare += 0;
+            welfare.TotalWelfare += w;
+        }
+
+        protected double POGainFunciton(List<int> ids, int @event)
+        {
+            var gain1 = 0d;
+            var gain2 = 0d;
+            foreach (var u1 in ids)
+            {
+                gain2 += (ExtrovertIndeces[u1] - 0.5) * ids.Count;
+                foreach (var u2 in ids)
+                {
+                    gain1 += CalculatePOUserEventPairGain(u1, u2, @event);
+                }
+            }
+
+            return gain1 + gain2;
+        }
+
+        protected double CalculatePOUserEventPairGain(int user1, int user2, int @event)
+        {
+            var gain = 0d;
+            var beta = Math.Min(ExtrovertIndeces[user1], ExtrovertIndeces[user2]);
+            gain = (Conf.Alpha * (InAffinities[user1][@event] + InAffinities[user2][@event])) + ((1 - beta) * SocAffinities[user1, user2]) + (beta * _Q);
+            gain = Math.Round(gain, Conf.Percision);
+
+            return gain;
+        }
+
+        private double? q;
+        protected double _Q
+        {
+            get
+            {
+                if (q == null)
+                {
+                    var max = double.MinValue;
+                    for (int i = 0; i < SocAffinities.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < SocAffinities.GetLength(1); j++)
+                        {
+                            max = Math.Max(SocAffinities[i, j], max);
+                        }
+                    }
+                    q = max;
+                    return max;
+                }
+                return q.Value;
+            }
         }
 
         protected List<List<int>> RealizePhantomEvents(List<List<int>> assignments, List<int> numberOfUserAssignments)
@@ -1240,34 +1250,29 @@ namespace Implementation.Algorithms
         protected UserEvent Util(int @event, int user, bool communityAware, CommunityFixEnum communityFix,
             List<int> users)
         {
-            //if (communityAware && communityFix.HasFlag(CommunityFixEnum.Predictive))
-            //{
-            //    var ue = new UserEvent(user, @event);
-            //    ue.Utility += (1 - Conf.Alpha) * InAffinities[user][@event];
-            //    var probableParticipants = 0;
-            //    //probability of landing on this event
-            //    var potentialSocialGain = AllUsers.Sum(x =>
-            //    {
-            //        var probabilityOfLanding = userEvents1[UserEvent.GetKey(x, e)].Utility / maxInterest * 100;
-            //        var thereOrNotThere = rnd.Next(0, 100) < probabilityOfLanding;
-            //        if (thereOrNotThere)
-            //        {
-            //            probableParticipants++;
-            //            return SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d);
-            //        }
-            //        return 0;
-            //    });
-            //    ue.Utility += Conf.Alpha * EventCapacity[e].Max * (potentialSocialGain / probableParticipants);
-            //    userEvents2.Add(ue);
-            //    return ue;
-            //}
-
             var userevent = new UserEvent
             {
                 Event = @event,
                 User = user
             };
 
+            if (!Conf.PersonalityOriented)
+            {
+                userevent.Utility = DefaultGainUpdate(@event, user, communityAware, communityFix, users);
+            }
+            else
+            {
+                var assignments = new List<int>();
+                assignments.AddRange(Assignments[@event]);
+                assignments.Add(user);
+                userevent.Utility = POGainFunciton(assignments, @event);
+            }
+
+            return userevent; //Math.Round(g, Conf.Percision);
+        }
+
+        private double DefaultGainUpdate(int @event, int user, bool communityAware, CommunityFixEnum communityFix, List<int> users)
+        {
             var g = (1 - Conf.Alpha) * InAffinities[user][@event];
 
             var s = Conf.Alpha * Assignments[@event].Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d));
@@ -1362,9 +1367,8 @@ namespace Implementation.Algorithms
                     Console.WriteLine("|_user| bigger than |users| is {0}.", firstNotSecond.Count > secondNotFirst.Count);
                 }*/
             }
-            userevent.Utility = g;
 
-            return userevent; //Math.Round(g, Conf.Percision);
+            return g;
         }
 
         protected List<UserEvent> ExtraversionIndexInitialization(List<int> users, List<int> events)
@@ -1456,6 +1460,17 @@ namespace Implementation.Algorithms
             return userEvents;
         }
 
+        protected UserEvent InitializePersonalityOrientedUserEventPair(List<int> users, int user, int @event)
+        {
+            var ue = new UserEvent { Event = @event, User = user, Utility = 0d };
+            if (InAffinities[user][@event] != 0)
+            {
+                ue.Utility += (Conf.Alpha * InAffinities[user][@event]) + (ExtrovertIndeces[user] - 0.5);
+            }
+
+            return ue;
+        }
+
         protected List<UserEvent> PredictiveInitialization(InitStrategyEnum initStrategy, List<int> users, List<int> events)
         {
             UserEventsInit = new Dictionary<string, UserEvent>();
@@ -1469,18 +1484,29 @@ namespace Implementation.Algorithms
                         continue;
                     }
 
-                    var ue = new UserEvent { Event = e, User = u, Utility = 0d };
-
-                    ue.Utility += (1 - Conf.Alpha) * InAffinities[u][e];
-                    ue.Utility += Conf.Alpha * (EventCapacity[e].Max *
-                                  users.Sum(
-                                      x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) /
-                                  (users.Count - 1));
-                    UserEventsInit.Add(ue.Key, ue);
-
-                    if (initStrategy == InitStrategyEnum.CommunityAwareSort)
+                    if (!Conf.PersonalityOriented)
                     {
-                        userEvents.Add(ue);
+                        var ue = new UserEvent { Event = e, User = u, Utility = 0d };
+                        ue.Utility += (1 - Conf.Alpha) * InAffinities[u][e];
+                        ue.Utility += Conf.Alpha * (EventCapacity[e].Max *
+                                      users.Sum(
+                                          x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d)) /
+                                      (users.Count - 1));
+                        UserEventsInit.Add(ue.Key, ue);
+
+                        if (initStrategy == InitStrategyEnum.CommunityAwareSort)
+                        {
+                            userEvents.Add(ue);
+                        }
+                    }
+                    else
+                    {
+                        var ue = InitializePersonalityOrientedUserEventPair(users, u, e);
+                        UserEventsInit.Add(ue.Key, ue);
+                        if (initStrategy == InitStrategyEnum.CommunityAwareSort)
+                        {
+                            userEvents.Add(ue);
+                        }
                     }
                 }
             }

@@ -145,6 +145,19 @@ namespace Implementation.Algorithms
             }
             userGainsSheet.Cells[userGainsSheet.Dimension.Address].AutoFitColumns();
 
+            if (_algorithm.ExtrovertIndeces != null)
+            {
+                var extrovertIndecesSheet = excel.Workbook.Worksheets.Add("Extrovert Indeces");
+                extrovertIndecesSheet.Cells[1, 1].Value = @"User";
+                extrovertIndecesSheet.Cells[1, 2].Value = "Index";
+                foreach (var user in _algorithm.AllUsers)
+                {
+                    extrovertIndecesSheet.Cells[user + 2, 1].Value = user;
+                    extrovertIndecesSheet.Cells[user + 2, 2].Value = _algorithm.ExtrovertIndeces[user];
+                }
+                extrovertIndecesSheet.Cells[extrovertIndecesSheet.Dimension.Address].AutoFitColumns();
+            }
+
             excel.Save();
         }
 
@@ -171,6 +184,16 @@ namespace Implementation.Algorithms
                 }
             }
             socialAffinityFile.Close();
+
+            if (_algorithm.ExtrovertIndeces != null)
+            {
+                var extrovertIndecesFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.ExtrovertIndeces));
+                foreach (var user1 in _algorithm.AllUsers)
+                {
+                    extrovertIndecesFile.WriteLine("{0},{1}", user1 + 1, _algorithm.ExtrovertIndeces[user1]);
+                }
+                extrovertIndecesFile.Close();
+            }
 
             var cardinalitiesFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.Cardinality));
             for (int i = 0; i < _algorithm.EventCapacity.Count; i++)

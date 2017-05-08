@@ -10,17 +10,15 @@ namespace Implementation.Algorithms
 {
     public class POSPG : Algorithm<List<UserEvent>>
     {
-        private List<List<double>> _inAffinities;
-        private double[,] _socAffinities;
         private List<int> _events;
         private List<int> _users;
-        private List<double> _extravortIndeces;
         private List<UserPairEvent> _queue;
         private bool _init;
+        private double _Q;
         private readonly IDataFeed _dataFeeder;
         private SGConf _conf => (SGConf)Conf;
 
-        public POSPG(SGConf conf, IDataFeed dataFeeder, int index): base(index)
+        public POSPG(SGConf conf, IDataFeed dataFeeder, int index) : base(index)
         {
             _dataFeeder = dataFeeder;
             Conf = conf;
@@ -31,61 +29,92 @@ namespace Implementation.Algorithms
             if (!_init)
                 throw new Exception("Not Initialized");
             Conf.PopOperationCount = 0;
-            Conf.EvenSwitchRoundCount = _queue.Count;
+            Conf.EvenSwitchRoundCount = 0;
 
             while (_queue.Any())
             {
                 PrintQueue();
                 Conf.PopOperationCount++;
-                var min = _queue.First();
-                var user1 = min.User1;
-                var user2 = min.User2;
-                var @event = min.Event;
+                var bestPair = _queue.First();
+                _queue.RemoveAt(0);
+                int user1 = bestPair.User1;
+                int? user2 = bestPair.User2;
+                var @event = bestPair.Event;
                 var maxCapacity = EventCapacity[@event].Max;
 
-                if (UserAssignments[user1] == null && UserAssignments[user2] == null && Assignments[@event].Count + 1 < maxCapacity
+                if (bestPair.User2.HasValue)
+                {
+                    if (UserAssignments[user1] == null && UserAssignments[user2.Value] == null && Assignments[@event].Count + 1 < maxCapacity
+                        && !Assignments[@event].Contains(user1) && !Assignments[@event].Contains(user2.Value))
+                    {
+                        Assignments[@event].Add(user1);
+                        Assignments[@event].Add(user2.Value);
 
-                    && !Assignments[@event].Contains(user1) && !Assignments[@event].Contains(user2))
+                        UserAssignments[user1] = @event;
+                        UserAssignments[user2.Value] = @event;
+                    }
+                }
+                else if (UserAssignments[user1] == null && Assignments[@event].Count < maxCapacity && !Assignments[@event].Contains(user1))
                 {
                     Assignments[@event].Add(user1);
-                    Assignments[@event].Add(user2);
                     UserAssignments[user1] = @event;
-                    UserAssignments[user2] = @event;
                 }
-                _queue.RemoveAt(0);
 
                 if (_queue.Count == 0)
                 {
-                    var phantomEvents = new List<int>();
-                    for (int e = 0; e < Assignments.Count; e++)
+                    Reinitialize();
+                }
+            }
+        }
+
+        private void Reinitialize()
+        {
+            var availableUsers = new List<int>();
+            for (int e = 0; e < Assignments.Count; e++)
+            {
+                var assignment = Assignments[e];
+                if (assignment.Count < EventCapacity[e].Min)
+                {
+                    availableUsers.AddRange(Assignments[e]);
+                    Assignments[e].RemoveAll(x => true);
+                }
+            }
+
+            var openEvents = _events.Where(x => Assignments[x].Count >= EventCapacity[x].Min && Assignments[x].Count < EventCapacity[x].Max);
+            availableUsers = availableUsers.Distinct().ToList();
+
+            foreach (var u1 in availableUsers)
+            {
+                foreach (var u2 in availableUsers)
+                {
+                    foreach (var e in openEvents)
                     {
-                        var assignment = Assignments[e];
-                        if (assignment.Count < EventCapacity[e].Min)
+                        if (u1 != u2)
                         {
-                            phantomEvents.Add(e);
-                        }
-                    }
-
-                    var openEvents = _events.Where(x => Assignments[x].Count >= EventCapacity[x].Min && Assignments[x].Count < EventCapacity[x].Max);
-
-                    foreach (var phantomEvent in phantomEvents)
-                    {
-                        List<int> users = Assignments[phantomEvent];
-
-                        foreach (var u1 in users)
-                        {
-                            foreach (var u2 in users)
+                            if (Assignments[e].Count + 1 < EventCapacity[e].Max)
                             {
-                                foreach (var e in openEvents)
-                                {
-                                    var gain = 0d;
-                                    gain = ((1 - _conf.Alpha) * (_inAffinities[u1][e] + _inAffinities[u2][e])) + (2 * _conf.Alpha * _socAffinities[u1, u2]);
-                                    gain = Math.Round(gain, _conf.Percision);
-                                    var ue = new UserPairEvent { Event = e, User1 = u1, User2 = u2, Utility = gain };
-                                    _queue.Add(ue);
-                                }
+                                var ue = new UserPairEvent();
+                                ue.User1 = u1;
+                                ue.User2 = u2;
+                                ue.Utility = CalculatePOUserEventPairGain(u1, u2, e);
+                                _queue.Add(ue);
                             }
                         }
+                    }
+                }
+            }
+
+            foreach (var u in availableUsers)
+            {
+                foreach (var e in openEvents)
+                {
+                    if (Assignments[e].Count + 1 == EventCapacity[e].Max)
+                    {
+                        var ue = new UserPairEvent();
+                        ue.User1 = u;
+                        ue.User2 = null;
+                        ue.Utility = CalculateUserEventPair(u, e);
+                        _queue.Add(ue);
                     }
                 }
             }
@@ -157,124 +186,6 @@ namespace Implementation.Algorithms
             }
         }
 
-        private void Print(List<UserEvent> result, double welfare, FileInfo output)
-        {
-            ExcelPackage excel = new ExcelPackage(output);
-            var usereventsheet = excel.Workbook.Worksheets.Add("Innate Affinities");
-            usereventsheet.Cells[1, 1].Value = @"User\Event";
-            foreach (var @event in AllEvents)
-            {
-                usereventsheet.Cells[1, @event + 2].Value = @event + 1;
-                foreach (var user in AllUsers)
-                {
-                    if (@event == 0)
-                    {
-                        usereventsheet.Cells[user + 2, 1].Value = user + 1;
-                    }
-
-                    usereventsheet.Cells[user + 2, @event + 2].Value = _inAffinities[user][@event];
-                }
-            }
-            usereventsheet.Cells[usereventsheet.Dimension.Address].AutoFitColumns();
-
-            var socialaffinitiessheet = excel.Workbook.Worksheets.Add("Social Affinities");
-            socialaffinitiessheet.Cells[1, 1].Value = @"User\User";
-            foreach (var user1 in AllUsers)
-            {
-                socialaffinitiessheet.Cells[1, user1 + 2].Value = user1 + 1;
-                foreach (var user2 in AllUsers)
-                {
-                    if (user1 == 0)
-                    {
-                        socialaffinitiessheet.Cells[user2 + 2, 1].Value = user2 + 1;
-                    }
-
-                    socialaffinitiessheet.Cells[user2 + 2, user1 + 2].Value = _socAffinities[user1, user2];
-                }
-            }
-            socialaffinitiessheet.Cells[socialaffinitiessheet.Dimension.Address].AutoFitColumns();
-
-            var cardinalitiessheet = excel.Workbook.Worksheets.Add("Cardinalities");
-            cardinalitiessheet.Cells[1, 1].Value = "Event";
-            cardinalitiessheet.Cells[1, 2].Value = "Min";
-            cardinalitiessheet.Cells[1, 3].Value = "Max";
-            for (int i = 0; i < EventCapacity.Count; i++)
-            {
-                var cap = EventCapacity[i];
-                cardinalitiessheet.Cells[i + 2, 1].Value = i + 1;
-                cardinalitiessheet.Cells[i + 2, 2].Value = cap.Min;
-                cardinalitiessheet.Cells[i + 2, 3].Value = cap.Max;
-            }
-            cardinalitiessheet.Cells[cardinalitiessheet.Dimension.Address].AutoFitColumns();
-
-            var assignmentssheet = excel.Workbook.Worksheets.Add("Assignments");
-            assignmentssheet.Cells[1, 1].Value = "User";
-            assignmentssheet.Cells[1, 2].Value = "Event";
-            for (int i = 0; i < result.Count; i++)
-            {
-                var userEvent = result[i];
-                assignmentssheet.Cells[i + 2, 1].Value = userEvent.User + 1;
-                if (userEvent.Event >= 0)
-                {
-                    assignmentssheet.Cells[i + 2, 2].Value = userEvent.Event + 1;
-                }
-            }
-            assignmentssheet.Cells[result.Count + 3, 1].Value = "Social Welfare";
-            assignmentssheet.Cells[result.Count + 3, 2].Value = welfare;
-
-            assignmentssheet.Cells[assignmentssheet.Dimension.Address].AutoFitColumns();
-            _conf.PrintToExcel(excel, _watch);
-            excel.Save();
-        }
-
-        private double Util(int @event, int user)
-        {
-            var g = (1 - _conf.Alpha) * _inAffinities[user][@event];
-
-            var s = 0d;
-            foreach (var u in Assignments[@event])
-            {
-                s += _socAffinities[user, u];
-            }
-
-            s *= _conf.Alpha;
-            g += s;
-            s = 0d;
-
-            foreach (var u in _users)
-            {
-                s += _socAffinities[user, u];
-            }
-            g += (s * _conf.Alpha * (EventCapacity[@event].Min - Assignments[@event].Count)) / Math.Max(_users.Count - 1, 1);
-            return Math.Round(g, _conf.Percision);
-        }
-
-        public double CalculateSocialWelfare(List<List<int>> assignments)
-        {
-            double u = 0;
-            for (int @event = 0; @event < assignments.Count; @event++)
-            {
-                var assignment = assignments[@event];
-
-                double s1 = 0;
-                double s2 = 0;
-                foreach (var user1 in assignment)
-                {
-                    s1 += _inAffinities[user1][@event];
-                    foreach (var user2 in assignment)
-                    {
-                        if (user1 != user2)
-                        {
-                            s2 += _socAffinities[user1, user2];
-                        }
-                    }
-                }
-                s1 *= (1 - _conf.Alpha);
-                s2 *= _conf.Alpha;
-                u += s1 + s2;
-            }
-            return u;
-        }
 
         protected override void RealizePhantomEvent(List<List<int>> assignments, int @event, List<int> affectedEvents)
         {
@@ -287,7 +198,7 @@ namespace Implementation.Algorithms
             AllEvents = new List<int>();
             _init = false;
             Conf.EvenSwitchRoundCount = 0;
-            
+
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {
                 int numberOfUsers;
@@ -311,7 +222,7 @@ namespace Implementation.Algorithms
             _events = new List<int>();
             Assignments = new List<List<int>>();
             UserAssignments = new List<int?>();
-            _extravortIndeces = new List<double>();
+            ExtrovertIndeces = new List<double>();
             Welfare = new Welfare();
             _queue = new List<UserPairEvent>(_conf.NumberOfUsers * _conf.NumberOfUsers * _conf.NumberOfEvents);
             _init = true;
@@ -329,8 +240,9 @@ namespace Implementation.Algorithms
             }
 
             EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
-            _inAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
-            _socAffinities = _dataFeeder.GenerateSocialAffinities(_users);
+            InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
+            SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
+            ExtrovertIndeces = _dataFeeder.GenerateExtrovertIndeces(_users);
 
             foreach (var u1 in _users)
             {
@@ -342,15 +254,26 @@ namespace Implementation.Algorithms
                     }
                     foreach (var e in _events)
                     {
-                        var gain = 0d;
-                        gain = ((1 - _conf.Alpha) * (_inAffinities[u1][e] + _inAffinities[u2][e])) + (2 * _conf.Alpha * _socAffinities[u1, u2]);
-                        gain = Math.Round(gain, _conf.Percision);
+                        var gain = CalculatePOUserEventPairGain(u1, u2, e);
                         var ue = new UserPairEvent { Event = e, User1 = u1, User2 = u2, Utility = gain };
-                        _queue.Add(ue);
+                        if (ue.Utility > 0)
+                        {
+                            _queue.Add(ue);
+                        }
                     }
                 }
             }
             _queue = _queue.OrderByDescending(x => x.Utility).ToList();
         }
+
+        private double CalculateUserEventPair(int user, int e)
+        {
+            var assignments = new List<int>();
+            assignments.AddRange(Assignments[e]);
+            assignments.Add(user);
+            return POGainFunciton(assignments, e);
+        }
+
+
     }
 }

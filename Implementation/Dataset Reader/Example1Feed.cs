@@ -26,6 +26,11 @@ namespace Implementation.Dataset_Reader
             return result;
         }
 
+        public List<double> GenerateExtrovertIndeces(List<int> users)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<List<double>> GenerateInnateAffinities(List<int> users, List<int> events)
         {
             if (users.Count != NumberOfUsers || events.Count != NumberOfEvents)

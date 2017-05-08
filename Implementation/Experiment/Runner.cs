@@ -127,6 +127,12 @@ namespace Implementation.Experiment
                                            setType = (SetType)Convert.ToInt32(x.Attribute("SetType").Value);
                                        }
 
+                                       var personalityOriented = false;
+                                       if (x.Attribute("PersonalityOriented") != null)
+                                       {
+                                           personalityOriented = Convert.ToBoolean(x.Attribute("PersonalityOriented").Value);
+                                       }
+
                                        var algspec = new AlgorithmSpec
                                        {
                                            CommunityFix = communityfix,
@@ -141,7 +147,8 @@ namespace Implementation.Experiment
                                            PreservePercentage = preservePercentage,
                                            PostPhantomRealization = postPhantomRealization,
                                            InitStrategy = initStrategy,
-                                           SetType = setType
+                                           SetType = setType,
+                                           PersonalityOriented = personalityOriented
                                        };
 
                                        switch (x.Value.ToUpper())
@@ -351,6 +358,13 @@ namespace Implementation.Experiment
                 return new OG(ogConf, feed, index);
             }
 
+            if (configs[j] is POSPGConf)
+            {
+                var ogConf = (POSPGConf)configs[j];
+                var feed = CreateFeed(ogConf.FeedType, ogConf.InputFilePath, parameters);
+                return new POSPG(ogConf, feed, index);
+            }
+
             {
                 var sgConf = (SGConf)configs[j];
                 var feed = CreateFeed(sgConf.FeedType, sgConf.InputFilePath, parameters);
@@ -401,7 +415,8 @@ namespace Implementation.Experiment
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
                         Asymmetric = parameters.Asymmetric,
-                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs,
+                        PersonalityOriented = parameters.ExpTypes[i].PersonalityOriented
                     };
 
                     configs.Add(conf);
@@ -430,7 +445,8 @@ namespace Implementation.Experiment
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
-                        InitStrategyEnum = parameters.ExpTypes[i].InitStrategy
+                        InitStrategyEnum = parameters.ExpTypes[i].InitStrategy,
+                        PersonalityOriented = parameters.ExpTypes[i].PersonalityOriented
                     };
 
                     configs.Add(conf);
@@ -457,7 +473,8 @@ namespace Implementation.Experiment
                         Asymmetric = parameters.Asymmetric,
                         Reassignment = parameters.ExpTypes[i].Reassignment,
                         ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs,
-                        PostPhantomRealization = parameters.ExpTypes[i].PostPhantomRealization
+                        PostPhantomRealization = parameters.ExpTypes[i].PostPhantomRealization,
+                        PersonalityOriented = parameters.ExpTypes[i].PersonalityOriented
                     };
 
                     if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.LA)
@@ -501,7 +518,44 @@ namespace Implementation.Experiment
                         SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
-                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs,
+                        PersonalityOriented = parameters.ExpTypes[i].PersonalityOriented
+                    };
+
+                    configs.Add(conf);
+                }
+                else if (algorithmEnum == AlgorithmSpec.AlgorithmEnum.POSPG)
+                {
+                    var conf = new POSPGConf();
+                    var DG = alg == (int)AlgorithmSpec.AlgorithmEnum.DG;
+                    var PCADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PCADG;
+                    var PADG = alg == (int)AlgorithmSpec.AlgorithmEnum.PADG;
+                    var IR = alg == (int)AlgorithmSpec.AlgorithmEnum.IR;
+                    var IRC = alg == (int)AlgorithmSpec.AlgorithmEnum.IRC;
+
+                    conf = new POSPGConf
+                    {
+                        NumberOfUsers = parameters.UserCount,
+                        NumberOfEvents = parameters.EventCount,
+                        InputFilePath = GetInputFile(parameters),
+                        //PhantomAware = !DG,
+                        //ImmediateReaction = IR || IRC,
+                        Reassignment = parameters.ExpTypes[i].Reassignment,
+                        PrintOutEachStep = false,
+                        FeedType = GetFeedType(parameters),
+                        //CommunityAware = IRC || PCADG,
+                        Alpha = parameters.AlphaValue,
+                        AlgorithmName = ConvertToString(algorithmEnum),
+                        Parameters = parameters,
+                        //CommunityFix = parameters.ExpTypes[i].CommunityFix,
+                        OutputType = parameters.OutputType,
+                        Swap = parameters.ExpTypes[i].Swap,
+                        Sweep = parameters.ExpTypes[i].Sweep,
+                        SwapThreshold = parameters.ExpTypes[i].SwapThreshold,
+                        PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
+                        Asymmetric = parameters.Asymmetric,
+                        ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs,
+                        PersonalityOriented = true
                     };
 
                     configs.Add(conf);
@@ -538,7 +592,8 @@ namespace Implementation.Experiment
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
                         ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs,
-                        SetType = parameters.ExpTypes[i].SetType
+                        SetType = parameters.ExpTypes[i].SetType,
+                        PersonalityOriented = parameters.ExpTypes[i].PersonalityOriented
                     };
 
                     configs.Add(conf);
@@ -578,7 +633,8 @@ namespace Implementation.Experiment
                         PreservePercentage = parameters.ExpTypes[i].PreservePercentage,
                         Asymmetric = parameters.Asymmetric,
                         ReuseDisposedPairs = parameters.ExpTypes[i].ReuseDisposedPairs,
-                        SetType = parameters.ExpTypes[i].SetType
+                        SetType = parameters.ExpTypes[i].SetType,
+                        PersonalityOriented = parameters.ExpTypes[i].PersonalityOriented
                     };
 
                     configs.Add(conf);

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Implementation</RootNamespace>
     <AssemblyName>Implementation</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -96,6 +96,7 @@
     <Compile Include="Data Structures\FiboHeap.cs" />
     <Compile Include="Data Structures\IHeap.cs" />
     <Compile Include="Data Structures\InitStrategyEnum.cs" />
+    <Compile Include="Data Structures\POSPGConf.cs" />
     <Compile Include="Data Structures\SwapEnum.cs" />
     <Compile Include="Data Structures\OutputFiles.cs" />
     <Compile Include="Data Structures\OutputEnum.cs" />

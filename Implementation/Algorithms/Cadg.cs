@@ -488,7 +488,7 @@ namespace Implementation.Algorithms
 
         private void AddToQueue(int @event, int user, bool addOnPositiveUtility = false)
         {
-            if(ExcludingUserEvents != null && ExcludingUserEvents.Any(x=> x.Event == @event && x.User == user))
+            if (ExcludingUserEvents != null && ExcludingUserEvents.Any(x => x.Event == @event && x.User == user))
             {
                 return;
             }
@@ -583,7 +583,10 @@ namespace Implementation.Algorithms
             EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
             InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
             SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
-
+            if (Conf.PersonalityOriented)
+            {
+                ExtrovertIndeces = _dataFeeder.GenerateExtrovertIndeces(_users);
+            }
             InitializeQueue(AllUsers, AllEvents);
         }
 
@@ -615,35 +618,7 @@ namespace Implementation.Algorithms
                         continue;
                     }
 
-                    var ue = new UserEvent { Event = e, User = u, Utility = 0d };
-
-                    if (InAffinities[u][e] != 0)
-                    {
-                        ue.Utility += (1 - _conf.Alpha) * InAffinities[u][e];
-                        //gain = Math.Round(gain, _conf.Percision);
-                    }
-
-                    if (_conf.CommunityAware && _conf.CommunityFix.HasFlag(CommunityFixEnum.InitializationFix))
-                    {
-                        var denomDeduction = 1;
-                        if (_conf.CommunityFix.HasFlag(CommunityFixEnum.DenomFix))
-                        {
-                            denomDeduction = 0;
-                        }
-
-                        if (users.Count - denomDeduction > 0)
-                        {
-                            ue.Utility += _conf.Alpha*(EventCapacity[e].Max*
-                                          users.Sum(
-                                              x => SocAffinities[u, x] + (Conf.Asymmetric ? SocAffinities[x, u] : 0d))/
-                                          (users.Count - denomDeduction));
-                        }
-                    }
-
-                    if (Double.IsNaN(ue.Utility))
-                    {
-                        throw new Exception("Utility is not a number.");
-                    }
+                    UserEvent ue = GenerateUserEventPair(users, u, e);
 
                     UserEventsInit.Add(ue.Key, ue);
                     if (ue.Utility != 0)
@@ -654,6 +629,53 @@ namespace Implementation.Algorithms
             }
 
             return userEvents;
+        }
+
+        private UserEvent GenerateUserEventPair(List<int> users, int user, int @event)
+        {
+            if (!Conf.PersonalityOriented)
+            {
+                return GenerateDefaultOFUserEventPair(users, user, @event);
+            }
+            else
+            {
+                return InitializePersonalityOrientedUserEventPair(users, user, @event);
+            }
+        }
+
+        private UserEvent GenerateDefaultOFUserEventPair(List<int> users, int user, int @event)
+        {
+            var ue = new UserEvent { Event = @event, User = user, Utility = 0d };
+
+            if (InAffinities[user][@event] != 0)
+            {
+                ue.Utility += (1 - _conf.Alpha) * InAffinities[user][@event];
+                //gain = Math.Round(gain, _conf.Percision);
+            }
+
+            if (_conf.CommunityAware && _conf.CommunityFix.HasFlag(CommunityFixEnum.InitializationFix))
+            {
+                var denomDeduction = 1;
+                if (_conf.CommunityFix.HasFlag(CommunityFixEnum.DenomFix))
+                {
+                    denomDeduction = 0;
+                }
+
+                if (users.Count - denomDeduction > 0)
+                {
+                    ue.Utility += _conf.Alpha * (EventCapacity[@event].Max *
+                                  users.Sum(
+                                      x => SocAffinities[user, x] + (Conf.Asymmetric ? SocAffinities[x, user] : 0d)) /
+                                  (users.Count - denomDeduction));
+                }
+            }
+
+            if (Double.IsNaN(ue.Utility))
+            {
+                throw new Exception("Utility is not a number.");
+            }
+
+            return ue;
         }
 
         private void InitializeQueue(List<UserEvent> userEvents)

@@ -34,6 +34,7 @@ namespace Implementation.Data_Structures
         public bool PostPhantomRealization { get; set; }
         public double SwapThreshold { get; set; }
         public double PreservePercentage { get; set; }
+        public bool PersonalityOriented { get; internal set; }
 
         public enum AlgorithmEnum
         {

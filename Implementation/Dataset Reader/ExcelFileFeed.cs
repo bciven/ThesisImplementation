@@ -118,5 +118,38 @@ namespace Implementation.Dataset_Reader
             }
             return array;
         }
+
+        public List<double> GenerateExtrovertIndeces(List<int> users)
+        {
+            var fileInfo = new FileInfo(_filePath);
+            var excel = new ExcelPackage(fileInfo);
+            bool found = false;
+            // Loop through all worksheets in the workbook
+            foreach (var sheet in excel.Workbook.Worksheets)
+            {
+                // Check the name of the current sheet
+                if (sheet.Name == "Extrovert Indeces")
+                {
+                    found = true;
+                    break; // Exit the loop now
+                }
+            }
+
+            if (!found)
+            {
+                return null;
+            }
+
+            var ws = excel.Workbook.Worksheets["Extrovert Indeces"];
+
+            var result = ReadWorksheet(ws);
+            var indeces = new List<double>();
+            foreach (var item in result)
+            {
+                indeces.Add(item[0]);
+            }
+
+            return indeces;
+        }
     }
 }

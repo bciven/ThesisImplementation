@@ -94,5 +94,17 @@ namespace Implementation.Dataset_Reader
         {
             return _rand.Next(minimum, maximum + 1);
         }
+
+        public List<double> GenerateExtrovertIndeces(List<int> users)
+        {
+            var indeces = new List<double>();
+            foreach (var user in users)
+            {
+                var r = GenerateRandom(0d, 1d);
+                r = Math.Round(r, 2);
+                indeces.Add(r);
+            }
+            return indeces;
+        }
     }
 }

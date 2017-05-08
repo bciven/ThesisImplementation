@@ -42,14 +42,14 @@ namespace Implementation.Algorithms
                 var @event = min.Event;
                 var maxCapacity = EventCapacity[@event].Max;
 
-                if (UserAssignments[user1] == null && UserAssignments[user2] == null && Assignments[@event].Count + 1 < maxCapacity
+                if (UserAssignments[user1] == null && UserAssignments[user2.Value] == null && Assignments[@event].Count + 1 < maxCapacity
 
-                    && !Assignments[@event].Contains(user1) && !Assignments[@event].Contains(user2))
+                    && !Assignments[@event].Contains(user1) && !Assignments[@event].Contains(user2.Value))
                 {
                     Assignments[@event].Add(user1);
-                    Assignments[@event].Add(user2);
+                    Assignments[@event].Add(user2.Value);
                     UserAssignments[user1] = @event;
-                    UserAssignments[user2] = @event;
+                    UserAssignments[user2.Value] = @event;
                 }
                 _queue.RemoveAt(0);
 

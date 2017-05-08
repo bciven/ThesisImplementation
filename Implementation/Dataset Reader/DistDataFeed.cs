@@ -15,6 +15,7 @@ namespace Implementation.Dataset_Reader
         private readonly Normal _maxGenerator;
         private readonly Normal _innateNormalRandomGenerator;
         private readonly Normal _socialNormalRandomGenerator;
+        private readonly Random _extrovertIndexGenerator;
         private Random _rand;
 
         //public DistDataFeed()
@@ -31,6 +32,7 @@ namespace Implementation.Dataset_Reader
             _maxGenerator = Normal.WithMeanVariance(_distDataParams.CapacityMean, _distDataParams.CapacityVariance, _rand);
             _innateNormalRandomGenerator = Normal.WithMeanVariance(1.5, 3, _rand);
             _socialNormalRandomGenerator = Normal.WithMeanVariance(1.5, 3, _rand);
+            _extrovertIndexGenerator = new Random();
         }
 
         private UndirectedGraph GenerateEventGraph(int userNumber, int eventNumber)
@@ -372,6 +374,21 @@ namespace Implementation.Dataset_Reader
             }
 
             throw new NotImplementedException("Max Cardinality Unknown");
+        }
+
+        private double GenerateExtrovertionIndex()
+        {
+            return _extrovertIndexGenerator.NextDouble();
+        }
+
+        public List<double> GenerateExtrovertIndeces(List<int> users)
+        {
+            var extrovertIndeces = new List<double>();
+            foreach (var user in users)
+            {
+                extrovertIndeces.Add(GenerateExtrovertionIndex());
+            }
+            return extrovertIndeces;
         }
     }
 }

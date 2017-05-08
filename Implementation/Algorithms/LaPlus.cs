@@ -243,6 +243,10 @@ namespace Implementation.Algorithms
             EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
             InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
             SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
+            if (Conf.PersonalityOriented)
+            {
+                ExtrovertIndeces = _dataFeeder.GenerateExtrovertIndeces(_users);
+            }
 
             var rnd = new System.Random();
             _users = _users.OrderBy(item => rnd.Next()).ToList();
