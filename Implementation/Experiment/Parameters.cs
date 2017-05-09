@@ -24,5 +24,7 @@ namespace Implementation.Experiment
         public OutputTypeEnum OutputType { get; set; }
         public string ExperimentInputFile { get; internal set; }
         public string Title { get; internal set; }
+        public double Exponent { get; internal set; }
+        public int MinDegree { get; internal set; }
     }
 }

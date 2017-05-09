@@ -11,5 +11,7 @@ namespace Implementation.Data_Structures
         public SocialNetworkModel SocialNetworkModel { get; set; }
         public double SocialNetworkDensity { get; set; }
         public double EventInterestPerct { get; set; }
+        public double Exponent { get; set; }
+        public int MinDegree { get; internal set; }
     }
 }

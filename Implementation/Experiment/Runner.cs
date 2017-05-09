@@ -18,9 +18,10 @@ namespace Implementation.Experiment
     {
         const string experimentFile = "Experiment\\Experiments.xml";
 
-        private List<Parameters> ReadExperiments()
+        private List<Parameters> ReadExperiments(out string experimentTitle)
         {
             var root = XDocument.Load(experimentFile);
+            experimentTitle = root.Root.Attribute("title")?.Value;
 
             var experiments = (from exp in root.Descendants("Experiment")
                                let users = exp.Element("users")
@@ -53,6 +54,8 @@ namespace Implementation.Experiment
                                    MaxCardinalityOption = maxcard != null ? (MaxCardinalityOptions)Convert.ToInt32(maxcard.Attribute("value").Value) : MaxCardinalityOptions.Random,
                                    SocialNetworkModel = (SocialNetworkModel)Convert.ToInt32(snmodel.Attribute("value").Value),
                                    Asymmetric = Convert.ToBoolean(snmodel.Attribute("asymmetric").Value),
+                                   Exponent = Convert.ToDouble(snmodel.Attribute("exponent").Value),
+                                   MinDegree = Convert.ToInt32(snmodel.Attribute("mindegree").Value),
                                    OutputType = (OutputTypeEnum)Convert.ToInt32(exp.Attribute("output").Value),
                                    ExpTypes = exptypes.Descendants("type").Select(x =>
                                    {
@@ -218,7 +221,9 @@ namespace Implementation.Experiment
                 SocialNetworkModel = parameters.SocialNetworkModel,
                 SocialNetworkDensity = parameters.SndensityValue,
                 EventInterestPerct = parameters.EventInterestPerctValue,
-                MaxCardinalityOption = parameters.MaxCardinalityOption
+                MaxCardinalityOption = parameters.MaxCardinalityOption,
+                Exponent = parameters.Exponent,
+                MinDegree = parameters.MinDegree
             };
 
             switch (feedType)
@@ -261,9 +266,9 @@ namespace Implementation.Experiment
         public void RunExperiments()
         {
             bool useMenu = false; //ChooseByMenu();
-
-            var experiments = ReadExperiments();
-            CreateWorkingDirectory();
+            string tite = null;
+            var experiments = ReadExperiments(out tite);
+            CreateWorkingDirectory(tite);
 
             foreach (var parameters in experiments)
             {
@@ -372,13 +377,16 @@ namespace Implementation.Experiment
             }
         }
 
-        private static void CreateWorkingDirectory()
+        private static void CreateWorkingDirectory(string folderTitle)
         {
-            var folder = "Batch - " + (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-            Directory.CreateDirectory(folder);
+            if (folderTitle == null)
+            {
+                folderTitle = "Batch - " + (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            }
+            Directory.CreateDirectory(folderTitle);
             var fileInfo = new FileInfo(experimentFile);
-            File.Copy(experimentFile, Path.Combine(folder, fileInfo.Name));
-            Directory.SetCurrentDirectory(folder);
+            File.Copy(experimentFile, Path.Combine(folderTitle, fileInfo.Name));
+            Directory.SetCurrentDirectory(folderTitle);
         }
 
         private bool ChooseByMenu()

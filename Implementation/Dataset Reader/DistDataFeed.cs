@@ -53,12 +53,12 @@ namespace Implementation.Dataset_Reader
             return graph;
         }
 
-        private UndirectedGraph GenerateSocialGraph(int userCount)
+        private UndirectedGraph GenerateSocialGraph(int userCount, double exponent, int minDegree)
         {
             switch (_distDataParams.SocialNetworkModel)
             {
                 case SocialNetworkModel.PowerLawModel:
-                    return PowerLawModel(userCount);
+                    return PowerLawModel(userCount, exponent, minDegree);
                 case SocialNetworkModel.BarabasiAlbertModel:
                     return BarabasiAlbertModel(userCount);
                 case SocialNetworkModel.SymmetricErdosModel:
@@ -71,7 +71,6 @@ namespace Implementation.Dataset_Reader
                     throw new ArgumentOutOfRangeException();
             }
         }
-
         private UndirectedGraph BarabasiAlbertModel(int userCount)
         {
             List<string> lines;
@@ -196,14 +195,13 @@ namespace Implementation.Dataset_Reader
         //    return graph;
         //}
 
-        private static UndirectedGraph PowerLawModel(int userCount)
+        private static UndirectedGraph PowerLawModel(int userCount, double exponent, int minDegree)
         {
             List<string> lines;
-            var minDegree = 1;
             using (WebClient client = new WebClient())
             {
                 var ip = ConfigurationManager.AppSettings["IP"];
-                var csv = client.DownloadString(ip + $"/powerlaw/{userCount}/{minDegree}");
+                var csv = client.DownloadString(ip + $"/powerlaw/{userCount}/{minDegree}/{exponent}");
                 lines = csv.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             }
 
@@ -306,7 +304,7 @@ namespace Implementation.Dataset_Reader
 
         public double[,] GenerateSocialAffinities(List<int> users)
         {
-            var socialNetworkGraph = GenerateSocialGraph(users.Count);
+            var socialNetworkGraph = GenerateSocialGraph(users.Count, _distDataParams.Exponent, _distDataParams.MinDegree);
             var usersInterests = new double[users.Count, users.Count];
 
             foreach (var edge in socialNetworkGraph.Edges)
