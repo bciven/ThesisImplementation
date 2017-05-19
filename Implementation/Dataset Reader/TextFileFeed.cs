@@ -106,7 +106,7 @@ namespace Implementation.Dataset_Reader
             return result;
         }
 
-        public List<double> GenerateExtrovertIndeces(List<int> users)
+        public List<double> GenerateExtrovertIndeces(List<int> users, double[,] socialAffinities)
         {
             var extrovertIndecesLines = File.ReadAllLines(Path.Combine(_filePath, OutputFiles.ExtrovertIndeces));
             var result = new List<double>();
@@ -117,7 +117,7 @@ namespace Implementation.Dataset_Reader
                     continue;
                 }
                 var user = CsvReader.ReadIntValue(line, 0);
-                var extrovertIndex = CsvReader.ReadDoubleValue(line, 2);
+                var extrovertIndex = CsvReader.ReadDoubleValue(line, 1);
 
                 result.Add(extrovertIndex);
             }

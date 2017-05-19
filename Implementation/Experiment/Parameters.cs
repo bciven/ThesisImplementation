@@ -26,5 +26,6 @@ namespace Implementation.Experiment
         public string Title { get; internal set; }
         public double Exponent { get; internal set; }
         public int MinDegree { get; internal set; }
+        public ExtrovertIndexEnum ExtrovertIndexModel { get; internal set; }
     }
 }

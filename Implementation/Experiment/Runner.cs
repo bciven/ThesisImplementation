@@ -18,10 +18,11 @@ namespace Implementation.Experiment
     {
         const string experimentFile = "Experiment\\Experiments.xml";
 
-        private List<Parameters> ReadExperiments(out string experimentTitle)
+        private List<Parameters> ReadExperiments(out string experimentTitle, out bool shutdown)
         {
             var root = XDocument.Load(experimentFile);
             experimentTitle = root.Root.Attribute("title")?.Value;
+            shutdown = root.Root.Attribute("shutdown")?.Value == "true";
 
             var experiments = (from exp in root.Descendants("Experiment")
                                let users = exp.Element("users")
@@ -34,6 +35,7 @@ namespace Implementation.Experiment
                                let mincard = exp.Element("mincard")
                                let maxcard = exp.Element("maxcard")
                                let snmodel = exp.Element("snmodel")
+                               let extrovertindex = exp.Element("extrovertindex")
                                let inputfile = exp.Element("inputfile")
                                let eventinterestperct = exp.Element("eventinterestperct")
                                where users != null && events != null && alpha != null &&
@@ -57,6 +59,7 @@ namespace Implementation.Experiment
                                    Exponent = Convert.ToDouble(snmodel.Attribute("exponent").Value),
                                    MinDegree = Convert.ToInt32(snmodel.Attribute("mindegree").Value),
                                    OutputType = (OutputTypeEnum)Convert.ToInt32(exp.Attribute("output").Value),
+                                   ExtrovertIndexModel = (ExtrovertIndexEnum)Convert.ToInt32(extrovertindex?.Attribute("value")?.Value),
                                    ExpTypes = exptypes.Descendants("type").Select(x =>
                                    {
                                        var communityfix = x.Attribute("CommunityFix") != null ? (CommunityFixEnum)Convert.ToInt32(x.Attribute("CommunityFix").Value) : CommunityFixEnum.None;
@@ -223,7 +226,8 @@ namespace Implementation.Experiment
                 EventInterestPerct = parameters.EventInterestPerctValue,
                 MaxCardinalityOption = parameters.MaxCardinalityOption,
                 Exponent = parameters.Exponent,
-                MinDegree = parameters.MinDegree
+                MinDegree = parameters.MinDegree,
+                ExtrovertIndexModel = parameters.ExtrovertIndexModel
             };
 
             switch (feedType)
@@ -267,7 +271,8 @@ namespace Implementation.Experiment
         {
             bool useMenu = false; //ChooseByMenu();
             string tite = null;
-            var experiments = ReadExperiments(out tite);
+            bool shutdown = false;
+            var experiments = ReadExperiments(out tite, out shutdown);
             CreateWorkingDirectory(tite);
 
             foreach (var parameters in experiments)
@@ -284,12 +289,12 @@ namespace Implementation.Experiment
                         SetInputFile(serial, round, configs);
                         var output = CreateOutputFileInfo(configs, numOfExp, i, round, dir);
                         var algorithm = CreateAlgorithm(configs, round, parameters, round);
-                        Run(i, algorithm, output, parameters.ExpTypes[round].Algorithm);
+                        Run(i, algorithm, output, parameters.ExpTypes[round].Algorithm, shutdown);
                     }
                 }
             }
 
-            Exit();
+            Exit(shutdown);
         }
 
         private static FileInfo CreateOutputFileInfo(List<SGConf> configs, int numOfExp, int i, int round, DirectoryInfo dir)
@@ -669,7 +674,7 @@ namespace Implementation.Experiment
 
         private FeedTypeEnum GetFeedType(Parameters parameters)
         {
-            if(parameters.ExperimentInputFile == null)
+            if (parameters.ExperimentInputFile == null)
             {
                 return FeedTypeEnum.SerialExperiment;
             }
@@ -687,8 +692,15 @@ namespace Implementation.Experiment
             throw new NotSupportedException("Input file not is not provided or supported.");
         }
 
-        private void Exit()
+        private void Exit(bool shutdown = false)
         {
+            if (shutdown)
+            {
+                ProcessStartInfo startinfo = new ProcessStartInfo("shutdown.exe", "-s");
+                Process.Start(startinfo);
+                return;
+            }
+
             ConsoleKeyInfo str;
             do
             {
@@ -882,8 +894,13 @@ namespace Implementation.Experiment
             return configs;
         }
 
-        private void Print(List<UserEvent> result, Welfare welfare, Stopwatch watch)
+        private void Print(List<UserEvent> result, Welfare welfare, Stopwatch watch, bool shutdown)
         {
+            if (shutdown)
+            {
+                return;
+            }
+
             var time = DateTime.Now;
             var formattedTime = time.ToString("HH:mm:ss");
             formattedTime = string.Format("Date: {0}", formattedTime).ToString();
@@ -895,13 +912,16 @@ namespace Implementation.Experiment
             Console.WriteLine();
         }
 
-        private void Run(int round, Algorithm<List<UserEvent>> alg, FileInfo output, AlgorithmSpec.AlgorithmEnum algorithmEnum)
+        private void Run(int round, Algorithm<List<UserEvent>> alg, FileInfo output, AlgorithmSpec.AlgorithmEnum algorithmEnum, bool shutdown)
         {
-            Console.WriteLine("....Round {0}-{1}....", round, ConvertToString(algorithmEnum));
+            if (!shutdown)
+            {
+                Console.WriteLine("....Round {0}-{1}....", round, ConvertToString(algorithmEnum));
+            }
             alg.Initialize();
             var watch = alg.Execute(output);
             var result = alg.CreateOutput(output);
-            Print(result, alg.Welfare, watch);
+            Print(result, alg.Welfare, watch, shutdown);
         }
 
         public string ConvertToString(Enum eff)

@@ -26,7 +26,7 @@ namespace Implementation.Dataset_Reader
             return result;
         }
 
-        public List<double> GenerateExtrovertIndeces(List<int> users)
+        public List<double> GenerateExtrovertIndeces(List<int> users, double[,] socialAffinities)
         {
             throw new NotImplementedException();
         }

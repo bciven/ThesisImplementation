@@ -44,6 +44,7 @@ namespace ChartMaker
                     config.AvgSocialWelfare += ReadSocialWelfare(wb);
                     config.AvgInnatelWelfare += ReadInnateWelfare(wb);
                     config.AvgRegRatio += ReadRegRatio(wb);
+                    config.AvgExecTime += ReadExecTime(wb);
                     config.Count++;
                     excelPackage.Dispose();
                 }
@@ -71,6 +72,7 @@ namespace ChartMaker
                     config.AvgTotalWelfare += ReadTotalWelfare(configLines);
                     config.AvgSocialWelfare += ReadSocialWelfare(configLines);
                     config.AvgInnatelWelfare += ReadInnateWelfare(configLines);
+                    config.AvgExecTime += ReadExecTime(configLines);
                     config.AvgRegRatio += ReadRegRatio(directory);
                     config.Count++;
                 }
@@ -90,7 +92,7 @@ namespace ChartMaker
                 welfare.AvgInnatelWelfare = welfare.AvgInnatelWelfare / welfare.Count;
                 welfare.AvgSocialWelfare = welfare.AvgSocialWelfare / welfare.Count;
                 welfare.AvgRegRatio = welfare.AvgRegRatio / welfare.Count;
-                welfare.AvgExecTime = Math.Round(welfare.AvgExecTime / 1000, 2);
+                welfare.AvgExecTime = Math.Round(welfare.AvgExecTime / (1000* welfare.Count), 2);
             }
         }
 
@@ -169,6 +171,31 @@ namespace ChartMaker
             return avg;
         }
 
+        private double ReadExecTime(ExcelWorkbook wb)
+        {
+            var wsConfigs = wb.Worksheets[6];
+            var execTimeIndex = 1;
+            for (; ; execTimeIndex++)
+            {
+                if (Convert.ToString(wsConfigs.Cells[execTimeIndex, 1].Value) == "Execution Time")
+                {
+                    break;
+                }
+            }
+            return Convert.ToDouble(wsConfigs.Cells[execTimeIndex, 2].Value);
+        }
+        private double ReadExecTime(string[] configLines)
+        {
+            foreach (var line in configLines)
+            {
+                if (line.Contains("Execution Time"))
+                {
+                    return CsvReader.ReadDoubleValue(line, 1);
+                }
+            }
+            throw new ArgumentException("Argument is not available");
+        }
+
         private double ReadRegRatio(DirectoryInfo directory)
         {
             var lines = File.ReadAllLines(Path.Combine(directory.FullName, OutputFiles.RegretRatio));
@@ -227,16 +254,6 @@ namespace ChartMaker
             }
             welfare.MinCardinalityOption = Convert.ToString(wsParameters.Cells[minCardinalityOptionIndex, 2].Value);
 
-            var execTimeIndex = 1;
-            for (; ; execTimeIndex++)
-            {
-                if (Convert.ToString(wsConfigs.Cells[execTimeIndex, 1].Value) == "Execution Time")
-                {
-                    break;
-                }
-            }
-            welfare.AvgExecTime = Convert.ToDouble(wsConfigs.Cells[execTimeIndex, 2].Value);
-
             var popOperationCountIndex = 1;
             for (; ; popOperationCountIndex++)
             {
@@ -290,7 +307,6 @@ namespace ChartMaker
             welfare.Alpha = CsvReader.ReadDoubleValue(configLines.First(x => x.Contains("Alpha")), 1);
             welfare.UserCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Number Of Users")), 1);
             welfare.EventCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Number Of Events")), 1);
-            welfare.AvgExecTime = CsvReader.ReadDoubleValue(configLines.First(x => x.Contains("Execution Time")), 1);
             welfare.PopOperationCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Pop Operation Count")), 1);
             welfare.EvenSwitchRoundCount = CsvReader.ReadIntValue(configLines.First(x => x.Contains("Even Switch Round Count")), 1);
             welfare.LListSize = CsvReader.ReadIntValue(configLines.First(x => x.Contains("L List Size")), 1);

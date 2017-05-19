@@ -243,7 +243,7 @@ namespace Implementation.Algorithms
                 SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
                 if (Conf.PersonalityOriented)
                 {
-                    ExtrovertIndeces = _dataFeeder.GenerateExtrovertIndeces(_users);
+                    ExtrovertIndeces = _dataFeeder.GenerateExtrovertIndeces(_users, SocAffinities);
                 }
             }
             

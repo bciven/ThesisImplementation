@@ -244,6 +244,10 @@ namespace Implementation.Data_Structures
 
             ws.Cells[i, 1].Value = "MinCardinalityOption";
             ws.Cells[i, 2].Value = Parameters.MinCardinalityOption;
+            i++;
+
+            ws.Cells[i, 1].Value = "ExtrovertIndexModel";
+            ws.Cells[i, 2].Value = Parameters.ExtrovertIndexModel;
         }
 
         protected void PrintParameters(DirectoryInfo directoryInfo)
@@ -266,6 +270,8 @@ namespace Implementation.Data_Structures
             parametersFile.WriteLine("{0},{1}", "SocialNetworkModel", Parameters.SocialNetworkModel);
 
             parametersFile.WriteLine("{0},{1}", "MinCardinalityOption", Parameters.MinCardinalityOption);
+
+            parametersFile.WriteLine("{0},{1}", "ExtrovertIndexModel", Parameters.ExtrovertIndexModel);
 
             parametersFile.Close();
         }

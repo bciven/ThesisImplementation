@@ -8,7 +8,6 @@ namespace Implementation.Data_Structures
         public bool DoublePriority { get; set; }
         public bool ProbabilisticApproach { get; set; }
         public AlgorithmSpec.ReassignmentEnum Reassignment { get; set; }
-
         public OGConf()
         {
             CommunityAware = false;

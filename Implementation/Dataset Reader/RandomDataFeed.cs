@@ -95,7 +95,7 @@ namespace Implementation.Dataset_Reader
             return _rand.Next(minimum, maximum + 1);
         }
 
-        public List<double> GenerateExtrovertIndeces(List<int> users)
+        public List<double> GenerateExtrovertIndeces(List<int> users, double[,] socialAffinities)
         {
             var indeces = new List<double>();
             foreach (var user in users)

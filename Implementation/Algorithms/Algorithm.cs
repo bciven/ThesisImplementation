@@ -1049,6 +1049,12 @@ namespace Implementation.Algorithms
             };
             //var rand = GetVoucherNumber(5);
 
+            if (Conf.PersonalityOriented)
+            {
+                result.TotalWelfare = POGainFunciton(assignments[@event], @event);
+                return result;
+            }
+
             var assignment = assignments[@event];
             //var file = new StreamWriter(string.Format("{0}-{1}.txt", @event, rand));
             //assignment.ForEach(x => file.WriteLine(x));
@@ -1097,6 +1103,11 @@ namespace Implementation.Algorithms
             var assignment = userAssignments.First();
             var @event = assignments.IndexOf(assignment);
             if (onlyRealEvents && !EventIsReal(@event, assignments[@event]))
+            {
+                return welfare;
+            }
+
+            if (Conf.PersonalityOriented)
             {
                 return welfare;
             }

@@ -119,7 +119,7 @@ namespace Implementation.Dataset_Reader
             return array;
         }
 
-        public List<double> GenerateExtrovertIndeces(List<int> users)
+        public List<double> GenerateExtrovertIndeces(List<int> users, double[,] socialAffinities)
         {
             var fileInfo = new FileInfo(_filePath);
             var excel = new ExcelPackage(fileInfo);

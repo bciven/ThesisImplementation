@@ -374,17 +374,51 @@ namespace Implementation.Dataset_Reader
             throw new NotImplementedException("Max Cardinality Unknown");
         }
 
-        private double GenerateExtrovertionIndex()
+        private double GenerateExtrovertionIndex(int user, double[,] socialAffinities, int maxNumberOfFriends)
         {
-            return _extrovertIndexGenerator.NextDouble();
+            if (_distDataParams.ExtrovertIndexModel == ExtrovertIndexEnum.UserDegree)
+            {
+                if (maxNumberOfFriends == 0)
+                {
+                    return 0;
+                }
+
+                var numberOfFriends = 0;
+                for (int i = 0; i < socialAffinities.GetLength(0); i++)
+                {
+                    if (socialAffinities[user, i] > 0)
+                    {
+                        numberOfFriends++;
+                    }
+                }
+                return (double)numberOfFriends / maxNumberOfFriends;
+            }
+            else
+            {
+                return _extrovertIndexGenerator.NextDouble();
+            }
         }
 
-        public List<double> GenerateExtrovertIndeces(List<int> users)
+        public List<double> GenerateExtrovertIndeces(List<int> users, double[,] socialAffinities)
         {
             var extrovertIndeces = new List<double>();
+            var maxNumberOfFriends = 0;
             foreach (var user in users)
             {
-                extrovertIndeces.Add(GenerateExtrovertionIndex());
+                var numberOfFriends = 0;
+                for (int i = 0; i < socialAffinities.GetLength(0); i++)
+                {
+                    if (socialAffinities[user, i] > 0)
+                    {
+                        numberOfFriends++;
+                    }
+                }
+                maxNumberOfFriends = Math.Max(maxNumberOfFriends, numberOfFriends);
+            }
+
+            foreach (var user in users)
+            {
+                extrovertIndeces.Add(GenerateExtrovertionIndex(user, socialAffinities, maxNumberOfFriends));
             }
             return extrovertIndeces;
         }

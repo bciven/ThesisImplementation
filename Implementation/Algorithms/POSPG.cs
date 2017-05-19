@@ -242,7 +242,7 @@ namespace Implementation.Algorithms
             EventCapacity = _dataFeeder.GenerateCapacity(_users, _events);
             InAffinities = _dataFeeder.GenerateInnateAffinities(_users, _events);
             SocAffinities = _dataFeeder.GenerateSocialAffinities(_users);
-            ExtrovertIndeces = _dataFeeder.GenerateExtrovertIndeces(_users);
+            ExtrovertIndeces = _dataFeeder.GenerateExtrovertIndeces(_users, SocAffinities);
 
             foreach (var u1 in _users)
             {

@@ -13,5 +13,7 @@ namespace Implementation.Data_Structures
         public double EventInterestPerct { get; set; }
         public double Exponent { get; set; }
         public int MinDegree { get; internal set; }
+        public int SocialNetworkGraphMaxDegree { get; set; }
+        public ExtrovertIndexEnum ExtrovertIndexModel { get; set; }
     }
 }
