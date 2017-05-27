@@ -45,6 +45,9 @@ namespace ChartMaker
                     config.AvgInnatelWelfare += ReadInnateWelfare(wb);
                     config.AvgRegRatio += ReadRegRatio(wb);
                     config.AvgExecTime += ReadExecTime(wb);
+                    config.AvgAssignmentExecTime += ReadAssignmentExecTime(wb);
+                    config.AvgUserSubstitueExecTime += ReadUserSubstitueExecTime(wb);
+                    config.AvgEventSwitchExecTime += ReadEventSwitchExecTime(wb);
                     config.Count++;
                     excelPackage.Dispose();
                 }
@@ -72,7 +75,10 @@ namespace ChartMaker
                     config.AvgTotalWelfare += ReadTotalWelfare(configLines);
                     config.AvgSocialWelfare += ReadSocialWelfare(configLines);
                     config.AvgInnatelWelfare += ReadInnateWelfare(configLines);
-                    config.AvgExecTime += ReadExecTime(configLines);
+                    config.AvgExecTime += ReadExecTime(directory);
+                    config.AvgAssignmentExecTime += ReadAssignmentExecTime(directory);
+                    config.AvgUserSubstitueExecTime += ReadUserSubstitueExecTime(directory);
+                    config.AvgEventSwitchExecTime += ReadEventSwitchExecTime(directory);
                     config.AvgRegRatio += ReadRegRatio(directory);
                     config.Count++;
                 }
@@ -92,7 +98,10 @@ namespace ChartMaker
                 welfare.AvgInnatelWelfare = welfare.AvgInnatelWelfare / welfare.Count;
                 welfare.AvgSocialWelfare = welfare.AvgSocialWelfare / welfare.Count;
                 welfare.AvgRegRatio = welfare.AvgRegRatio / welfare.Count;
-                welfare.AvgExecTime = Math.Round(welfare.AvgExecTime / (1000* welfare.Count), 2);
+                welfare.AvgExecTime = Math.Round(welfare.AvgExecTime / (1000 * welfare.Count), 2);
+                welfare.AvgAssignmentExecTime = Math.Round(welfare.AvgAssignmentExecTime / (1000 * welfare.Count), 4);
+                welfare.AvgUserSubstitueExecTime = Math.Round(welfare.AvgUserSubstitueExecTime / (1000 * welfare.Count), 4);
+                welfare.AvgEventSwitchExecTime = Math.Round(welfare.AvgEventSwitchExecTime / (1000 * welfare.Count), 4);
             }
         }
 
@@ -184,16 +193,104 @@ namespace ChartMaker
             }
             return Convert.ToDouble(wsConfigs.Cells[execTimeIndex, 2].Value);
         }
-        private double ReadExecTime(string[] configLines)
+        private double ReadAssignmentExecTime(ExcelWorkbook wb)
         {
-            foreach (var line in configLines)
+            var wsConfigs = wb.Worksheets[6];
+            var execTimeIndex = 1;
+            var hit = false;
+            for (; ; execTimeIndex++)
             {
-                if (line.Contains("Execution Time"))
+                if (Convert.ToString(wsConfigs.Cells[execTimeIndex, 1].Value) == "Assignment Execution Time")
+                {
+                    hit = true;
+                    break;
+                }
+            }
+            return hit ? Convert.ToDouble(wsConfigs.Cells[execTimeIndex, 2].Value) : 0d;
+        }
+
+        private double ReadUserSubstitueExecTime(ExcelWorkbook wb)
+        {
+            var wsConfigs = wb.Worksheets[6];
+            var execTimeIndex = 1;
+            var hit = false;
+            for (; ; execTimeIndex++)
+            {
+                if (Convert.ToString(wsConfigs.Cells[execTimeIndex, 1].Value) == "User Substitution Execution Time")
+                {
+                    hit = true;
+                    break;
+                }
+            }
+            return hit ? Convert.ToDouble(wsConfigs.Cells[execTimeIndex, 2].Value) : 0d;
+        }
+
+        private double ReadEventSwitchExecTime(ExcelWorkbook wb)
+        {
+            var wsConfigs = wb.Worksheets[6];
+            var execTimeIndex = 1;
+            var hit = false;
+            for (; ; execTimeIndex++)
+            {
+                if (Convert.ToString(wsConfigs.Cells[execTimeIndex, 1].Value) == "Event Switch Execution Time")
+                {
+                    hit = true;
+                    break;
+                }
+            }
+            return hit ? Convert.ToDouble(wsConfigs.Cells[execTimeIndex, 2].Value) : 0d;
+        }
+
+        private double ReadExecTime(DirectoryInfo directory)
+        {
+            var lines = File.ReadAllLines(Path.Combine(directory.FullName, OutputFiles.Configs));
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("Execution Time"))
                 {
                     return CsvReader.ReadDoubleValue(line, 1);
                 }
             }
             throw new ArgumentException("Argument is not available");
+        }
+
+        private double ReadAssignmentExecTime(DirectoryInfo directory)
+        {
+            var lines = File.ReadAllLines(Path.Combine(directory.FullName, OutputFiles.Configs));
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("Assignment Execution Time"))
+                {
+                    return CsvReader.ReadDoubleValue(line, 1);
+                }
+            }
+            return 0;
+        }
+
+        private double ReadUserSubstitueExecTime(DirectoryInfo directory)
+        {
+            var lines = File.ReadAllLines(Path.Combine(directory.FullName, OutputFiles.Configs));
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("User Substitution Execution Time"))
+                {
+                    return CsvReader.ReadDoubleValue(line, 1);
+                }
+            }
+            return 0;
+        }
+
+        private double ReadEventSwitchExecTime(DirectoryInfo directory)
+        {
+            var lines = File.ReadAllLines(Path.Combine(directory.FullName, OutputFiles.Configs));
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("Event Switch Execution Time"))
+                {
+                    return CsvReader.ReadDoubleValue(line, 1);
+                }
+            }
+            return 0;
         }
 
         private double ReadRegRatio(DirectoryInfo directory)
@@ -340,6 +437,9 @@ namespace ChartMaker
         public string MinCardinalityOption { get; set; }
         public string SocialNetworkModel { get; set; }
         public double AvgExecTime { get; internal set; }
+        public double AvgAssignmentExecTime { get; internal set; }
+        public double AvgUserSubstitueExecTime { get; internal set; }
+        public double AvgEventSwitchExecTime { get; internal set; }
         public int PopOperationCount { get; internal set; }
         public int EvenSwitchRoundCount { get; internal set; }
         public int LListSize { get; internal set; }

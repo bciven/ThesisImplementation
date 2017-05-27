@@ -31,6 +31,7 @@ namespace Implementation.Algorithms
                 throw new Exception("Not Initialized");
             Conf.PopOperationCount = 0;
             Conf.EvenSwitchRoundCount = _queue.Count;
+            _watches._assignmentWatch.Start();
 
             while (_queue.Any())
             {
@@ -88,6 +89,7 @@ namespace Implementation.Algorithms
                     }
                 }
             }
+            _watches._assignmentWatch.Stop();
         }
 
         protected override void PrintQueue()
@@ -222,7 +224,7 @@ namespace Implementation.Algorithms
             assignmentssheet.Cells[result.Count + 3, 2].Value = welfare;
 
             assignmentssheet.Cells[assignmentssheet.Dimension.Address].AutoFitColumns();
-            _conf.PrintToExcel(excel, _watch);
+            _conf.PrintToExcel(excel, _watches);
             excel.Save();
         }
 
@@ -286,7 +288,10 @@ namespace Implementation.Algorithms
             AllEvents = new List<int>();
             _init = false;
             Conf.EvenSwitchRoundCount = 0;
-            
+            _watches._assignmentWatch.Reset();
+            _watches._eventSwitchWatch.Reset();
+            _watches._userSubstitueWatch.Reset();
+
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {
                 int numberOfUsers;

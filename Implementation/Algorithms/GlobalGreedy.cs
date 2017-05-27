@@ -54,6 +54,7 @@ namespace Implementation.Algorithms
             if (!_init)
                 throw new Exception("Not Initialized");
             int hitcount = 0;
+            _watches._assignmentWatch.Start();
 
             while (!_queue.IsEmpty())
             {
@@ -161,7 +162,7 @@ namespace Implementation.Algorithms
                     Reassign();
                 }
             }
-
+            _watches._assignmentWatch.Stop();
             GreedyAssign();
 
             _permanentAssignments = Swap(_permanentAssignments);
@@ -561,6 +562,9 @@ namespace Implementation.Algorithms
             AllEvents = new List<int>();
             _init = false;
             _conf.NumberOfPhantomEvents = 0;
+            _watches._assignmentWatch.Reset();
+            _watches._eventSwitchWatch.Reset();
+            _watches._userSubstitueWatch.Reset();
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {

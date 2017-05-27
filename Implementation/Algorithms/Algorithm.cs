@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Implementation.Data_Structures;
-using LouvainCommunityPL;
+//using LouvainCommunityPL;
 using OfficeOpenXml;
 using System.Threading.Tasks;
 
@@ -24,7 +24,7 @@ namespace Implementation.Algorithms
         public List<double> ExtrovertIndeces;
         public double[,] SocAffinities;
         public SGConf Conf;
-        public Stopwatch _watch;
+        public Watches _watches;
         protected readonly int _index;
         private readonly ReassignmentStrategy<T> _reassignmentStrategy;
         private readonly PrintOutput<T> _printOutput;
@@ -36,18 +36,19 @@ namespace Implementation.Algorithms
         protected Algorithm(int index)
         {
             _index = index;
-            _watch = new Stopwatch();
+            _watches = new Watches();
+
             _reassignmentStrategy = new ReassignmentStrategy<T>(this);
             _printOutput = new PrintOutput<T>(this);
         }
 
-        public Stopwatch Execute(FileInfo output)
+        public Watches Execute(FileInfo output)
         {
-            _watch.Reset();
-            _watch.Start();
+            _watches._watch.Reset();
+            _watches._watch.Start();
             Run(output);
-            _watch.Stop();
-            return _watch;
+            _watches._watch.Stop();
+            return _watches;
         }
 
         protected void UserAssignmentFault(List<List<int>> assignments)
@@ -289,17 +290,26 @@ namespace Implementation.Algorithms
 
         protected List<List<int>> Swap(List<List<int>> assignments)
         {
+            _watches._eventSwitchWatch.Start();
             switch (Conf.Swap)
             {
                 case SwapEnum.None:
-                    return assignments;
-                    break;
+                    {
+                        _watches._eventSwitchWatch.Stop();
+                        return assignments;
+                    }
                 case SwapEnum.Linear:
-                    return LinearSwap(assignments);
-                    break;
+                    {
+                        var results = LinearSwap(assignments);
+                        _watches._eventSwitchWatch.Stop();
+                        return results;
+                    }
                 case SwapEnum.Parallel:
-                    return ParallelSwap(assignments);
-                    break;
+                    {
+                        var results = ParallelSwap(assignments);
+                        _watches._eventSwitchWatch.Stop();
+                        return results;
+                    }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -585,9 +595,10 @@ namespace Implementation.Algorithms
 
                 var batches = new List<List<EventPair>>();
                 var pairIndex = 0;
+                var numberOfThreads = 8;
                 while (pairIndex < eventPairs.Count)
                 {
-                    for (int i = 0; i < 8 && pairIndex < eventPairs.Count; i++)
+                    for (int i = 0; i < numberOfThreads && pairIndex < eventPairs.Count; i++)
                     {
                         if (batches.ElementAtOrDefault(i) == null)
                         {
@@ -726,12 +737,13 @@ namespace Implementation.Algorithms
             }
         }
 
-        protected List<List<int>> ReuseDisposedPairs(List<List<int>> assignments)
+        protected List<List<int>> UserSubstitution(List<List<int>> assignments)
         {
             if (!Conf.ReuseDisposedPairs)
             {
                 return assignments;
             }
+            _watches._userSubstitueWatch.Start();
 
             foreach (var disposeUserEvent in DisposeUserEvents)
             {
@@ -763,6 +775,7 @@ namespace Implementation.Algorithms
                 }
             }
             DisposeUserEvents.Clear();
+            _watches._userSubstitueWatch.Stop();
 
             assignments = Swap(assignments);
             assignments = Sweep(assignments);
@@ -1226,37 +1239,37 @@ namespace Implementation.Algorithms
             return usersCount >= min && usersCount <= max;
         }
 
-        protected Dictionary<int, List<int>> DetectCommunities()
-        {
-            var graph = new Graph();
-            int edgecounter = 0;
-            for (int i = 0; i < SocAffinities.GetLength(0); i++)
-            {
-                for (int j = 0; j < SocAffinities.GetLength(1); j++)
-                {
-                    if (SocAffinities[i, j] != 0)
-                    {
-                        graph.AddEdge(i, j, SocAffinities[i, j]);
-                        edgecounter++;
-                    }
-                }
-            }
-            Console.WriteLine("{0} edges added", edgecounter);
+        //protected Dictionary<int, List<int>> DetectCommunities()
+        //{
+        //    var graph = new Graph();
+        //    int edgecounter = 0;
+        //    for (int i = 0; i < SocAffinities.GetLength(0); i++)
+        //    {
+        //        for (int j = 0; j < SocAffinities.GetLength(1); j++)
+        //        {
+        //            if (SocAffinities[i, j] != 0)
+        //            {
+        //                graph.AddEdge(i, j, SocAffinities[i, j]);
+        //                edgecounter++;
+        //            }
+        //        }
+        //    }
+        //    Console.WriteLine("{0} edges added", edgecounter);
 
-            Dictionary<int, int> partition = Community.BestPartition(graph);
-            var communities = new Dictionary<int, List<int>>();
-            foreach (var kvp in partition)
-            {
-                List<int> nodeset;
-                if (!communities.TryGetValue(kvp.Value, out nodeset))
-                {
-                    nodeset = communities[kvp.Value] = new List<int>();
-                }
-                nodeset.Add(kvp.Key);
-            }
-            Console.WriteLine("{0} communities found", communities.Count);
-            return communities;
-        }
+        //    Dictionary<int, int> partition = Community.BestPartition(graph);
+        //    var communities = new Dictionary<int, List<int>>();
+        //    foreach (var kvp in partition)
+        //    {
+        //        List<int> nodeset;
+        //        if (!communities.TryGetValue(kvp.Value, out nodeset))
+        //        {
+        //            nodeset = communities[kvp.Value] = new List<int>();
+        //        }
+        //        nodeset.Add(kvp.Key);
+        //    }
+        //    Console.WriteLine("{0} communities found", communities.Count);
+        //    return communities;
+        //}
 
         protected UserEvent Util(int @event, int user, bool communityAware, CommunityFixEnum communityFix,
             List<int> users)
@@ -1301,74 +1314,80 @@ namespace Implementation.Algorithms
                     denumDeduction = 0;
                 }
 
-                if (communityFix.HasFlag(CommunityFixEnum.None))
+                if (communityFix.HasFlag(CommunityFixEnum.CommunityAwareFix))
+                {
+                    var friends = users.Where(u => InAffinities[u][@event] > 0 && SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d) > 0).ToList();
+                    s = Conf.Alpha * (Math.Max((EventCapacity[@event].Max - Assignments[@event].Count - 1), 0) *
+                       friends.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) / Math.Max(friends.Count - 1, 1));
+                }
+                else if (communityFix.HasFlag(CommunityFixEnum.None))
                 {
                     s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
-                        users.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
+                        users.Where(u => u != user).Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
                         (double)Math.Max(users.Count - denumDeduction, 1));
                 }
-                else if (communityFix.HasFlag(CommunityFixEnum.Version1))
-                {
-                    var lowInterestedUsers =
-                        users.OrderBy(x => SocAffinities[user, x]).Take(EventCapacity[@event].Max).ToList();
-                    s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(
-                            u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
-                         (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1)));
+                //if (communityFix.HasFlag(CommunityFixEnum.Version1))
+                //{
+                //    var lowInterestedUsers =
+                //        users.OrderBy(x => SocAffinities[user, x]).Take(EventCapacity[@event].Max).ToList();
+                //    s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
+                //        (lowInterestedUsers.Sum(
+                //            u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
+                //         (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1)));
 
-                    //s += Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
-                    //(users.Sum(u => InAffinities[u][@event]) / (double)Math.Max(users.Count - 1, 1));
-                }
-                else if (communityFix.HasFlag(CommunityFixEnum.Version2))
-                {
-                    var lowInterestedUsers =
-                        users.OrderBy(x => SocAffinities[user, x])
-                            .Take(EventCapacity[@event].Max - Assignments[@event].Count)
-                            .ToList();
-                    s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(
-                            u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
-                         (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1)));
-                }
-                else if (communityFix.HasFlag(CommunityFixEnum.Version3))
-                {
-                    var lowInterestedUsers =
-                        users.OrderBy(x => SocAffinities[user, x] + InAffinities[x][@event])
-                            .Take(EventCapacity[@event].Max - Assignments[@event].Count)
-                            .ToList();
-                    s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(
-                            u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
-                         (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1)));
-                }
-                else if (communityFix.HasFlag(CommunityFixEnum.Version4))
-                {
-                    var lowInterestedUsers = users.Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
-                    s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
-                        (lowInterestedUsers.Sum(
-                            u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
-                         (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1)));
-                }
-                else if (communityFix.HasFlag(CommunityFixEnum.Predictive))
-                {
-                    /*int probableParticipants = 0;
-                    var rnd = new Random();
-                    var potentialSocialGain = users.Sum(x =>
-                    {
-                        var probabilityOfLanding = UserEventsInit[UserEvent.GetKey(x, @event)].Utility / MaxInterest * 100;
-                        var thereOrNotThere = rnd.Next(0, 100) < probabilityOfLanding;
-                        if (thereOrNotThere)
-                        {
-                            probableParticipants++;
-                            return SocAffinities[user, x] + (Conf.Asymmetric ? SocAffinities[x, user] : 0d);
-                        }
-                        return 0;
-                    });
-                    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (potentialSocialGain / Math.Max(probableParticipants, 1));*/
-                    s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
-                        users.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
-                        (double)Math.Max(users.Count - denumDeduction, 1));
-                }
+                //    //s += Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) *
+                //    //(users.Sum(u => InAffinities[u][@event]) / (double)Math.Max(users.Count - 1, 1));
+                //}
+                //if (communityFix.HasFlag(CommunityFixEnum.Version2))
+                //{
+                //    var lowInterestedUsers =
+                //        users.OrderBy(x => SocAffinities[user, x])
+                //            .Take(EventCapacity[@event].Max - Assignments[@event].Count)
+                //            .ToList();
+                //    s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
+                //        (lowInterestedUsers.Sum(
+                //            u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
+                //         (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1)));
+                //}
+                //if (communityFix.HasFlag(CommunityFixEnum.Version3))
+                //{
+                //    var lowInterestedUsers =
+                //        users.OrderBy(x => SocAffinities[user, x] + InAffinities[x][@event])
+                //            .Take(EventCapacity[@event].Max - Assignments[@event].Count)
+                //            .ToList();
+                //    s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
+                //        (lowInterestedUsers.Sum(
+                //            u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
+                //         (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1)));
+                //}
+                //if (communityFix.HasFlag(CommunityFixEnum.Version4))
+                //{
+                //    var lowInterestedUsers = users.Take(EventCapacity[@event].Max - Assignments[@event].Count).ToList();
+                //    s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
+                //        (lowInterestedUsers.Sum(
+                //            u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
+                //         (double)Math.Max(lowInterestedUsers.Count - denumDeduction, 1)));
+                //}
+                //if (communityFix.HasFlag(CommunityFixEnum.Predictive))
+                //{
+                //    /*int probableParticipants = 0;
+                //    var rnd = new Random();
+                //    var potentialSocialGain = users.Sum(x =>
+                //    {
+                //        var probabilityOfLanding = UserEventsInit[UserEvent.GetKey(x, @event)].Utility / MaxInterest * 100;
+                //        var thereOrNotThere = rnd.Next(0, 100) < probabilityOfLanding;
+                //        if (thereOrNotThere)
+                //        {
+                //            probableParticipants++;
+                //            return SocAffinities[user, x] + (Conf.Asymmetric ? SocAffinities[x, user] : 0d);
+                //        }
+                //        return 0;
+                //    });
+                //    s = Conf.Alpha * (EventCapacity[@event].Max - Assignments[@event].Count) * (potentialSocialGain / Math.Max(probableParticipants, 1));*/
+                //    s = Conf.Alpha * ((EventCapacity[@event].Max - Assignments[@event].Count) *
+                //        users.Sum(u => SocAffinities[user, u] + (Conf.Asymmetric ? SocAffinities[u, user] : 0d)) /
+                //        (double)Math.Max(users.Count - denumDeduction, 1));
+                //}
 
                 g = s + g;
                 /*var firstNotSecond = usersints.Except(users).ToList();

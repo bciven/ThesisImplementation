@@ -38,6 +38,7 @@ namespace Implementation.Algorithms
             FillQueue(_users, _events);
             Conf.PopOperationCount = 0;
             Conf.LListSize = _queue.Count;
+            _watches._assignmentWatch.Start();
 
             while (_queue.Count > 0)
             {
@@ -62,11 +63,12 @@ namespace Implementation.Algorithms
                     Reassign();
                 }
             }
+            _watches._assignmentWatch.Stop();
 
             GreedyAssign();
             Assignments = Swap(Assignments);
             Assignments = Sweep(Assignments);
-            Assignments = ReuseDisposedPairs(Assignments);
+            Assignments = UserSubstitution(Assignments);
         }
 
         private void FillQueue(List<int> users, List<int> events)
@@ -191,6 +193,9 @@ namespace Implementation.Algorithms
             DisposeUserEvents = new Dictionary<string, UserEvent>();
             _init = false;
             _conf.NumberOfPhantomEvents = 0;
+            _watches._assignmentWatch.Reset();
+            _watches._eventSwitchWatch.Reset();
+            _watches._userSubstitueWatch.Reset();
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {

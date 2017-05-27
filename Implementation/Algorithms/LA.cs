@@ -72,6 +72,7 @@ namespace Implementation.Algorithms
         {
             Conf.PopOperationCount = 0;
             Conf.LListSize = _queue.Count;
+            _watches._assignmentWatch.Start();
 
             while (_queue.Count > 0)
             {
@@ -121,12 +122,12 @@ namespace Implementation.Algorithms
                     Reassign();
                 }
             }
-
+            _watches._assignmentWatch.Stop();
             RemovePhantomEvents();
 
             //Assignments = Swap(Assignments);
             Assignments = Sweep(Assignments);
-            Assignments = ReuseDisposedPairs(Assignments);
+            Assignments = UserSubstitution(Assignments);
             Assignments = RealizePhantomEvents(Assignments, _numberOfUserAssignments);
         }
 
@@ -192,6 +193,9 @@ namespace Implementation.Algorithms
             DisposeUserEvents = new Dictionary<string, UserEvent>();
             _init = false;
             Conf.EvenSwitchRoundCount = 0;
+            _watches._assignmentWatch.Reset();
+            _watches._eventSwitchWatch.Reset();
+            _watches._userSubstitueWatch.Reset();
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {
@@ -308,56 +312,56 @@ namespace Implementation.Algorithms
             }
         }
 
-        private void CommunityInitialization()
-        {
-            var communities = DetectCommunities();
-            var dictionary = new Dictionary<string, int>(AllUsers.Count * AllEvents.Count);
-            foreach (var community in communities)
-            {
-                var userPreferedEvent = new List<UserEvent>();
-                foreach (var user in community.Value)
-                {
-                    var maxIndex = -1;
-                    var max = double.MinValue;
-                    foreach (var @event in _events)
-                    {
-                        if (InAffinities[user][@event] > max)
-                        {
-                            max = InAffinities[user][@event];
-                            maxIndex = @event;
-                        }
-                    }
-                    userPreferedEvent.Add(new UserEvent(user, maxIndex));
-                }
-                var votes = userPreferedEvent.GroupBy(x => x.Event);
-                votes = votes.OrderByDescending(x => x.Count()).ToList();
-                foreach (var vote in votes)
-                {
-                    foreach (var userEvent in vote)
-                    {
-                        var key = userEvent.User + "-" + userEvent.Event;
-                        if (!dictionary.ContainsKey(key))
-                        {
-                            _queue.Enqueue(new UserEvent(userEvent.User, userEvent.Event));
-                            dictionary.Add(key, 1);
-                        }
-                    }
-                }
-            }
+        //private void CommunityInitialization()
+        //{
+        //    var communities = DetectCommunities();
+        //    var dictionary = new Dictionary<string, int>(AllUsers.Count * AllEvents.Count);
+        //    foreach (var community in communities)
+        //    {
+        //        var userPreferedEvent = new List<UserEvent>();
+        //        foreach (var user in community.Value)
+        //        {
+        //            var maxIndex = -1;
+        //            var max = double.MinValue;
+        //            foreach (var @event in _events)
+        //            {
+        //                if (InAffinities[user][@event] > max)
+        //                {
+        //                    max = InAffinities[user][@event];
+        //                    maxIndex = @event;
+        //                }
+        //            }
+        //            userPreferedEvent.Add(new UserEvent(user, maxIndex));
+        //        }
+        //        var votes = userPreferedEvent.GroupBy(x => x.Event);
+        //        votes = votes.OrderByDescending(x => x.Count()).ToList();
+        //        foreach (var vote in votes)
+        //        {
+        //            foreach (var userEvent in vote)
+        //            {
+        //                var key = userEvent.User + "-" + userEvent.Event;
+        //                if (!dictionary.ContainsKey(key))
+        //                {
+        //                    _queue.Enqueue(new UserEvent(userEvent.User, userEvent.Event));
+        //                    dictionary.Add(key, 1);
+        //                }
+        //            }
+        //        }
+        //    }
 
-            foreach (var u in _users)
-            {
-                foreach (var e in _events)
-                {
-                    var key = u + "-" + e;
-                    if (!dictionary.ContainsKey(key))
-                    {
-                        _queue.Enqueue(new UserEvent(u, e));
-                        dictionary.Add(key, 1);
-                    }
-                }
-            }
-        }
+        //    foreach (var u in _users)
+        //    {
+        //        foreach (var e in _events)
+        //        {
+        //            var key = u + "-" + e;
+        //            if (!dictionary.ContainsKey(key))
+        //            {
+        //                _queue.Enqueue(new UserEvent(u, e));
+        //                dictionary.Add(key, 1);
+        //            }
+        //        }
+        //    }
+        //}
 
         private void SetNullMembers()
         {

@@ -30,6 +30,7 @@ namespace Implementation.Algorithms
                 throw new Exception("Not Initialized");
             Conf.PopOperationCount = 0;
             Conf.EvenSwitchRoundCount = 0;
+            _watches._assignmentWatch.Start();
 
             while (_queue.Any())
             {
@@ -65,6 +66,7 @@ namespace Implementation.Algorithms
                     Reinitialize();
                 }
             }
+            _watches._assignmentWatch.Stop();
         }
 
         private void Reinitialize()
@@ -198,6 +200,9 @@ namespace Implementation.Algorithms
             AllEvents = new List<int>();
             _init = false;
             Conf.EvenSwitchRoundCount = 0;
+            _watches._assignmentWatch.Reset();
+            _watches._eventSwitchWatch.Reset();
+            _watches._userSubstitueWatch.Reset();
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {

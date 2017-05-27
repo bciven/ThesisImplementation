@@ -98,7 +98,7 @@ namespace Implementation.Algorithms
             }
             regRatiosheet.Cells[regRatiosheet.Dimension.Address].AutoFitColumns();
 
-            _algorithm.Conf.PrintToExcel(excel, _algorithm._watch);
+            _algorithm.Conf.PrintToExcel(excel, _algorithm._watches);
 
             var eventAssignmentsSheet = excel.Workbook.Worksheets.Add("Event Assignments");
             eventAssignmentsSheet.Cells[1, 1].Value = "Event";
@@ -230,7 +230,7 @@ namespace Implementation.Algorithms
 
             regRatiosFile.Close();
 
-            _algorithm.Conf.PrintToText(dir, _algorithm._watch);
+            _algorithm.Conf.PrintToText(dir, _algorithm._watches);
 
             var eventAssignmentsFile = new StreamWriter(Path.Combine(dir.FullName, OutputFiles.EventAssignment));
             int e = 0;

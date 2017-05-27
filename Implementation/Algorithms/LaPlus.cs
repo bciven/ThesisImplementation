@@ -30,6 +30,7 @@ namespace Implementation.Algorithms
             if (!_init)
                 throw new Exception("Not Initialized");
             int hitcount = 0;
+            _watches._assignmentWatch.Start();
 
             while (_randomQueue.Count > 0)
             {
@@ -93,6 +94,7 @@ namespace Implementation.Algorithms
                     //AdjustList(affectedEvents, user, @event, assignmentMade);
                 }
             }
+            _watches._assignmentWatch.Stop();
 
             Assignments = AllEvents.Select(x => new List<int>()).ToList();
             for (int user = 0; user < UserAssignments.Count; user++)
@@ -191,6 +193,9 @@ namespace Implementation.Algorithms
             AllEvents = new List<int>();
             _init = false;
             Conf.EvenSwitchRoundCount = 0;
+            _watches._assignmentWatch.Reset();
+            _watches._eventSwitchWatch.Reset();
+            _watches._userSubstitueWatch.Reset();
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {

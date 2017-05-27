@@ -148,6 +148,45 @@ namespace ChartMaker
                     }
                 }
 
+                if (welfares[i].Any(x => x.AvgAssignmentExecTime != 0))
+                {
+                    for (int j = 0; j < welfares[i].Count; j++, col++)
+                    {
+                        ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                        ws.Cells[i + 3, col].Value = welfares[i][j].AvgAssignmentExecTime;
+                        if (i == 0 && j == 0)
+                        {
+                            ws.Cells[1, col].Value = "Assignment Execution Time";
+                        }
+                    }
+                }
+
+                if (welfares[i].Any(x=> x.AvgUserSubstitueExecTime != 0))
+                {
+                    for (int j = 0; j < welfares[i].Count; j++, col++)
+                    {
+                        ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                        ws.Cells[i + 3, col].Value = welfares[i][j].AvgUserSubstitueExecTime;
+                        if (i == 0 && j == 0)
+                        {
+                            ws.Cells[1, col].Value = "User Substitution Execution Time";
+                        }
+                    }
+                }
+
+                if (welfares[i].Any(x => x.AvgEventSwitchExecTime != 0))
+                {
+                    for (int j = 0; j < welfares[i].Count; j++, col++)
+                    {
+                        ws.Cells[dataRow, col].Value = welfares[i][j].Version;
+                        ws.Cells[i + 3, col].Value = welfares[i][j].AvgEventSwitchExecTime;
+                        if (i == 0 && j == 0)
+                        {
+                            ws.Cells[1, col].Value = "Event Switch Execution Time";
+                        }
+                    }
+                }
+
                 for (int j = 0; j < welfares[i].Count; j++, col++)
                 {
                     ws.Cells[dataRow, col].Value = welfares[i][j].Version;

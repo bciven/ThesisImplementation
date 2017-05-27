@@ -96,6 +96,7 @@ namespace Implementation.Algorithms
 
             Conf.PopOperationCount = 0;
             Conf.LListSize = _queue.Count();
+            _watches._assignmentWatch.Start();
 
             while (!_queue.IsEmpty())
             {
@@ -225,13 +226,14 @@ namespace Implementation.Algorithms
                     Reassign();
                 }
             }
+            _watches._assignmentWatch.Stop();
 
             GreedyAssign();
             Assignments = RealizePhantomEvents(Assignments, _numberOfUserAssignments);
             RemovePhantomEvents();
             Assignments = Swap(Assignments);
             Assignments = Sweep(Assignments);
-            Assignments = ReuseDisposedPairs(Assignments);
+            Assignments = UserSubstitution(Assignments);
             UserMultiAssignmentFault(Assignments);
         }
 
@@ -525,6 +527,9 @@ namespace Implementation.Algorithms
             _conf.NumberOfPhantomEvents = 0;
             DisposeUserEvents = new Dictionary<string, UserEvent>();
             Conf.EvenSwitchRoundCount = 0;
+            _watches._assignmentWatch.Reset();
+            _watches._eventSwitchWatch.Reset();
+            _watches._userSubstitueWatch.Reset();
 
             if (_conf.FeedType == FeedTypeEnum.Example1 || _conf.FeedType == FeedTypeEnum.XlsxFile)
             {

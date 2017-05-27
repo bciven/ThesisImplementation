@@ -871,7 +871,7 @@ namespace Implementation.Experiment
                             DeficitFix = input.Contains("5"),
                             LazyAdjustment = !input.Contains("6"),
                             CommunityAware = input.Contains("7"),
-                            CommunityFix = input.Contains("8") ? CommunityFixEnum.Version1 : CommunityFixEnum.None,
+                            CommunityFix = input.Contains("8") ? CommunityFixEnum.CommunityAwareFix : CommunityFixEnum.None,
                             PrintOutEachStep = input.Contains("9"),
                             FeedType = feedType,
                             Alpha = parameters.AlphaValue,
@@ -894,7 +894,7 @@ namespace Implementation.Experiment
             return configs;
         }
 
-        private void Print(List<UserEvent> result, Welfare welfare, Stopwatch watch, bool shutdown)
+        private void Print(List<UserEvent> result, Welfare welfare, Watches watches, bool shutdown)
         {
             if (shutdown)
             {
@@ -905,7 +905,7 @@ namespace Implementation.Experiment
             var formattedTime = time.ToString("HH:mm:ss");
             formattedTime = string.Format("Date: {0}", formattedTime).ToString();
             Console.WriteLine(formattedTime);
-            Console.WriteLine("Exection Time: {0}ms", watch.ElapsedMilliseconds);
+            Console.WriteLine("Exection Time: {0}ms", watches._watch.ElapsedMilliseconds);
             Console.WriteLine("Social Welfare: {0}", welfare.SocialWelfare);
             Console.WriteLine("Innate Welfare: {0}", welfare.InnateWelfare);
             Console.WriteLine("Total Welfare: {0}", welfare.TotalWelfare);
@@ -919,9 +919,9 @@ namespace Implementation.Experiment
                 Console.WriteLine("....Round {0}-{1}....", round, ConvertToString(algorithmEnum));
             }
             alg.Initialize();
-            var watch = alg.Execute(output);
+            var watches = alg.Execute(output);
             var result = alg.CreateOutput(output);
-            Print(result, alg.Welfare, watch, shutdown);
+            Print(result, alg.Welfare, watches, shutdown);
         }
 
         public string ConvertToString(Enum eff)

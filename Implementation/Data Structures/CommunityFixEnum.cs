@@ -10,7 +10,7 @@ namespace Implementation.Data_Structures
     public enum CommunityFixEnum
     {
         None = 0,
-        Version1 = 1,
+        CommunityAwareFix = 1,
         Version2 = 2,
         Version3 = 4,
         Version4 = 8,
